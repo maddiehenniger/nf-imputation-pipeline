@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "maddiehenniger/nf-imputation-pipeline params.samplesheet schema",
+    "description": "Schema for the samplesheet used as input to maddiehenniger/nf-imputation-pipeline",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "required": ["sampleName"],
+      "properties": {
+        "sampleName": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "Sample name must be provided and cannot contain spaces",
+          "meta": "sampleName"
+        },
+        "samplePath": {
+          "type": "string",
+          "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+          "format": "file-path",
+          "errorMessage": "BCF/VCF(.gz) file for samples must be provided, cannot contain spaces and must have extension '.bcf'/'.bcf.gz' or '.vcf'/'vcf.gz'"
+        }
+      }
+    }
+  }

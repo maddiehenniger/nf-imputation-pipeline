@@ -1,2 +1,85 @@
 # nf-imputation-pipeline
+
 GitHub repository for an imputation pipeline implemented in Nextflow.
+
+## Overview of nf-imputation-pipeline
+
+* Workflow image coming soon *
+
+The Rowan lab `nf-imputation-pipeline` aims to impute genotypes from array or low-pass whole genome sequencing datasets using either a one or two steps of imputation. Input samples are phased to the reference panel by default, but can optionally be phased to a pedigree file. By default, input samples undergo an intermediate imputation step and then a to-sequence imputation step, but can optionally undergo only one imputation step.
+
+Please see "Modifying the Configuration File" for modifying defaults. 
+
+## Quickstart
+
+TBD
+
+## Preparing to Run the nf-imputation-pipeline
+
+In order to run the pipeline, you must have the following inputs:
+
+- Input sample(s) that require imputation
+- Reference panel(s) for imputing
+- Sample and reference metadata for downstream processes
+- Nextflow downloaded and/or configured
+
+Input samples that require imputation will be referred to as test samples throughout this documentation. The reference population that you are using to impute with will be referred to as the reference panel. You may optionally also include a pedigree file and must specify this in the configuration file. 
+
+### Required Input Files
+
+The following are the user-required files for the pipeline to work. Please note the required input file extensions, expected file format, and pipeline assumptions for each file type. IMPORTANT: The input files for this are assumed to be in VCF/BCF(.gz) format and have already been filtered for the analysis-appropriate quality, allele frequencies, missingness, etc. The user must be aware of how including low-quality base calls in the dataset may impact downstream imputation accuracies. 
+
+Note: The below paragraph is currently not implemented in this version of the pipeline and only supports hard copying. Future implementations of the pipeline will provide the below features.
+
+The pipeline will automatically detect where your sample(s), reference(s), and optionally, your pre-indexed file(s) are located. IMPORTANT: (Feature) If you do not have your samples and references pre-indexed and in the same directory defined in your samplesheet, the pipeline will check if the files exist in `${PROJECTDIR}/data/samples/` and `${PROJECTDIR}/data/references/` directories and perform indexing - if they do not exist in the defined directories, the pipeline is set to hard copy these files to these directories to perform downstream analysis, which can impact your processing time and available storage. Therefore, to avoid unneccessary duplication of files, we recommend either preemptively creating these directories and populating them with the correct files, and, optionally, pre-indexing your files. 
+
+#### Sample and Reference Files and Metadata
+
+The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers. The test samples are assumed to be unphased and there is currently no option to skip phasing.
+
+The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance.
+
+The sample metadata should be a comma-delimited file (.CSV) containing two columns: sampleName, samplePath
+- sampleName: A string with no spaces containing the user-defined name of the sample with no file extensions (ex: sample_1)
+- samplePath: A string in the form of a file path to where the associated sample is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz)
+- sampleIndexPath (OPTIONAL, RECOMMENDED): A string in the form of a file path to where the associated sample index is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz.csi)
+
+Please note that the `sampleIndexPath` must be in the same directory as the supplied sample file, and in the current version, only supports `.csi` index file format. If no indexed files have been generated for a sample, you may leave this column blank. Be aware that if the test samples do not exist under `${PROJECTDIR}/data/samples`, they will be hard copied to the project directory where the Nextflow script is ran. If the samples already exist in this directory, and simply need to be indexed, the copying step will be skipped and only indexing will be performed. Hard copying of sample files can reduce available storage within the project directory and increase processing time depending on sample size.
+
+The reference metadata should be a comma-delimited file (.CSV) containing three columns: referenceName, referencePath, imputationStep
+- referenceName: A string with no spaces contianing the user-defined name of the reference panel with no file extensions (ex: HD_panel)
+- referencePath: A string in the form of a file path to where the associated reference panel is located in your directory; this should end with the file extension (ex: /path/to/reference/HD_panel.bcf)
+- referenceIndexPath (OPTIONAL, RECOMMENDED): A string in the form of a file path to where the associated reference panel index file are located in your directory; this should end with the file extension (ex: /path/to/reference/HD_panel.bcf.csi)
+- imputationStep: A string containing one of the following: one or two; one corresponds to the intermediate imputation step, and two corresponds to sequence-level imputation
+
+Please note the `imputationStep` column is required regardless of whether you are performing two-step imputation or not (in this case, the user will just put 'one').
+
+Please note that the `referenceIndexPath` must be in the same directory as the supplied reference file, and in the current version, only supports `.csi` index file format. If no indexed files have been generated for a reference panel, you may leave this column blank. Be aware that if the reference(s) do not exist under `${PROJECTDIR}/data/references`, they will be hard copied to the project directory where the Nextflow script is ran. If the reference panel(s) already exist in this directory, and simply need to be indexed, the copying step will be skipped and only indexing will be performed. Hard copying of reference files can reduce available storage within the project directory and increase processing time depending on reference size.
+
+#### Optional: Pedigree File
+
+Please note: This is currently undergoing construction is not an available feature.
+
+If you already know you'd like to phase your test samples to a pedigree file, you must also supply an additional input file. You must provide the pedigree file in a tab-delimited format containing one line per sample having parent(s) in the data and three columns (kidID fatherID and motherID). Use NAs for unknown parents (in the case of duos).
+
+You must also modify the configuration file to specify that phasing must occur to the pedigree file and the location of the pedigree file. The test sample population must be larger than 25 individuals for pedigree-based phasing, which is a restriction implemented by the phasing tool and not pipeline developers.
+
+### The Configuration File
+
+The `nextflow.config` file is where the workflow configurations are located. This file is automatically detected by Nextflow, provided it is located within the launch directory. The user must modify the configuration file with project-specific details for Nextflow to detect where test samples, reference panels, and associated files are located. The configuration file is built for the intention of running on a SLURM-based system. 
+
+## Detailed Walkthrough of the Workflow
+
+Some steps will run simultaneously throughout this process. 
+
+### Test Sample and Reference Validation
+
+The workflow will automatically identify the name and location of the test samples and validate their existence based on the user-specified metadata. The test samples will be assessed for the number of chromosomes.
+
+By default, the workflow will identify the name and location of the reference panel(s) and validate their existence based on the user-specified metadata. If multiple reference panels are specified, the workflow detects which step of imputation each reference is used for based on user-supplied input in the metadata. The reference panel will be assessed for the number of chromosomes and whether or not the reference has been phased. These steps cannot currently be skipped to save time by the user configuration, but take a negligible amount of time and computational power.
+
+```
+singularity exec https://depot.galaxyproject.org/singularity/bcftools:1.19--h8b25389_1 bcftools view -H -G 210723_ASA_GGP-F250_20000778_A1_fill.bcf.gz | head -n 1 | awk '{print $1}' >> test_210723_ASA_GGP-F250_20000778_A1_fill.test
+```
+
+### 
