@@ -20,18 +20,7 @@ workflow Parse_Samplesheet {
             .fromList(
                 samplesheetToList(samplesheet, "${projectDir}/assets/schema_samplesheet.json")
             )
-            /*
-                Reshape nf-schema output to format I want
-                This gives a shape of:
-                [
-                    metadata map,
-                    [ samplePath VCF/BCF(.gz) file ]
-                ]
-                This general shape is passed into most downstream steps that take in input samples.
-            */
-            .map { meta, samplePath ->
-                createSampleReadsChannel(meta, samplePath)
-            }
+            .map { meta, samplePath -> tuple(meta, [ samplePath ]) }
             .set { ch_samples }
     
     emit:

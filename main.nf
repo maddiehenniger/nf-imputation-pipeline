@@ -21,6 +21,5 @@ workflow {
         file(params.samplesheet)
     )
     ch_input_samples = PREPARE_INPUTS.out.samples
-    Channel.of(ch_input_samples)
         .view()
 }
