@@ -1,6 +1,6 @@
 # nf-imputation-pipeline
 
-GitHub repository for an imputation pipeline implemented in Nextflow.
+GitHub repository for an imputation pipeline implemented in Nextflow. This documentation and pipeline are actively undergoing construction and are not currently ready for use.
 
 ## Overview of nf-imputation-pipeline
 
@@ -12,16 +12,16 @@ Please see "Modifying the Configuration File" for modifying defaults.
 
 ## Quickstart
 
-TBD
+Under construction
 
 ## Preparing to Run the nf-imputation-pipeline
 
 In order to run the pipeline, you must have the following inputs:
 
+- Nextflow downloaded and/or configured
 - Input sample(s) that require imputation
 - Reference panel(s) for imputing
 - Sample and reference metadata for downstream processes
-- Nextflow downloaded and/or configured
 
 Input samples that require imputation will be referred to as test samples throughout this documentation. The reference population that you are using to impute with will be referred to as the reference panel. You may optionally also include a pedigree file and must specify this in the configuration file. 
 
@@ -52,9 +52,9 @@ The reference metadata should be a comma-delimited file (.CSV) containing three 
 - referenceIndexPath (OPTIONAL, RECOMMENDED): A string in the form of a file path to where the associated reference panel index file are located in your directory; this should end with the file extension (ex: /path/to/reference/HD_panel.bcf.csi)
 - imputationStep: A string containing one of the following: one or two; one corresponds to the intermediate imputation step, and two corresponds to sequence-level imputation
 
-Please note the `imputationStep` column is required regardless of whether you are performing two-step imputation or not (in this case, the user will just put 'one').
-
 Please note that the `referenceIndexPath` must be in the same directory as the supplied reference file, and in the current version, only supports `.csi` index file format. If no indexed files have been generated for a reference panel, you may leave this column blank. Be aware that if the reference(s) do not exist under `${PROJECTDIR}/data/references`, they will be hard copied to the project directory where the Nextflow script is ran. If the reference panel(s) already exist in this directory, and simply need to be indexed, the copying step will be skipped and only indexing will be performed. Hard copying of reference files can reduce available storage within the project directory and increase processing time depending on reference size.
+
+Please note the `imputationStep` column is required regardless of whether you are performing two-step imputation or not (in this case, the user will just put 'one'). Please also note that at this time, there cannot be more than two reference datasets (i.e., only one for imputationStep value one, only one for imputationStep value two), even if you intend to test different intermediate or sequence-level imputation reference panels. Hopefully, this will be a feature in future implementations to allow for more savvy testing of multiple reference panels, but is not a priority feature.
 
 #### Optional: Pedigree File
 
@@ -67,6 +67,8 @@ You must also modify the configuration file to specify that phasing must occur t
 ### The Configuration File
 
 The `nextflow.config` file is where the workflow configurations are located. This file is automatically detected by Nextflow, provided it is located within the launch directory. The user must modify the configuration file with project-specific details for Nextflow to detect where test samples, reference panels, and associated files are located. The configuration file is built for the intention of running on a SLURM-based system. 
+
+Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, `samplesheet`, and `referencesheet` at a minimum. These inputs allows the pipeline to classify the pipeline by project; locate input samples; and locate references and which imputation step they will be used for, if applicable. 
 
 ## Detailed Walkthrough of the Workflow
 
