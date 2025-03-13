@@ -35,6 +35,8 @@ The pipeline will automatically detect where your sample(s), reference(s), and o
 
 #### Sample and Reference Files and Metadata
 
+! Undergoing Construction: For the current implementation of the pipeline, you MUST supply the path to the reference database AND the indexed file for testing. Making the indexing optional is a future priority implementation !
+
 The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers. The test samples are assumed to be unphased and there is currently no option to skip phasing.
 
 The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance.
