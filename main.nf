@@ -18,7 +18,7 @@ include { PREPARE_INPUTS } from "./workflows/prepare_inputs.nf"
 
 workflow {
     PREPARE_INPUTS(
-        file(params.samplesheet)
+        file(params.samplesheet),
         file(params.referencesheet)
     )
     ch_input_samples    = PREPARE_INPUTS.out.samples
