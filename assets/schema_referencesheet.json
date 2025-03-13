@@ -10,14 +10,27 @@
         "referenceName": {
           "type": "string",
           "pattern": "^\\S+$",
-          "errorMessage": "Reference name must be provided and cannot contain spaces",
+          "errorMessage": "Reference name must be provided and cannot contain spaces.",
           "meta": "referenceName"
         },
         "referencePath": {
           "type": "string",
-          "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+          "pattern": "^\\S+$",
           "format": "file-path",
-          "errorMessage": "BCF/VCF(.gz) file for samples must be provided, cannot contain spaces and must have extension '.bcf'/'.bcf.gz' or '.vcf'/'vcf.gz'"
+          "errorMessage": "BCF/VCF(.gz) file for samples must be provided, cannot contain spaces and must have extension '.bcf'/'.bcf.gz' or '.vcf'/'vcf.gz'."
+        },
+        "referenceIndexPath": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "format": "file-path",
+          "errorMessage": "BCF/VCF(.gz) index file for samples must be provided, cannot contain spaces and must have extension '.bcf.csi'/'.bcf.gz.csi' or '.vcf.csi'/'vcf.gz.csi'."
+        },
+        "imputationStep": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "Value must be provided as either 'one' or 'two' with no spaces; if there is only one reference panel, please supply only the value 'one'. There cannot be more than one 'one' or 'two' values.",
+          "enum": [ "one", "two" ],
+          "meta": "imputationStep"
         }
       }
     }
