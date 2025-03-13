@@ -20,7 +20,7 @@ workflow Parse_Referencesheet {
             .fromList(
                 samplesheetToList(referencesheet, "${projectDir}/assets/schema_referencesheet.json")
             )
-            .map { meta, referencePath, referenceIndexPath -> tuple(meta, [ referencePath, referencePathIndex ]) }
+            .map { meta, referencePath, referenceIndexPath -> tuple(meta, [ referencePath, referenceIndexPath ]) }
             .set { ch_reference }
     
     emit:
