@@ -23,6 +23,8 @@ workflow {
     )
     ch_input_samples    = PREPARE_INPUTS.out.samples
         .view()
-    ch_input_reference  = PREPARE_INPUTS.out.reference
+    ch_one_reference    = PREPARE_INPUTS.out.reference_intermediate
+        .view()
+    ch_two_reference    = PREPARE_INPUTS.out.reference_twostep
         .view()
 }
