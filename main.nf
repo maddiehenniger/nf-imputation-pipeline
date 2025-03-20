@@ -15,6 +15,7 @@ nextflow.enable.dsl=2
 
 // include custom workflows
 include { PREPARE_INPUTS } from "./workflows/prepare_inputs.nf"
+include { VALIDATE_CHR   } from "./modules/bcftools_validate_samples.nf"
 
 workflow {
     PREPARE_INPUTS(
@@ -26,5 +27,11 @@ workflow {
     ch_one_reference    = PREPARE_INPUTS.out.reference_intermediate
         .view()
     ch_two_reference    = PREPARE_INPUTS.out.reference_twostep
+        .view()
+
+    VALIDATE_CHR(
+        ch_input_samples
+    )
+    ch_sample_chr = VALIDATE_CHR.out.ch_sample_chr
         .view()
 }
