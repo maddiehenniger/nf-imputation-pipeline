@@ -22,7 +22,7 @@
     )
 
     input:
-        tuple val(meta), path(samplePath)
+        tuple val(meta), path(samplePath), path(sampleIndexPath)
 
     output:
         path "${meta.sampleName}_chromosomes.txt", emit: sampleChromosomes
