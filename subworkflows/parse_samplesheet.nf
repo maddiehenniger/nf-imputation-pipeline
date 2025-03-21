@@ -20,7 +20,7 @@ workflow Parse_Samplesheet {
             .fromList(
                 samplesheetToList(samplesheet, "${projectDir}/assets/schema_samplesheet.json")
             )
-            .map { meta, samplePath, sampleIndexPath -> tuple(meta, [ samplePath, sampleIndexPath ]) }
+            .map { meta, samplePath, sampleIndexPath -> tuple(meta, samplePath, sampleIndexPath) }
             .set { ch_samples }
     
     emit:
