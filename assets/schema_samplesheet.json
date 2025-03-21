@@ -18,6 +18,12 @@
         "pattern": "^\\S+$",
         "format": "file-path",
         "errorMessage": "BCF/VCF(.gz) file for samples must be provided, cannot contain spaces and must have extension '.bcf'/'.bcf.gz' or '.vcf'/'vcf.gz'"
+      },
+      "sampleIndexPath": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "format": "file-path",
+        "errorMessage": "BCF/VCF(.gz).csi index file for samples must be provided, cannot contain spaces and must have extension '.bcf.csi'/'.bcf.gz.csi' or '.vcf.csi'/'vcf.gz.csi'"
       }
     }
   }
