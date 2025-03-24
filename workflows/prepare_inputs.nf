@@ -18,6 +18,7 @@ include { Parse_Referencesheet  } from "../subworkflows/parse_referencesheet.nf"
     
     emit:
         samples                  = Parse_Samplesheet.out.samples
+        references               = Parse_Referencesheet.out.references
         reference_intermediate   = Parse_Referencesheet.out.reference_intermediate
         reference_twostep        = Parse_Referencesheet.out.reference_twostep
 }

@@ -17,10 +17,10 @@ workflow Parse_Referencesheet {
     main:
         Channel
             .fromList(samplesheetToList(referencesheet, "${projectDir}/assets/schema_referencesheet.json"))
-            .meta { metaRef, referencePath, referenceIndexPath -> tuple(metaRef, referencePath, referenceIndexPath) }
-            .set { ch_reference }
+            .map { metaRef, referencePath, referenceIndexPath -> tuple(metaRef, referencePath, referenceIndexPath) }
+            .set { ch_references }
         
-        ch_reference
+        ch_references
         .branch { metaRef, referencePath, referenceIndexPath ->
                 // If imputationStep is equal to one, create a channel for the reference for the intermediate imputation step
                 intermediate: metaRef.imputationStep == 'one'
@@ -30,7 +30,7 @@ workflow Parse_Referencesheet {
         .set { ch_ref_split }
     
     emit:
-        references             = ch_reference
+        references             = ch_references
         reference_intermediate = ch_ref_split.intermediate
         reference_twostep      = ch_ref_split.twostep
 }
