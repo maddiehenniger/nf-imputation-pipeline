@@ -17,15 +17,16 @@ workflow Parse_Referencesheet {
     main:
         Channel
             .fromList(samplesheetToList(referencesheet, "${projectDir}/assets/schema_referencesheet.json"))
-            .branch { meta, referencePath, referenceIndexPath ->
+            .branch { metaRef, referencePath, referenceIndexPath ->
                 // If imputationStep is equal to one, create a channel for the reference for the intermediate imputation step
-                intermediate: meta.imputationStep == 'one'
+                intermediate: metaRef.imputationStep == 'one'
                 // If imputationStep is equal to two...
-                twostep: meta.imputationStep == 'two'
+                twostep: metaRef.imputationStep == 'two'
             }
             .set { ch_reference }
     
     emit:
+        references             = ch_reference
         reference_intermediate = ch_reference.intermediate
         reference_twostep      = ch_reference.twostep
 }
