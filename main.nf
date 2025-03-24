@@ -24,6 +24,7 @@ workflow {
     )
     ch_input_samples    = PREPARE_INPUTS.out.samples
         .view()
+    ch_references       = PREPARE_INPUTS.out.references
     ch_one_reference    = PREPARE_INPUTS.out.reference_intermediate
         .view()
     ch_two_reference    = PREPARE_INPUTS.out.reference_twostep
@@ -31,8 +32,7 @@ workflow {
 
     VALIDATE_CHROMOSOMES(
         ch_input_samples,
-        ch_one_reference,
-        ch_two_reference
+        ch_references
     )
     ch_sample_chromosomes = VALIDATE_CHROMOSOMES.out.sample_chromosomes
         .view()
