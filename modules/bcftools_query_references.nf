@@ -8,7 +8,7 @@
  * @emit
  */
 
- process bcftools_query_reference {
+ process bcftools_query_references {
     
     label 'bcftools'
 
