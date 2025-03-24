@@ -31,8 +31,7 @@ workflow {
         .view()
 
     VALIDATE_CHROMOSOMES(
-        ch_input_samples,
-        ch_references
+        ch_input_samples
     )
     ch_sample_chromosomes = VALIDATE_CHROMOSOMES.out.sample_chromosomes
         .view()
