@@ -16,6 +16,7 @@ nextflow.enable.dsl=2
 // include custom workflows
 include { PREPARE_INPUTS       } from "./workflows/prepare_inputs.nf"
 include { VALIDATE_CHROMOSOMES } from "./workflows/validate_chromosomes.nf"
+include { PHASE_SAMPLES        } from "./workflows/phase_samples.nf"
 
 workflow {
     PREPARE_INPUTS(
@@ -23,19 +24,23 @@ workflow {
         file(params.referencesheet)
     )
     ch_input_samples    = PREPARE_INPUTS.out.samples
-        .view()
     ch_references       = PREPARE_INPUTS.out.references
     ch_one_reference    = PREPARE_INPUTS.out.reference_intermediate
-        .view()
     ch_two_reference    = PREPARE_INPUTS.out.reference_twostep
-        .view()
 
     VALIDATE_CHROMOSOMES(
         ch_input_samples,
         ch_references
     )
-    ch_sample_chromosomes = VALIDATE_CHROMOSOMES.out.sample_chromosomes
-        .view()
+    ch_chromosomes           = VALIDATE_CHROMOSOMES.out.chromosomes
+    ch_sample_chromosomes    = VALIDATE_CHROMOSOMES.out.sample_chromosomes
     ch_reference_chromosomes = VALIDATE_CHROMOSOMES.out.reference_chromosomes
+
+    PHASE_SAMPLES(
+        ch_input_samples,
+        ch_one_reference,
+        ch_chromosomes
+    )
+    ch_phased = PHASE_SAMPLES.out.phased
         .view()
 }
