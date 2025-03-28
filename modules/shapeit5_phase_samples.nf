@@ -27,15 +27,15 @@
         val(chromosomes)
 
     output:
-        path "${meta.sampleName}_phased.bcf", emit: phased
+        path "${meta.sampleName}_phased.bcf", emit: phasedSamples
 
     script:
         """
-        shapeit5 SHAPEIT5_phase_common \
-        --input ${samples} \
-        --reference ${reference_intermediate} \
-        --thread 24 \
-        --region ${chromosomes} \
-        --out ${meta.sampleName}_phased.bcf
+        SHAPEIT5_phase_common \\
+            --input ${samplePath} \\
+            --reference ${referencePath} \\
+            --thread 24 \\
+            --region ${chromosomes} \\
+            --output ${meta.sampleName}_phased.bcf
         """
  }
