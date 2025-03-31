@@ -43,6 +43,7 @@ workflow {
         ch_chromosomes
     )
     ch_phased_samples = PHASE_SAMPLES.out.phased_samples
+    ch_phased_samples_index = PHASE_SAMPLES.out.phased_samples_index
 
     IMPUTE_SAMPLES(
         ch_one_reference,

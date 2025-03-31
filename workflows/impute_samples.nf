@@ -1,8 +1,8 @@
 include { Prepare_Imputation } from "../subworkflows/prepare_imputation.nf"
 
-workflow IMPUTE_SAMPLES(
+workflow IMPUTE_SAMPLES {
     take:
-        intermediate_reference
+        reference_intermediate
         phased_samples
         chromosomes
 
@@ -15,4 +15,4 @@ workflow IMPUTE_SAMPLES(
 
         chunked_regions = Prepare_Imputation.out.chunked_regions
 
-)
+}
