@@ -80,10 +80,15 @@ Some steps will run simultaneously throughout this process.
 
 The workflow will automatically identify the name and location of the test samples and validate their existence based on the user-specified metadata. The test samples will be assessed for the number of chromosomes.
 
-By default, the workflow will identify the name and location of the reference panel(s) and validate their existence based on the user-specified metadata. If multiple reference panels are specified, the workflow detects which step of imputation each reference is used for based on user-supplied input in the metadata. The reference panel will be assessed for the number of chromosomes and whether or not the reference has been phased. These steps cannot currently be skipped to save time by the user configuration, but take a negligible amount of time and computational power.
+By default, the workflow will identify the name and location of the reference panel(s) and validate their existence based on the user-specified metadata. If multiple reference panels are specified, the workflow detects which step of imputation each reference is used for based on user-supplied input in the metadata. The reference panel will be assessed for the number of chromosomes and whether or not the reference has been phased. These steps cannot currently be skipped to save time by the user configuration.
 
-```
-singularity exec https://depot.galaxyproject.org/singularity/bcftools:1.19--h8b25389_1 bcftools view -H -G 210723_ASA_GGP-F250_20000778_A1_fill.bcf.gz | head -n 1 | awk '{print $1}' >> test_210723_ASA_GGP-F250_20000778_A1_fill.test
-```
+### Phasing Test Samples to the Reference Population
 
-### 
+Once the number of chromosomes are validated, the test samples then undergo phasing to the intermediate reference population using `SHAPEIT5`. In most cases, the pipeline is ran using the `phase_common`, which takes an `--input` of test samples and `--reference` of the reference panel used for the intermediate imputation step (specified as 'one' in the metadata). As an input, `phase_common` requires an unphased file (with AC and AN tags filled up) and automatically sub-sets the file to the desired MAF (`--filter-maf 0.001`, which is MAF >= 0.1%). `phase_common` performs phasing in regions, or chromosome chunks. Once phasing is complete, the output file is a phased BCF. 
+
+Future features for phasing include: 
+- Chunking files for phasing WGS data, which will improve processing time, and then remerging
+- Allowing the user to select their `--filter-maf` value for phasing 
+- Allowing the user to phase by pedigree if they meet a minimum number of test samples (at least >= 25 per `SHAPEIT5`)
+- Allowing the user to run `phase_rare` in the case of >=2000 test samples
+

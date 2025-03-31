@@ -25,7 +25,8 @@ workflow VALIDATE_CHROMOSOMES {
                 it.readLines()
             }
         
-        ch_chromosomes = ch_reference_chromosomes.join(ch_sample_chromosomes)
+        ch_chromosomes = ch_reference_chromosomes
+            .join(ch_sample_chromosomes, failOnMismatch = true)
             .unique()
 
     emit:

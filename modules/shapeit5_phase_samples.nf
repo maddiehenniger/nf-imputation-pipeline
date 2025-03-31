@@ -35,6 +35,7 @@
             --input ${samplePath} \\
             --reference ${referencePath} \\
             --thread 24 \\
+            --filter-maf 0.001 \\
             --region ${chromosomes} \\
             --output ${meta.sampleName}_phased.bcf
         """

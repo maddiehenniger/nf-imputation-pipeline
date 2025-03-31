@@ -20,5 +20,5 @@ workflow PHASE_SAMPLES {
         )
 
     emit:
-        phased = shapeit5_phase_samples.out.phasedSamples
+        phased_samples = shapeit5_phase_samples.out.phasedSamples
 }

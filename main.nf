@@ -41,6 +41,6 @@ workflow {
         ch_one_reference,
         ch_chromosomes
     )
-    ch_phased = PHASE_SAMPLES.out.phased
+    ch_phased = PHASE_SAMPLES.out.phased_samples
         .view()
 }
