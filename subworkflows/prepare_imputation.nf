@@ -1,5 +1,5 @@
 include { chunk_samples           } from "../modules/chunk_samples.nf"
-include { convert_xcf             } from "../modules/convert_xcf.nf"
+// include { convert_xcf             } from "../modules/convert_xcf.nf"
 
 /**
  * Prepares the samples and references for imputation. 
@@ -12,12 +12,17 @@ include { convert_xcf             } from "../modules/convert_xcf.nf"
 
  workflow Prepare_Imputation {
     take:
-        phasedSamples
-        references
+        reference_intermediate,
+        phased_samples,
+        chromosomes
     
     main:
-        chunk_samples()
-
-        convert_xcf()
+        chunk_samples(
+            reference_intermediate,
+            phased_samples,
+            chromosomes
+        )
+    
+        chunked_regions = chunk_samples.out.chunkedRegions
 
  }

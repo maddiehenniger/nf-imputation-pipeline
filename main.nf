@@ -17,6 +17,7 @@ nextflow.enable.dsl=2
 include { PREPARE_INPUTS       } from "./workflows/prepare_inputs.nf"
 include { VALIDATE_CHROMOSOMES } from "./workflows/validate_chromosomes.nf"
 include { PHASE_SAMPLES        } from "./workflows/phase_samples.nf"
+include { IMPUTE_SAMPLES       } from "./workflows/impute_samples.nf"
 
 workflow {
     PREPARE_INPUTS(
@@ -41,6 +42,14 @@ workflow {
         ch_one_reference,
         ch_chromosomes
     )
-    ch_phased = PHASE_SAMPLES.out.phased_samples
+    ch_phased_samples = PHASE_SAMPLES.out.phased_samples
+
+    IMPUTE_SAMPLES(
+        ch_one_reference,
+        ch_phased_samples,
+        ch_chromosomes
+    )
+
+    ch_chunked_regions = IMPUTE_SAMPLES.out.chunked_regions
         .view()
 }

@@ -9,8 +9,6 @@
  */
 
  process chunk_samples {
-    
-    label 'impute5'
 
     label 'med_cpu'
     label 'med_mem'
@@ -27,13 +25,12 @@
         val(chromosomes)
 
     output:
-        val "${phased_samples.baseName}_chunked_coords.txt", emit: chunkedRegions
+        val "${phased_samples.baseName}_${chromosomes}_chunked_coords.txt", emit: chunkedRegions
 
     script:
 
-
         """
-        imp5Chunker_v1.2.0_static \\
+        /.bin/impute5_v1.2.0/imp5Chunker_v1.2.0_static \\
             --h ${referencePath} \\ 
             --g ${phasedSamples} \\
             --r ${chromosomes} \\
