@@ -23,6 +23,7 @@ include { chunk_samples           } from "../modules/chunk_samples.nf"
             chromosomes
         )
     
+    emit:
         chunked_regions = chunk_samples.out.chunkedRegions
 
  }

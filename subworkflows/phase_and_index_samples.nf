@@ -19,7 +19,7 @@ workflow Phase_And_Index_Samples {
             reference_intermediate,
             chromosomes
         )
-        ch_phased_samples = shapeit5_phase_samples.out.samplesPhased
+        ch_phased_samples = shapeit5_phase_samples.out.phasedSamples
 
         bcftools_index_phased(
             ch_phased_samples

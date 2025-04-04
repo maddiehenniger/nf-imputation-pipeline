@@ -13,6 +13,7 @@ workflow IMPUTE_SAMPLES {
             chromosomes
         )
 
+    emit:
         chunked_regions = Prepare_Imputation.out.chunked_regions
 
 }
