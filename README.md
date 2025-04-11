@@ -92,3 +92,22 @@ Future features for phasing include:
 - Allowing the user to phase by pedigree if they meet a minimum number of test samples (at least >= 25 per `SHAPEIT5`)
 - Allowing the user to run `phase_rare` in the case of >=2000 test samples
 
+### Intermediate Imputation of Test Samples to the Reference Population
+
+After phasing, phased test samples will be imputed to the intermediate reference panel specified in the metadata (as the `imputationStep` column set to `one`). Briefly, the samples are first broken down into chunks using `imp5chunker` from the `IMPUTE5` package. The input arguments require the reference panel, the target test sample, the chromosome to break into chunks, and outputs a text file with coordinates. The text file contains the Chunk ID / chromosome ID / Buffered region / Imputation region / Length / Number of target markers / Number of reference markers. The default parameters for `--window-size` and `--buffer-size` are used in the pipeline. Ensuring a buffering region is present around the imputation region is critical for ensuring accuracy at the edges of imputation regions. 
+
+Future features for chunking test samples include:
+- Converting the reference panel to only positions (no GT field) to improve efficiency
+- Allowing the user to modify `--window-size`, `--buffer-size`, and other marker-related options 
+
+While samples are being chunked, the reference panels are converted to the XCF file format. An XCF file format contains a set of files with genotype information on a region within a chromosome, and we will generate this for each chromosome in order to perform imputation on different chunks of the chromosome. `IMPUTE5` strongly suggests converting to this file format to speed up the process of imputation for the reference panel file.
+
+Future features for converting to XCF file format include:
+- Allowing the user to convert test samples to the XCF file format to improve efficiency
+
+Once the imputation and buffered regions have been generated for each chromosome, the test samples will be imputed to the intermediate reference panel using `IMPUTE5`. Briefly, `impute5` accepts a haplotype reference panel with associated indexed file (`--h`). `--m` specifies the fine-scale recombination map for the region to be analyzed - in this case, we do not define this parameter, so a constant recombination rate is assumed. `--g` contains the phased target test files to be imputed and assumes an associated indexed file. `--r` specifies the target region/chromosome to be imputed, and we include our buffering regions here using `--buffer-region` to expand the regions defined in the `--r` parameter. The imputed file is then output according to the `--o` argument.
+
+Future features for intermediate imputation include:
+- Allowing the user to specify the `--m` argument
+- Allowing the user to perform X chromosome imputation
+

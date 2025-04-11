@@ -10,6 +10,8 @@
 
  process chunk_samples {
 
+    stageInMode 'copy'
+
     label 'med_cpu'
     label 'med_mem'
     label 'med_time'
