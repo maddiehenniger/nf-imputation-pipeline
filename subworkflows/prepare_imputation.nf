@@ -13,13 +13,13 @@ include { chunk_samples           } from "../modules/chunk_samples.nf"
  workflow Prepare_Imputation {
     take:
         reference_intermediate
-        phased_samples
+        phased_samples_index
         chromosomes
     
     main:
         chunk_samples(
             reference_intermediate,
-            phased_samples,
+            phased_samples_index,
             chromosomes
         )
     

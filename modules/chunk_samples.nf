@@ -32,8 +32,8 @@
     script:
 
         """
-        /.bin/impute5_v1.2.0/imp5Chunker_v1.2.0_static \\
-            --h ${referencePath} \\ 
+        imp5Chunker_v1.2.0_static \\
+            --h ${referencePath} \\
             --g ${phasedSamples} \\
             --r ${chromosomes} \\
             --l ${phasedSamples.baseName}_chunking.log \\
