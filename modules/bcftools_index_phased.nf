@@ -25,7 +25,7 @@
         path phasedSamples
 
     output:
-        tuple path(phasedSamples), path("*.csi"), emit: phasedSamplesIndex
+       path "*.csi", emit: phasedSamplesIndex
 
     script:
         """

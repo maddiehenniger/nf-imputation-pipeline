@@ -27,7 +27,7 @@
         val(chromosomes)
 
     output:
-        path "${meta.sampleName}_phased.bcf", emit: phasedSamples
+        path "${meta.sampleName}_${chromosomes}_phased.bcf", emit: phasedSamples
 
     script:
         """
@@ -37,6 +37,6 @@
             --thread 24 \\
             --filter-maf 0.001 \\
             --region ${chromosomes} \\
-            --output ${meta.sampleName}_phased.bcf
+            --output ${meta.sampleName}_${chromosomes}_phased.bcf
         """
  }
