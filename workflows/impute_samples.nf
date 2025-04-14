@@ -14,6 +14,7 @@ workflow IMPUTE_SAMPLES {
         )
 
     emit:
-        chunked_regions = Prepare_Imputation.out.chunked_regions
+        chunked_regions      = Prepare_Imputation.out.chunked_regions
+        intermediate_ref_xcf = Prepare_Imputation.out.intermediate_ref_xcf
 
 }

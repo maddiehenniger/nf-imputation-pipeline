@@ -23,11 +23,11 @@
 
     input:
         tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        path phasedSamples
+        tuple path(phasedSamples), path(phasedSamplesIndex)
         val(chromosomes)
 
     output:
-        val "${phased_samples.baseName}_${chromosomes}_chunked_coords.txt", emit: chunkedRegions
+        val "${phasedSamples.baseName}_${chromosomes}_chunked_coords.txt", emit: chunkedRegions
 
     script:
 
@@ -37,6 +37,6 @@
             --g ${phasedSamples} \\
             --r ${chromosomes} \\
             --l ${phasedSamples.baseName}_chunking.log \\
-            --o ${phasedSamples.baseName}_chunked_coords.txt
+            --o ${phasedSamples.baseName}_${chromosomes}_chunked_coords.txt
         """
  }
