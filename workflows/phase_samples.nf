@@ -21,5 +21,5 @@ workflow PHASE_SAMPLES {
 
     emit:
         phased_samples = Phase_And_Index_Samples.out.phased_samples
-        phased_samples_index = Phase_And_Index_Samples.out.phased_samples_index
+        indexed_phased_pair = Phase_And_Index_Samples.out.indexed_phased_pair
 }
