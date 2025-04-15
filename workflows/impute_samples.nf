@@ -1,16 +1,24 @@
-include { Prepare_Imputation } from "../subworkflows/prepare_imputation.nf"
+include { Prepare_Imputation      } from "../subworkflows/prepare_imputation.nf"
+include { Intermediate_Imputation } from "../subworkflows/intermediate_imputation.nf"
 
 workflow IMPUTE_SAMPLES {
     take:
         reference_intermediate
-        phased_samples
+        indexed_phased_pair
         chromosomes
 
     main:
         Prepare_Imputation(
             reference_intermediate,
-            phased_samples,
+            indexed_phased_pair,
             chromosomes
+        )
+        
+        Intermediate_Imputation(
+            indexed_phased_pair
+            chromosomes
+            intermediate_ref_xcf
+            chunked_regions
         )
 
     emit:

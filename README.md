@@ -33,6 +33,8 @@ Note: The below paragraph is currently not implemented in this version of the pi
 
 The pipeline will automatically detect where your sample(s), reference(s), and optionally, your pre-indexed file(s) are located. IMPORTANT: (Feature) If you do not have your samples and references pre-indexed and in the same directory defined in your samplesheet, the pipeline will check if the files exist in `${PROJECTDIR}/data/samples/` and `${PROJECTDIR}/data/references/` directories and perform indexing - if they do not exist in the defined directories, the pipeline is set to hard copy these files to these directories to perform downstream analysis, which can impact your processing time and available storage. Therefore, to avoid unneccessary duplication of files, we recommend either preemptively creating these directories and populating them with the correct files, and, optionally, pre-indexing your files. 
 
+In the downstream analysis, the user will be allowed the ability to specify the `--map` parameter for phasing, and the `--m` parameter for imputation steps. These parameters are specifically for genetic maps, which specify recombination rates. Specifically, the user should pre-prepare genetic maps for each chromosome of interest that is present between their test samples and reference panels. These genetic maps are a text file that should consist of 3 columns: pos / chr / cM. They may optionally end in .gz. The name scheme of these files should remain consistent for pipeline configuration and be pre-supplied in the configuration file.
+
 #### Sample and Reference Files and Metadata
 
 ! Undergoing Construction: For the current implementation of the pipeline, you MUST supply the path to the reference database AND the indexed file for testing. Making the indexing optional is a future priority implementation !
@@ -66,6 +68,12 @@ If you already know you'd like to phase your test samples to a pedigree file, yo
 
 You must also modify the configuration file to specify that phasing must occur to the pedigree file and the location of the pedigree file. The test sample population must be larger than 25 individuals for pedigree-based phasing, which is a restriction implemented by the phasing tool and not pipeline developers.
 
+#### Optional: Recombination Maps
+
+Please note: This is a priority feature undergoing construction.
+
+The phasing and imputation steps within the current pipeline also optionally allow for the user to supply recombination maps. If recombination maps are not supplied, the phasing and imputation tools automatically assume a constant recombination rate of 1 cM/Mb by default. The current pipeline supplies no maintained recombination maps for any species, and therefore it is up to the user to determine up-to-date and accurate recombination maps for usage.
+
 ### The Configuration File
 
 The `nextflow.config` file is where the workflow configurations are located. This file is automatically detected by Nextflow, provided it is located within the launch directory. The user must modify the configuration file with project-specific details for Nextflow to detect where test samples, reference panels, and associated files are located. The configuration file is built for the intention of running on a SLURM-based system. 
@@ -93,6 +101,7 @@ Future features for phasing include:
 - Allowing the user to select their `--filter-maf` value for phasing 
 - Allowing the user to phase by pedigree if they meet a minimum number of test samples (at least >= 25 per `SHAPEIT5`)
 - Allowing the user to run `phase_rare` in the case of >=2000 test samples
+- Allowing the user to supply the `--map` argument for recombination rates
 
 ### Intermediate Imputation of Test Samples to the Reference Population
 
@@ -110,6 +119,7 @@ Future features for converting to XCF file format include:
 Once the imputation and buffered regions have been generated for each chromosome, the test samples will be imputed to the intermediate reference panel using `IMPUTE5`. Briefly, `impute5` accepts a haplotype reference panel with associated indexed file (`--h`). `--m` specifies the fine-scale recombination map for the region to be analyzed - in this case, we do not define this parameter, so a constant recombination rate is assumed. `--g` contains the phased target test files to be imputed and assumes an associated indexed file. `--r` specifies the target region/chromosome to be imputed, and we include our buffering regions here using `--buffer-region` to expand the regions defined in the `--r` parameter. The imputed file is then output according to the `--o` argument.
 
 Future features for intermediate imputation include:
-- Allowing the user to specify the `--m` argument
+- Allowing the user to specify the `--m` parameter
 - Allowing the user to perform X chromosome imputation
 
+For users interested in including the `--m` parameter, which specifies the recombination rate, a specific subset of files must be supplied. 

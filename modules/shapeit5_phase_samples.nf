@@ -24,10 +24,11 @@
     input:
         tuple val(meta), path(samplePath), path(sampleIndexPath)
         tuple val(metaRef), path(referencePath), path(referenceIndexPath)
+        tuple val(chromosomeNum), path(recombinationMapFile)
         val(chromosomes)
 
     output:
-        path "${meta.sampleName}_${chromosomes}_phased.bcf", emit: phasedSamples
+        tuple path("${meta.sampleName}_${chromosomeNum}_phased.bcf"), val(chromosomeNum), path(recombinationMapFile) emit: phasedSamples
 
     script:
         """
@@ -36,7 +37,8 @@
             --reference ${referencePath} \\
             --thread 24 \\
             --filter-maf 0.001 \\
-            --region ${chromosomes} \\
-            --output ${meta.sampleName}_${chromosomes}_phased.bcf
+            --map ${recombinationMapFile} \\
+            --region ${chromosomeNum} \\
+            --output ${meta.sampleName}_${chromosomeNum}_phased.bcf
         """
  }

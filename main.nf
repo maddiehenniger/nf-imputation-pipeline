@@ -23,11 +23,13 @@ workflow {
     PREPARE_INPUTS(
         file(params.samplesheet),
         file(params.referencesheet)
+        file(params.recombinationMaps)
     )
-    ch_input_samples    = PREPARE_INPUTS.out.samples
-    ch_references       = PREPARE_INPUTS.out.references
-    ch_one_reference    = PREPARE_INPUTS.out.reference_intermediate
-    ch_two_reference    = PREPARE_INPUTS.out.reference_twostep
+    ch_input_samples      = PREPARE_INPUTS.out.samples
+    ch_references         = PREPARE_INPUTS.out.references
+    ch_one_reference      = PREPARE_INPUTS.out.reference_intermediate
+    ch_two_reference      = PREPARE_INPUTS.out.reference_twostep
+    ch_recombination_maps = PREPARE_INPUTS.out.recombination_maps
 
     VALIDATE_CHROMOSOMES(
         ch_input_samples,
@@ -50,8 +52,5 @@ workflow {
         ch_indexed_phased_pair,
         ch_chromosomes
     )
-
     ch_chunked_regions = IMPUTE_SAMPLES.out.chunked_regions
-        .view()
-    ch_indexed_phased_pair.view()
 }

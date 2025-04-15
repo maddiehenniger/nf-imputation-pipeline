@@ -25,10 +25,10 @@
     )
 
     input:
-        tuple val(sample_id), path(bcf)
+        tuple val(sample_id), path(bcf), val(chromosomeNum), path(recombinationMapFile)
 
     output:
-       tuple val(sample_id), path(bcf), path("*.bcf.csi"), emit: indexedPhasedPair
+       tuple val(sample_id), path(bcf), path("*.bcf.csi"), val(chromosomeNum), path(recombinationMapFile), emit: indexedPhasedPair
 
     script:
         """

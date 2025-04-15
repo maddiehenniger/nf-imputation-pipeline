@@ -9,6 +9,7 @@
  */
 
  process chunk_samples {
+    tag "$sample_id"
 
     stageInMode 'copy'
 
@@ -23,20 +24,19 @@
 
     input:
         tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        tuple path(phasedSamples), path(phasedSamplesIndex)
-        val(chromosomes)
+        ttuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
 
     output:
-        val "${phasedSamples.baseName}_${chromosomes}_chunked_coords.txt", emit: chunkedRegions
+        tuple val(chromosomeNum), path("${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt"), path(recombinationMapFile), emit: chunkedRegions
 
     script:
 
         """
         imp5Chunker_v1.2.0_static \\
             --h ${referencePath} \\
-            --g ${phasedSamples} \\
-            --r ${chromosomes} \\
-            --l ${phasedSamples.baseName}_chunking.log \\
-            --o ${phasedSamples.baseName}_${chromosomes}_chunked_coords.txt
+            --g ${sampleBcf} \\
+            --r ${chromosomeNum} \\
+            --l ${sampleBcf.baseName}_chunking.log \\
+            --o ${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt
         """
  }
