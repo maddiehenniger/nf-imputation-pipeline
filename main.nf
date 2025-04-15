@@ -22,7 +22,7 @@ include { IMPUTE_SAMPLES       } from "./workflows/impute_samples.nf"
 workflow {
     PREPARE_INPUTS(
         file(params.samplesheet),
-        file(params.referencesheet)
+        file(params.referencesheet),
         file(params.recombinationMaps)
     )
     ch_input_samples      = PREPARE_INPUTS.out.samples
@@ -42,7 +42,7 @@ workflow {
     PHASE_SAMPLES(
         ch_input_samples,
         ch_one_reference,
-        ch_chromosomes
+        ch_recombination_maps
     )
     ch_phased_samples      = PHASE_SAMPLES.out.phased_samples
     ch_indexed_phased_pair = PHASE_SAMPLES.out.indexed_phased_pair
@@ -50,7 +50,7 @@ workflow {
     IMPUTE_SAMPLES(
         ch_one_reference,
         ch_indexed_phased_pair,
-        ch_chromosomes
+        ch_recombination_maps
     )
     ch_chunked_regions = IMPUTE_SAMPLES.out.chunked_regions
 }

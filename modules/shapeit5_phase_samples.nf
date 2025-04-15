@@ -25,7 +25,6 @@
         tuple val(meta), path(samplePath), path(sampleIndexPath)
         tuple val(metaRef), path(referencePath), path(referenceIndexPath)
         tuple val(chromosomeNum), path(recombinationMapFile)
-        val(chromosomes)
 
     output:
         tuple path("${meta.sampleName}_${chromosomeNum}_phased.bcf"), val(chromosomeNum), path(recombinationMapFile) emit: phasedSamples
