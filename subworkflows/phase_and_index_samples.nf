@@ -20,12 +20,13 @@ workflow Phase_And_Index_Samples {
             chromosomes
         )
         ch_phased_samples = shapeit5_phase_samples.out.phasedSamples
+            .map { bcf -> [ bcf.baseName, bcf ] }
 
         bcftools_index_phased(
             ch_phased_samples
         )
 
     emit:
-        phased_samples = ch_phased_samples
-        phased_samples_index = bcftools_index_phased.out.phasedSamplesIndex
+        phased_samples      = ch_phased_samples
+        indexed_phased_pair = bcftools_index_phased.out.indexedPhasedPair
 }

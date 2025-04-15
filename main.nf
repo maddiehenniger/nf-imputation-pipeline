@@ -42,15 +42,16 @@ workflow {
         ch_one_reference,
         ch_chromosomes
     )
-    ch_phased_samples = PHASE_SAMPLES.out.phased_samples
-    ch_phased_samples_index = PHASE_SAMPLES.out.phased_samples_index
+    ch_phased_samples      = PHASE_SAMPLES.out.phased_samples
+    ch_indexed_phased_pair = PHASE_SAMPLES.out.indexed_phased_pair
 
     IMPUTE_SAMPLES(
         ch_one_reference,
-        ch_phased_samples,
+        ch_indexed_phased_pair,
         ch_chromosomes
     )
 
     ch_chunked_regions = IMPUTE_SAMPLES.out.chunked_regions
         .view()
+    ch_indexed_phased_pair.view()
 }

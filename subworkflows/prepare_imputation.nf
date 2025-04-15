@@ -13,13 +13,13 @@ include { convert_int_ref_to_xcf  } from "../modules/convert_xcf.nf"
  workflow Prepare_Imputation {
     take:
         reference_intermediate
-        phased_samples_index
+        indexed_phased_pair
         chromosomes
     
     main:
         chunk_samples(
             reference_intermediate,
-            phased_samples_index,
+            indexed_phased_pair,
             chromosomes
         )
 

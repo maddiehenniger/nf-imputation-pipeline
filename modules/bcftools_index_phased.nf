@@ -10,6 +10,8 @@
 
  process bcftools_index_phased {
     
+    tag "$sample_id"
+
     label 'bcftools'
 
     label 'def_cpu'
@@ -17,19 +19,20 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.phased_samples/",
-        mode:    "${params.publishMode}"
+        path:    "${params.publishDirData}/.phased_samples/$sample_id",
+        mode:    "${params.publishMode}",
+        pattern: '*.{bcf,bcf.csi}'
     )
 
     input:
-        path phasedSamples
+        tuple val(sample_id), path(bcf)
 
     output:
-       path "*.csi", emit: phasedSamplesIndex
+       tuple val(sample_id), path(bcf), path("*.bcf.csi"), emit: indexedPhasedPair
 
     script:
         """
         bcftools index \
-            ${phasedSamples}
+            ${bcf.name}
         """
  }
