@@ -8,15 +8,13 @@ include { impute5_impute_samples } from '../modules/impute5_impute_samples.nf'
 
 workflow Intermediate_Imputation {
     take:
-        indexed_phased_pair
+        intermediate_chunked_regions
         intermediate_ref_xcf
-        chunked_regions
     
     main:
         impute5_impute_samples(
-            indexed_phased_pair,
-            intermediate_ref_xcf,
-            chunked_regions
+            intermediate_chunked_regions,
+            intermediate_ref_xcf
         )
 
     emit: 

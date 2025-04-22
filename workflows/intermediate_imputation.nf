@@ -12,18 +12,17 @@ workflow INTERMEDIATE_IMPUTATION {
             indexed_phased_pair
         )
 
-        chunked_regions = Prepare_Imputation.out.chunked_regions
-        intermediate_ref_xcf = Prepare_Imputation.out.intermediate_ref_xcf
+        intermediate_chunked_regions = Prepare_Imputation.out.intermediate_chunked_regions
+        intermediate_ref_xcf         = Prepare_Imputation.out.intermediate_ref_xcf
         
         Intermediate_Imputation(
-            indexed_phased_pair,
-            intermediate_ref_xcf,
-            chunked_regions
+            intermediate_chunked_regions,
+            intermediate_ref_xcf
         )
 
     emit:
-        chunked_regions      = Prepare_Imputation.out.chunked_regions
-        intermediate_ref_xcf = Prepare_Imputation.out.intermediate_ref_xcf
-        imputed_intermediate = Intermediate_Imputation.out.imputed_intermediate_samples
+        intermediate_chunked_regions = Prepare_Imputation.out.intermediate_chunked_regions
+        intermediate_ref_xcf         = Prepare_Imputation.out.intermediate_ref_xcf
+        imputed_intermediate         = Intermediate_Imputation.out.imputed_intermediate_samples
 
 }

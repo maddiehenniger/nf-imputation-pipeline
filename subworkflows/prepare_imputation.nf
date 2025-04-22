@@ -27,7 +27,7 @@ include { convert_int_ref_to_xcf  } from "../modules/convert_xcf.nf"
         )
     
     emit:
-        chunked_regions      = chunk_samples.out.chunkedRegions
-        intermediate_ref_xcf = convert_int_ref_to_xcf.out.xcfIntermediateReference
+        intermediate_chunked_regions      = chunk_samples.out.chunkedRegions
+        intermediate_ref_xcf              = convert_int_ref_to_xcf.out.xcfIntermediateReference
 
  }

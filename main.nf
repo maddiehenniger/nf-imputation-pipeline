@@ -52,6 +52,6 @@ workflow {
         ch_indexed_phased_pair
     )
     ch_intermediate_ref_xcf = INTERMEDIATE_IMPUTATION.out.intermediate_ref_xcf
-    ch_chunked_regions      = INTERMEDIATE_IMPUTATION.out.chunked_regions
+    ch_intermediate_chunked_regions = INTERMEDIATE_IMPUTATION.out.intermediate_chunked_regions
     ch_imputed_intermediate = INTERMEDIATE_IMPUTATION.out.imputed_intermediate
 }
