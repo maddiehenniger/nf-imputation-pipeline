@@ -1,5 +1,6 @@
 include { Parse_Samplesheet     } from "../subworkflows/parse_samplesheet.nf"
 include { Parse_Referencesheet  } from "../subworkflows/parse_referencesheet.nf"
+include { Parse_Recombination_Maps } from "../subworkflows/parse_recombination_maps.nf"
 
 /**
  * Workflow to handle and prepare input files.

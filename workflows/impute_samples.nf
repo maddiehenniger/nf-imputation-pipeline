@@ -5,13 +5,11 @@ workflow IMPUTE_SAMPLES {
     take:
         reference_intermediate
         indexed_phased_pair
-        chromosomes
 
     main:
         Prepare_Imputation(
             reference_intermediate,
-            indexed_phased_pair,
-            chromosomes
+            indexed_phased_pair
         )
         
         Intermediate_Imputation(

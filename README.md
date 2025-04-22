@@ -68,11 +68,23 @@ If you already know you'd like to phase your test samples to a pedigree file, yo
 
 You must also modify the configuration file to specify that phasing must occur to the pedigree file and the location of the pedigree file. The test sample population must be larger than 25 individuals for pedigree-based phasing, which is a restriction implemented by the phasing tool and not pipeline developers.
 
-#### Optional: Recombination Maps
+#### Currently Required: Recombination Maps
 
-Please note: This is a priority feature undergoing construction.
+Please note: This is a priority feature undergoing construction. Currently, the pipeline requires recombination maps to be supplied.
 
-The phasing and imputation steps within the current pipeline also optionally allow for the user to supply recombination maps. If recombination maps are not supplied, the phasing and imputation tools automatically assume a constant recombination rate of 1 cM/Mb by default. The current pipeline supplies no maintained recombination maps for any species, and therefore it is up to the user to determine up-to-date and accurate recombination maps for usage.
+!TODO: If recombination maps aren't supplied in the config file, extract the chromosome number from the validation step instead!
+
+The phasing and imputation steps within the current pipeline also optionally allow for the user to supply recombination maps. If recombination maps are not supplied, the phasing and imputation tools automatically assume a constant recombination rate of 1 cM/Mb by default. The current pipeline supplies no maintained recombination maps for any species, and therefore it is up to the user to determine up-to-date and accurate recombination maps for usage. The recombination map input sheet must be a comma-delimited (CSV) file containing two columns:
+
+- chromosomeNum: An integer (i.e., 1, 2, 3...)
+- recombinationFilePath: A path to the recombination map
+
+The recombination maps themselves, as described above, are a text file that should consist of 3 columns: pos / chr / cM:
+- pos: The position in bases on the chromosome (must be in bases, not in mb, kb, etc.)
+- chr: The chromosome number
+- cM: Measure in centimorgans (cM) of how often recombination happens 
+
+They may optionally end in .gz. The name scheme of these files should remain consistent for pipeline configuration and be pre-supplied in the configuration file. As the downstream phasing and imputation steps require functions to be run by region (by chromosome, essentially), there must be one recombination map per chromosome of interest.  
 
 ### The Configuration File
 

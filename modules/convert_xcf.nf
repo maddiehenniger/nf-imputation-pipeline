@@ -21,21 +21,21 @@
 
     input:
         tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        val(chromosomes)
+        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
 
     output:
-        path "${referencePath.baseName}_${chromosomes}_xcf.bcf", emit: xcfIntermediateReference
-        path "${referencePath.baseName}_${chromosomes}_xcf_log.out", emit: xcfIntermediateReferenceLog
+        path "${referencePath.baseName}_${chromosomeNum}_xcf.bcf", emit: xcfIntermediateReference
+        path "${referencePath.baseName}_${chromosomeNum}_xcf_log.out", emit: xcfIntermediateReferenceLog
 
     script:
         """
         xcftools_static view \
             --input ${referencePath} \
-            --output ${referencePath.baseName}_${chromosomes}_xcf.bcf \
+            --output ${referencePath.baseName}_${chromosomeNum}_xcf.bcf \
             --format sh \
-            --region ${chromosomes} \
+            --region ${chromosomeNum} \
             --thread 8 \
             --maf 0.03125 \
-            --log ${referencePath.baseName}_${chromosomes}_xcf_log.out
+            --log ${referencePath.baseName}_${chromosomeNum}_xcf_log.out
         """
  }

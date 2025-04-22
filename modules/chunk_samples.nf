@@ -24,7 +24,7 @@
 
     input:
         tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        ttuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
+        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
 
     output:
         tuple val(chromosomeNum), path("${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt"), path(recombinationMapFile), emit: chunkedRegions

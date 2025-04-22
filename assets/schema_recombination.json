@@ -8,7 +8,7 @@
       "required": ["chromosomeNum"],
       "properties": {
         "chromosomeNum": {
-          "type": "string",
+          "type": "integer",
           "pattern": "^\\S+$",
           "errorMessage": "Chromosome number must be provided and cannot contain spaces",
           "meta": "chromosomeNum"

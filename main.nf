@@ -49,8 +49,7 @@ workflow {
 
     IMPUTE_SAMPLES(
         ch_one_reference,
-        ch_indexed_phased_pair,
-        ch_recombination_maps
+        ch_indexed_phased_pair
     )
     ch_chunked_regions = IMPUTE_SAMPLES.out.chunked_regions
 }

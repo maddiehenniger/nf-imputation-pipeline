@@ -27,7 +27,7 @@
         tuple val(chromosomeNum), path(recombinationMapFile)
 
     output:
-        tuple path("${meta.sampleName}_${chromosomeNum}_phased.bcf"), val(chromosomeNum), path(recombinationMapFile) emit: phasedSamples
+        tuple path("${meta.sampleName}_${chromosomeNum}_phased.bcf"), val(chromosomeNum), path(recombinationMapFile), emit: phasedSamples
 
     script:
         """
