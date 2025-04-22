@@ -26,8 +26,8 @@
         tuple val(metaRef), path(referencePath), path(referenceIndexPath), path(xcfIntermediateReferencePath), path(xcfIntermediateReferenceIndexPath), path(xcfIntBin), path(xcfIntFam)
 
     output:
-        path "${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.bcf", emit: intermediateImputation
-        path "${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.log", emit: intermediateImputationLog
+        path "*.bcf", emit: intermediateImputation
+        path "*.log", emit: intermediateImputationLog
 
     script:
         """
@@ -36,8 +36,8 @@
         region=\$(echo "\$line" | awk '{print \$4}')
         buffer=\$(echo "\$line" | awk '{print \$3}')
         count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.bcf"
-        log_file="${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.log"
+        out_file="${sampleBcf.baseName}_intermediate_${chromosomeNum}_\${count}.bcf"
+        log_file="${sampleBcf.baseName}_intermediate_${chromosomeNum}_\${count}.log"
         impute5_v1.2.0_static \
             --h ${xcfIntermediateReferencePath} \
             --g ${sampleBcf} \
