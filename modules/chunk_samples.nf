@@ -27,7 +27,7 @@
         tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
 
     output:
-        tuple val(chromosomeNum), path("${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt"), path(recombinationMapFile), emit: chunkedRegions
+        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path("${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt"), path(recombinationMapFile), emit: chunkedRegions
 
     script:
 
