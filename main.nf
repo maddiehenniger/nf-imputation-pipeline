@@ -47,9 +47,11 @@ workflow {
     ch_phased_samples      = PHASE_SAMPLES.out.phased_samples
     ch_indexed_phased_pair = PHASE_SAMPLES.out.indexed_phased_pair
 
-    IMPUTE_SAMPLES(
+    INTERMEDIATE_IMPUTATION(
         ch_one_reference,
         ch_indexed_phased_pair
     )
-    ch_chunked_regions = IMPUTE_SAMPLES.out.chunked_regions
+    ch_intermediate_ref_xcf = INTERMEDIATE_IMPUTATION.out.intermediate_ref_xcf
+    ch_chunked_regions      = INTERMEDIATE_IMPUTATION.out.chunked_regions
+    ch_imputed_intermediate = INTERMEDIATE_IMPUTATION.out.imputed_intermediate
 }

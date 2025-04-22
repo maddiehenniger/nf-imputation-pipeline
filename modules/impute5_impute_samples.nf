@@ -22,7 +22,7 @@
     )
 
     input:
-        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex)
+        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
         path(xcfIntermediateReference)
         path(chunkedRegions)
 
@@ -41,11 +41,12 @@
         log_file="${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.log"
         impute5_v1.2.0_static \
             --h ${xcfIntermediateReference} \
-            --g phasing/phased_snp50_testing_animals_seq.chr25.bcf \
+            --g ${sampleBcf} \
             --r /${region} \
             --buffer-region /${buffer} \
-            --o ${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.bcf \
-            --l ${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.log
+            --m ${recombinationMapFile} \
+            --o /${out_file} \
+            --l /${log_file}
         done < ${chunkedRegions}
         """
  }

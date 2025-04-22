@@ -92,17 +92,31 @@ The `nextflow.config` file is where the workflow configurations are located. Thi
 
 Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, `samplesheet`, and `referencesheet` at a minimum. These inputs allows the pipeline to classify the pipeline by project; locate input samples; and locate references and which imputation step they will be used for, if applicable. 
 
+### Modifying Function Parameters (Under Construction)
+
+! TODO: Allow the user to modify arguments within modules via the arguments configuration file !
+
+This is currently not available for the user.
+
+Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. 
+
 ## Detailed Walkthrough of the Workflow
 
-Some steps will run simultaneously throughout this process. 
+Some steps will run simultaneously throughout this process.
 
-### Test Sample and Reference Validation
+### Optional: Data Simulation (Under Construction)
+
+! TODO: Not currently available for this version of the pipeline !
+
+The user may optionally designate that a dataset be simulated for the pipeline. This will generate an "artificial" dataset created by downsampling high-density input data to simulate low-density genetic information. In theory, this may include if the user is interested in downsampling their high-density sample to specific SNP array genotypes, in which the user will also be prompted to supply the positions genotyped on their target array. 
+
+### Test Sample and Reference Validation (Under Construction)
 
 The workflow will automatically identify the name and location of the test samples and validate their existence based on the user-specified metadata. The test samples will be assessed for the number of chromosomes.
 
 By default, the workflow will identify the name and location of the reference panel(s) and validate their existence based on the user-specified metadata. If multiple reference panels are specified, the workflow detects which step of imputation each reference is used for based on user-supplied input in the metadata. The reference panel will be assessed for the number of chromosomes and whether or not the reference has been phased. These steps cannot currently be skipped to save time by the user configuration.
 
-! Issue: NF pipeline does not wait to validate all reference/samples before storing chromosome values and moving on, so need to fix.
+! Issue: NF pipeline does not wait to validate all reference/samples before storing chromosome values and moving on, so need to fix. !
 
 ### Phasing Test Samples to the Reference Population
 
@@ -113,9 +127,11 @@ Future features for phasing include:
 - Allowing the user to select their `--filter-maf` value for phasing 
 - Allowing the user to phase by pedigree if they meet a minimum number of test samples (at least >= 25 per `SHAPEIT5`)
 - Allowing the user to run `phase_rare` in the case of >=2000 test samples
-- Allowing the user to supply the `--map` argument for recombination rates
+- Allowing the user to optionally supply the `--map` argument for recombination rates
 
 ### Intermediate Imputation of Test Samples to the Reference Population
+
+! TODO: Decide how to incorporate IMPUTE5 for the user!
 
 After phasing, phased test samples will be imputed to the intermediate reference panel specified in the metadata (as the `imputationStep` column set to `one`). Briefly, the samples are first broken down into chunks using `imp5chunker` from the `IMPUTE5` package. The input arguments require the reference panel, the target test sample, the chromosome to break into chunks, and outputs a text file with coordinates. The text file contains the Chunk ID / chromosome ID / Buffered region / Imputation region / Length / Number of target markers / Number of reference markers. The default parameters for `--window-size` and `--buffer-size` are used in the pipeline. Ensuring a buffering region is present around the imputation region is critical for ensuring accuracy at the edges of imputation regions. 
 
