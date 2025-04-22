@@ -24,7 +24,7 @@
         tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
 
     output:
-        path "${referencePath.baseName}_${chromosomeNum}_xcf.bcf", emit: xcfIntermediateReference
+        tuple val(metaRef), path(referencePath), path(referenceIndexPath), path("${referencePath.baseName}_${chromosomeNum}_xcf.bcf"), path("${referencePath.baseName}_${chromosomeNum}_xcf.bcf.csi"), path("${referencePath.baseName}_${chromosomeNum}_xcf.bin"), path("${referencePath.baseName}_${chromosomeNum}_xcf.fam"), emit: xcfIntermediateReference
         path "${referencePath.baseName}_${chromosomeNum}_xcf_log.out", emit: xcfIntermediateReferenceLog
 
     script:

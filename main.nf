@@ -14,10 +14,10 @@ nextflow.enable.dsl=2
 */
 
 // include custom workflows
-include { PREPARE_INPUTS       } from "./workflows/prepare_inputs.nf"
-include { VALIDATE_CHROMOSOMES } from "./workflows/validate_chromosomes.nf"
-include { PHASE_SAMPLES        } from "./workflows/phase_samples.nf"
-include { IMPUTE_SAMPLES       } from "./workflows/impute_samples.nf"
+include { PREPARE_INPUTS          } from "./workflows/prepare_inputs.nf"
+include { VALIDATE_CHROMOSOMES    } from "./workflows/validate_chromosomes.nf"
+include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
+include { INTERMEDIATE_IMPUTATION } from "./workflows/intermediate_imputation.nf"
 
 workflow {
     PREPARE_INPUTS(

@@ -22,31 +22,30 @@
     )
 
     input:
-        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
-        path(xcfIntermediateReference)
-        path(chunkedRegions)
+        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(chunkedCoordinates), path(recombinationMapFile)
+        tuple val(metaRef), path(referencePath), path(referenceIndexPath), path(xcfIntermediateReferencePath), path(xcfIntermediateReferenceIndexPath), path(xcfIntBin), path(xcfIntFam)
 
     output:
-        path "${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.bcf", emit: intermediateImputation
-        path "${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.log", emit: intermediateImputationLog
+        path "${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.bcf", emit: intermediateImputation
+        path "${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.log", emit: intermediateImputationLog
 
     script:
         """
         while IFS= read -r line; do
-        chr=$(echo "/$line" | awk '{print /$2}')
-        region=$(echo "/$line" | awk '{print /$4}')
-        buffer=$(echo "/$line" | awk '{print /$3}')
-        count=$(echo "/$line" | awk '{print /$1}')
-        out_file="${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.bcf"
-        log_file="${sampleBcf.baseName}_${chromosomes}_intermediate_imputation.log"
+        chr=\$(echo "\$line" | awk '{print \$2}')
+        region=\$(echo "\$line" | awk '{print \$4}')
+        buffer=\$(echo "\$line" | awk '{print \$3}')
+        count=\$(echo "\$line" | awk '{print \$1}')
+        out_file="${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.bcf"
+        log_file="${sampleBcf.baseName}_${chromosomeNum}_intermediate_imputation.log"
         impute5_v1.2.0_static \
-            --h ${xcfIntermediateReference} \
+            --h ${xcfIntermediateReferencePath} \
             --g ${sampleBcf} \
-            --r /${region} \
-            --buffer-region /${buffer} \
+            --r \${region} \
+            --buffer-region \${buffer} \
             --m ${recombinationMapFile} \
-            --o /${out_file} \
-            --l /${log_file}
-        done < ${chunkedRegions}
+            --o \${out_file} \
+            --l \${log_file}
+        done < ${chunkedCoordinates}
         """
  }
