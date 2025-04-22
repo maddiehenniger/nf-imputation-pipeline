@@ -14,18 +14,16 @@ include { convert_int_ref_to_xcf  } from "../modules/convert_xcf.nf"
     take:
         reference_intermediate
         indexed_phased_pair
-        chromosomes
     
     main:
         chunk_samples(
             reference_intermediate,
-            indexed_phased_pair,
-            chromosomes
+            indexed_phased_pair
         )
 
         convert_int_ref_to_xcf(
             reference_intermediate,
-            chromosomes
+            indexed_phased_pair
         )
     
     emit:

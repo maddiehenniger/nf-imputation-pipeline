@@ -16,9 +16,12 @@ workflow Parse_Recombination_Maps {
     
     main:
         Channel
-            .fromList(samplesheetToList(recombination, "${projectDir}/assets/schema_recombination.json"))
-            .map { metaChromosome, recombinationMapPath -> tuple(metaChromosome, recombinationMapPath) }
-            .set { ch_recombination_map }
+            .fromList(samplesheetToList(recombinationMaps, "${projectDir}/assets/schema_recombination.json"))
+            .map { metaChromosome, recombinationMapPath -> // Entire line read in here from the input for samplesheetToList()
+                   def chromosomeNumber = metaChromosome.chromosomeNum.toInteger() // Converts to integer
+                   tuple(chromosomeNumber, recombinationMapPath) // Creates tuple with above values
+            }
+            .set { ch_recombination_map } // Sets the name of the channel
     
     emit:
         recombination_maps = ch_recombination_map
