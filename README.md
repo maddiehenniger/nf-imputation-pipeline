@@ -151,3 +151,14 @@ Future features for intermediate imputation include:
 - Allowing the user to perform X chromosome imputation
 
 For users interested in including the `--m` parameter, which specifies the recombination rate, a specific subset of files must be supplied. 
+
+Once chunked test samples have undergone the intermediate imputation step, they are then ligated back together using `bcftools concat`, as recommended by the IMPUTE5 authors. Notably, the files must be in correct order before ligating. The pipeline sorts and provides a file first within chromosome (i.e., all the imputed chunked regions in chromosome 25) to ligate, and does this until all individual chromosomes per sample have been ligated. Then, the pipeline sorts and provides a file per sample of all the combined chromosomes and concatenates the test sample back together, producing one imputed file per test sample.
+
+Future testing: 
+- Must make sure including X chromosome does not impact sorting (shouldn't if it gets the X at the name of the sample, but making sure)
+- Make sure including only one chromosome does not impact second ligation step (should be good to go)
+
+### Two-step Imputation of Test Samples to To-Sequence Reference Population
+
+
+

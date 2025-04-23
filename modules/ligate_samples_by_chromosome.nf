@@ -29,7 +29,7 @@
 
     script:
         """
-        ls -v ${sample_id}_${chromosomeNum}_phased_intermediate_${chromosomeNum}*.bcf >> ${sampleBcf}_file_names_${chromosomeNum}.txt
+        ls -v ${sample_id}_intermediate_${chromosomeNum}*.bcf >> ${sample_id}_file_names_${chromosomeNum}.txt
 
         bcftools concat \
         -n \

@@ -29,7 +29,7 @@
 
     script:
         """
-        ls -v ${sampleBcf}*.bcf >> ${sampleBcf}_file_names.txt
+        ls -v ${sample_id}*.bcf >> ${sample_id}_file_names.txt
 
         bcftools concat \
         -n \
