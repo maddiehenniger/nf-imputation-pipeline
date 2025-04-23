@@ -26,5 +26,5 @@ workflow Intermediate_Imputation {
 
     emit: 
         imputed_intermediate_samples = impute5_impute_samples.out.intermediateImputation
-        intermediate_by_chromosomes  = ligate_samples_by_chromosome.out.intermediateByChromosome
+        intermediate_by_chromosomes  = bcftools_concat_by_chromosome.out.intermediateByChromosome
 }
