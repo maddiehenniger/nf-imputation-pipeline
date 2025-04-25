@@ -25,5 +25,6 @@ workflow INTERMEDIATE_IMPUTATION {
         intermediate_ref_xcf         = Prepare_Imputation.out.intermediate_ref_xcf
         imputed_intermediate         = Intermediate_Imputation.out.imputed_intermediate_samples
         intermediate_by_chromosomes  = Intermediate_Imputation.out.intermediate_by_chromosomes
+        intermediate_imputed_paired  = Intermediate_Imputation.out.intermediate_imputed_paired
 
 }
