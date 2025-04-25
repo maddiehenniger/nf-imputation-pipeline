@@ -26,7 +26,7 @@
         tuple val(metaRef), path(referencePath), path(referenceIndexPath), path(xcfIntermediateReferencePath), path(xcfIntermediateReferenceIndexPath), path(xcfIntBin), path(xcfIntFam)
 
     output:
-        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), emit: intermediateImputation
+        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), path(recombinationMapFile), emit: intermediateImputation
         path "*.log", emit: intermediateImputationLog
 
     script:
