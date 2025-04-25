@@ -22,7 +22,7 @@
     )
 
     input:
-        tuple val(sample_id), val(chromosomeNum), path(intermediateByChromosome)
+        tuple val(sample_id), val(chromosomeNum), path(intermediateByChromosome), path(recombinationMapFile)
 
     output:
         tuple val(sample_id), val(chromosomeNum), path("${sample_id}_intermediate_ligated.bcf"), emit: intermediateJoinedImputation

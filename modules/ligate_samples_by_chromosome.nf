@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(sample_id), val(chromosomeNum), path(intImputedChunkedBcf), path(intImputedChunkedBcfIndex)
+        tuple val(sample_id), val(chromosomeNum), path(intImputedChunkedBcf), path(intImputedChunkedBcfIndex), path(recombinationMapFile)
 
     output:
-        tuple val(sample_id), val(chromosomeNum), path("${sample_id}_intermediate_ligated_${chromosomeNum}.bcf"), emit: intermediateByChromosome
+        tuple val(sample_id), val(chromosomeNum), path("${sample_id}_intermediate_ligated_${chromosomeNum}.bcf"), path(recombinationMapFile), emit: intermediateByChromosome
 
     script:
         """
