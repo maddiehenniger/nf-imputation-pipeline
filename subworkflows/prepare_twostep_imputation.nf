@@ -1,5 +1,5 @@
-include { chunk_samples           } from '../modules/chunk_samples.nf'
-include { convert_int_ref_to_xcf  } from '../modules/convert_xcf.nf'
+include { chunk_intermediate_imputed_samples } from '../modules/chunk_intermediate_imputed_samples.nf'
+include { convert_two_ref_to_xcf  } from '../modules/convert_twostep_xcf.nf'
 
 /**
  * Prepares the samples and references for imputation. 
@@ -13,21 +13,21 @@ include { convert_int_ref_to_xcf  } from '../modules/convert_xcf.nf'
  workflow Prepare_Twostep_Imputation {
     take:
         reference_twostep
-        imputed_intermediate
+        imputed_intermediate_paired
     
     main:
-        chunk_samples(
+        chunk_intermediate_imputed_samples(
             reference_twostep,
-            imputed_intermediate
+            imputed_intermediate_paired
         )
 
-        convert_int_ref_to_xcf(
+        convert_twostep_ref_to_xcf(
             reference_twostep,
-            indexed_phased_pair
+            imputed_intermediate_paired
         )
     
     emit:
-        twostep_chunked_regions      = chunk_samples.out.chunkedRegions
-        twostep_ref_xcf              = convert_int_ref_to_xcf.out.xcfReference
+        twostep_chunked_regions      = chunk_intermediate_imputed_samples.out.twoChunkedRegions
+        twostep_ref_xcf              = convert_twostep_ref_to_xcf.out.xcfTwostepReference
 
  }

@@ -32,6 +32,6 @@
     script:
         """
         bcftools index \
-            ${bcf.name}
+            ${intermediateBcf.name}
         """
  }

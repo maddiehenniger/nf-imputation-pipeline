@@ -8,7 +8,7 @@
  * @emit
  */
 
- process chunk_samples {
+ process chunk_intermediate_imputed_samples {
     tag "$sample_id"
 
     stageInMode 'copy'

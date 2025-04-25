@@ -18,6 +18,7 @@ include { PREPARE_INPUTS          } from "./workflows/prepare_inputs.nf"
 include { VALIDATE_CHROMOSOMES    } from "./workflows/validate_chromosomes.nf"
 include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
 include { INTERMEDIATE_IMPUTATION } from "./workflows/intermediate_imputation.nf"
+include { TWOSTEP_IMPUTATION      } from "./workflows/twostep_imputation.nf"
 
 workflow {
     PREPARE_INPUTS(
@@ -55,4 +56,14 @@ workflow {
     ch_intermediate_chunked_regions = INTERMEDIATE_IMPUTATION.out.intermediate_chunked_regions
     ch_imputed_intermediate         = INTERMEDIATE_IMPUTATION.out.imputed_intermediate
     ch_imputed_intermediate_paired  = INTERMEDIATE_IMPUTATION.out.intermediate_imputed_paired
+
+    TWOSTEP_IMPUTATION(
+        ch_two_reference,
+        ch_imputed_intermedaite_paired
+    )
+
+    ch_twostep_chunked_regions      = TWOSTEP_IMPUTATION.out.twostep_chunked_regions
+    ch_twostep_ref_xcf              = TWOSTEP_IMPUTATION.out.twostep_ref_xcf
+    ch_imputed_twostep              = TWOSTEP_IMPUTATION.out.imputed_twostep_samples
+    ch_twostep_by_chromosomes       = TWOSTEP_IMPUTATION.out.twostep_by_chromosomes
 }

@@ -8,7 +8,7 @@
  * @emit phased
  */
 
- process impute5_impute_samples {
+ process impute5_impute_twostep_samples {
     
     tag "$sample_id"
 
@@ -17,7 +17,7 @@
     label 'med_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.intermediate_imputed_samples/",
+        path:    "${params.publishDirData}/.twostep_imputed_samples/",
         mode:    "${params.publishMode}"
     )
 
@@ -26,8 +26,8 @@
         tuple val(metaRef), path(referencePath), path(referenceIndexPath), path(xcfIntermediateReferencePath), path(xcfIntermediateReferenceIndexPath), path(xcfIntBin), path(xcfIntFam)
 
     output:
-        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), path(recombinationMapFile) emit: intermediateImputation
-        path "*.log", emit: intermediateImputationLog
+        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), path(recombinationMapFile) emit: twostepImputation
+        path "*.log", emit: twostepImputationLog
 
     script:
         """
@@ -36,8 +36,8 @@
         region=\$(echo "\$line" | awk '{print \$4}')
         buffer=\$(echo "\$line" | awk '{print \$3}')
         count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${sampleBcf.baseName}_intermediate_${chromosomeNum}_\${count}.bcf"
-        log_file="${sampleBcf.baseName}_intermediate_${chromosomeNum}_\${count}.log"
+        out_file="${sampleBcf.baseName}_twostep_${chromosomeNum}_\${count}.bcf"
+        log_file="${sampleBcf.baseName}_twostep_${chromosomeNum}_\${count}.log"
         impute5_v1.2.0_static \
             --h ${xcfIntermediateReferencePath} \
             --g ${sampleBcf} \
