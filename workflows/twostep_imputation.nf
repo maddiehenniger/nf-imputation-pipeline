@@ -12,8 +12,8 @@ workflow TWOSTEP_IMPUTATION {
             intermediate_imputed_paired
         )
 
-        twostep_chunked_regions = Twostep_Imputation.out.twostep_chunked_regions
-        twostep_ref_xcf         = Twostep_Imputation.out.twostep_ref_xcf
+        twostep_chunked_regions = Prepare_Twostep_Imputation.out.twostep_chunked_regions
+        twostep_ref_xcf         = Prepare_Twostep_Imputation.out.twostep_ref_xcf
         
         Twostep_Imputation(
             twostep_chunked_regions,

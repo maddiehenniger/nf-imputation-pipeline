@@ -1,5 +1,5 @@
 include { chunk_intermediate_imputed_samples } from '../modules/chunk_intermediate_imputed_samples.nf'
-include { convert_two_ref_to_xcf  } from '../modules/convert_twostep_xcf.nf'
+include { convert_twostep_ref_to_xcf } from '../modules/convert_twostep_xcf.nf'
 
 /**
  * Prepares the samples and references for imputation. 

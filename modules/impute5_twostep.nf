@@ -26,7 +26,7 @@
         tuple val(metaRef), path(referencePath), path(referenceIndexPath), path(xcfIntermediateReferencePath), path(xcfIntermediateReferenceIndexPath), path(xcfIntBin), path(xcfIntFam)
 
     output:
-        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), path(recombinationMapFile) emit: twostepImputation
+        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), path(recombinationMapFile), emit: twostepImputation
         path "*.log", emit: twostepImputationLog
 
     script:
@@ -36,8 +36,8 @@
         region=\$(echo "\$line" | awk '{print \$4}')
         buffer=\$(echo "\$line" | awk '{print \$3}')
         count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${sampleBcf.baseName}_twostep_${chromosomeNum}_\${count}.bcf"
-        log_file="${sampleBcf.baseName}_twostep_${chromosomeNum}_\${count}.log"
+        out_file="${sample_id}_twostep_${chromosomeNum}_\${count}.bcf"
+        log_file="${sample_id}_twostep_${chromosomeNum}_\${count}.log"
         impute5_v1.2.0_static \
             --h ${xcfIntermediateReferencePath} \
             --g ${sampleBcf} \

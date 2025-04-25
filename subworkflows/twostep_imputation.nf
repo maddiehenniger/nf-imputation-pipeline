@@ -32,7 +32,7 @@ workflow Twostep_Imputation {
         )
 
     emit: 
-        imputed_twostep_samples        = impute5_impute_intermediate_samples.out.twostepImputation
+        imputed_twostep_samples        = impute5_impute_twostep_samples.out.twostepImputation
         twostep_by_chromosomes         = bcftools_concat_twostep_by_chromosome.out.twostepByChromosome
         twostep_imputed_joined_samples = bcftools_concat_twostep_by_sample.out.twostepJoinedImputation
 }

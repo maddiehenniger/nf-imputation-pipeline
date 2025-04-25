@@ -59,11 +59,11 @@ workflow {
 
     TWOSTEP_IMPUTATION(
         ch_two_reference,
-        ch_imputed_intermedaite_paired
+        ch_imputed_intermediate_paired
     )
 
     ch_twostep_chunked_regions      = TWOSTEP_IMPUTATION.out.twostep_chunked_regions
     ch_twostep_ref_xcf              = TWOSTEP_IMPUTATION.out.twostep_ref_xcf
-    ch_imputed_twostep              = TWOSTEP_IMPUTATION.out.imputed_twostep_samples
+    ch_imputed_twostep              = TWOSTEP_IMPUTATION.out.imputed_twostep
     ch_twostep_by_chromosomes       = TWOSTEP_IMPUTATION.out.twostep_by_chromosomes
 }
