@@ -35,7 +35,6 @@
             --input ${samplePath} \\
             --reference ${referencePath} \\
             --thread 24 \\
-            --filter-maf 0.001 \\
             --map ${recombinationMapFile} \\
             --region ${chromosomeNum} \\
             --output ${meta.sampleName}_${chromosomeNum}_phased.bcf
