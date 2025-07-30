@@ -15,31 +15,27 @@ nextflow.enable.dsl=2
 
 // include custom workflows
 include { PREPARE_INPUTS          } from "./workflows/prepare_inputs.nf"
-// include { VALIDATE_CHROMOSOMES    } from "./workflows/validate_chromosomes.nf"
 // include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
 // include { INTERMEDIATE_IMPUTATION } from "./workflows/intermediate_imputation.nf"
 // include { TWOSTEP_IMPUTATION      } from "./workflows/twostep_imputation.nf"
 
 workflow {
+    // STEP ONE: PREPARE INPUTS
+    // In this step, samplesheet and references provided in the nextflow.config file are read into the pipeline, indexed, and assessed for chromosome numbers.
     PREPARE_INPUTS(
         file(params.samplesheet),
         file(params.references)
     )
-    ch_input_samples      = PREPARE_INPUTS.out.samples
-    ch_references         = PREPARE_INPUTS.out.references
-    ch_one_reference      = PREPARE_INPUTS.out.reference_intermediate
-    ch_two_reference      = PREPARE_INPUTS.out.reference_twostep
 
-    VALIDATE_CHROMOSOMES(
-        ch_input_samples,
-        ch_references
-    )
-
-    ch_samples                 = VALIDATE_CHROMOSOMES.out.samples_idx
+    ch_input_samples          = PREPARE_INPUTS.out.samples
+    ch_references             = PREPARE_INPUTS.out.references
+    ch_one_reference          = PREPARE_INPUTS.out.reference_intermediate
+    ch_two_reference          = PREPARE_INPUTS.out.reference_twostep
+    ch_samples                = PREPARE_INPUTS.out.samples_idx
         .view()
-    ch_intermediate_reference  = VALIDATE_CHROMOSOMES.out.intermediate_idx
+    ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
         .view()
-    ch_twostep_reference       = VALIDATE_CHROMOSOMES.out.twostep_idx
+    ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
         .view()
 
     // PHASE_SAMPLES(

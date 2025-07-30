@@ -25,11 +25,11 @@
         tuple val(meta), path(samplePath), path(sampleIndexPath)
 
     output:
-        path "${meta.sampleID}_chromosomes.txt", emit: chromosomes
+        path "${meta.id}_chromosomes.txt", emit: chromosomes
 
     script:
         """
         bcftools query \
-            -f '%CHROM' ${samplePath} | sort -u -n >> ${meta.sampleID}_chromosomes.txt
+            -f '%CHROM' ${samplePath} | sort -u -n >> ${meta.id}_chromosomes.txt
         """
  }

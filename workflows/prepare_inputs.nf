@@ -18,7 +18,10 @@ include { Validate_Chromosomes } from "../subworkflows/validate_chromosomes.nf"
             references
         )
 
-        samples = Parse_Input_Sheets.out.
+        samples = Parse_Input_Sheets.out.samples
+        references = Parse_Input_Sheets.out.references
+        reference_intermediate = Parse_Input_Sheets.out.reference_intermediate
+        reference_twostep = Parse_Input_Sheets.out.reference_twostep
 
         Validate_Chromosomes(
             samples,
