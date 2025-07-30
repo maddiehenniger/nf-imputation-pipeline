@@ -26,21 +26,21 @@ workflow {
         file(params.references)
     )
     ch_input_samples      = PREPARE_INPUTS.out.samples
-        .view()
     ch_references         = PREPARE_INPUTS.out.references
-        .view()
     ch_one_reference      = PREPARE_INPUTS.out.reference_intermediate
-        .view()
     ch_two_reference      = PREPARE_INPUTS.out.reference_twostep
-        .view()
 
-    // VALIDATE_CHROMOSOMES(
-    //    ch_input_samples,
-    //     ch_references
-    // )
-    // ch_chromosomes           = VALIDATE_CHROMOSOMES.out.chromosomes
-    // ch_sample_chromosomes    = VALIDATE_CHROMOSOMES.out.sample_chromosomes
-    // ch_reference_chromosomes = VALIDATE_CHROMOSOMES.out.reference_chromosomes
+    VALIDATE_CHROMOSOMES(
+        ch_input_samples,
+        ch_references
+    )
+
+    ch_samples                 = VALIDATE_CHROMOSOMES.out.samples_idx
+        .view()
+    ch_intermediate_reference  = VALIDATE_CHROMOSOMES.out.intermediate_idx
+        .view()
+    ch_twostep_reference       = VALIDATE_CHROMOSOMES.out.twostep_idx
+        .view()
 
     // PHASE_SAMPLES(
     //     ch_input_samples,
