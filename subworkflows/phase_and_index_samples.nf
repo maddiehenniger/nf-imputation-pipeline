@@ -28,5 +28,5 @@ workflow Phase_And_Index_Samples {
 
     emit:
         phased_samples      = ch_phased_samples
-        indexed_phased_pair = bcftools_index_phased.out.indexedPhasedPair
+        indexed_phased_pair = bcftools_index.out.indexedPair
 }

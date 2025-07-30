@@ -5,25 +5,19 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["sampleName"],
+    "required": ["sampleID", "samplePath"],
     "properties": {
-      "sampleName": {
+      "sampleID": {
         "type": "string",
         "pattern": "^\\S+$",
-        "errorMessage": "Sample name must be provided and cannot contain spaces",
-        "meta": "sampleName"
+        "errorMessage": "A user-provided sample ID must be provided and cannot contain spaces.",
+        "meta": "id"
       },
       "samplePath": {
         "type": "string",
         "pattern": "^\\S+$",
         "format": "file-path",
-        "errorMessage": "BCF/VCF(.gz) file for samples must be provided, cannot contain spaces and must have extension '.bcf'/'.bcf.gz' or '.vcf'/'vcf.gz'"
-      },
-      "sampleIndexPath": {
-        "type": "string",
-        "pattern": "^\\S+$",
-        "format": "file-path",
-        "errorMessage": "BCF/VCF(.gz).csi index file for samples must be provided, cannot contain spaces and must have extension '.bcf.csi'/'.bcf.gz.csi' or '.vcf.csi'/'vcf.gz.csi'"
+        "errorMessage": "A BCF/VCF(.gz) file path for samples must be provided, cannot contain spaces, and must have extension '.bcf' or '.vcf'/'vcf.gz'."
       }
     }
   }

@@ -1,6 +1,4 @@
-include { Parse_Samplesheet     } from "../subworkflows/parse_samplesheet.nf"
-include { Parse_Referencesheet  } from "../subworkflows/parse_referencesheet.nf"
-include { Parse_Recombination_Maps } from "../subworkflows/parse_recombination_maps.nf"
+include { Parse_Input_Sheets } from "../subworkflows/parse_input_sheets.nf"
 
 /**
  * Workflow to handle and prepare input files.
@@ -11,18 +9,17 @@ include { Parse_Recombination_Maps } from "../subworkflows/parse_recombination_m
  workflow PREPARE_INPUTS {
     take:
         samplesheet
-        referencesheet
-        recombinationMaps
+        references
 
     main:
-        Parse_Samplesheet(samplesheet)
-        Parse_Referencesheet(referencesheet)
-        Parse_Recombination_Maps(recombinationMaps)
+        Parse_Input_Sheets(
+            samplesheet,
+            references
+        )
     
     emit:
-        samples                  = Parse_Samplesheet.out.samples
-        references               = Parse_Referencesheet.out.references
-        reference_intermediate   = Parse_Referencesheet.out.reference_intermediate
-        reference_twostep        = Parse_Referencesheet.out.reference_twostep
-        recombination_maps       = Parse_Recombination_Maps.out.recombination_maps
+        samples                  = Parse_Input_Sheets.out.samples
+        references               = Parse_Input_Sheets.out.references
+        reference_intermediate   = Parse_Input_Sheets.out.reference_intermediate
+        reference_twostep        = Parse_Input_Sheets.out.reference_twostep
 }

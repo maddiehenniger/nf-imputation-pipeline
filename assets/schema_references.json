@@ -1,0 +1,42 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "maddiehenniger/nf-imputation-pipeline params.references schema",
+    "description": "Schema for the input references and optional genetic maps for maddiehenniger/nf-imputation-pipeline",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "required": ["referenceID", "referencePath", "chromosome", "imputationStep"],
+      "properties": {
+        "referenceID": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "A user-provided reference ID must be provided and cannot contain spaces.",
+          "meta": "id"
+        },
+        "referencePath": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "format": "file-path",
+          "errorMessage": "A BCF/VCF(.gz) file path for the respective reference must be provided, cannot contain spaces, and must have extension '.bcf' or '.vcf'/'vcf.gz'."
+        },
+        "chromosome": {
+          "type": "integer",
+          "errorMessage": "A numeric value in the form of an integer must be provided for the respective reference and cannot contain spaces or special characters. Currently, sex chromosome imputation is unavailable.",
+          "meta": "chromosome"
+        },
+        "imputationStep": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "Value must be provided as either 'one' or 'two' with no spaces. 'one' represents the reference panel to use for the first round of imputation and 'two' represents the reference panel to use for the second round of imputation.",
+          "enum": [ "one", "two" ],
+          "meta": "step"
+        },
+        "geneticMapPath": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "format": "file-path",
+          "errorMessage": "If optionally providing genetic maps, a GMAP file path must be provided, cannot contain spaces, and must have the extension '.gmap'. If you are not intending to use genetic maps and are receiving this error, please modify this column to be empty and the default 1 cM/Mb will be used for phasing and imputation."
+        }
+      }
+    }
+  }

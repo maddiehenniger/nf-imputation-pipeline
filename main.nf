@@ -23,14 +23,16 @@ include { TWOSTEP_IMPUTATION      } from "./workflows/twostep_imputation.nf"
 workflow {
     PREPARE_INPUTS(
         file(params.samplesheet),
-        file(params.referencesheet),
-        file(params.recombinationMaps)
+        file(params.references)
     )
     ch_input_samples      = PREPARE_INPUTS.out.samples
+        .view()
     ch_references         = PREPARE_INPUTS.out.references
+        .view()
     ch_one_reference      = PREPARE_INPUTS.out.reference_intermediate
+        .view()
     ch_two_reference      = PREPARE_INPUTS.out.reference_twostep
-    ch_recombination_maps = PREPARE_INPUTS.out.recombination_maps
+        .view()
 
     VALIDATE_CHROMOSOMES(
         ch_input_samples,
