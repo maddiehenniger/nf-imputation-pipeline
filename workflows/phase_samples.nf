@@ -10,13 +10,11 @@ workflow PHASE_SAMPLES {
     take:
         samples
         reference_intermediate
-        recombination_maps
     
     main:
         Phase_And_Index_Samples(
             samples,
-            reference_intermediate,
-            recombination_maps
+            reference_intermediate
         )
 
     emit:

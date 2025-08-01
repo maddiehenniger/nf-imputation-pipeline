@@ -40,11 +40,9 @@ workflow {
 
     // PHASE_SAMPLES(
     //     ch_input_samples,
-    //     ch_one_reference,
-    //     ch_recombination_maps
+    //     ch_intermediate_reference
     // )
-    // ch_phased_samples      = PHASE_SAMPLES.out.phased_samples
-    // ch_indexed_phased_pair = PHASE_SAMPLES.out.indexed_phased_pair
+    // ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
 
     // INTERMEDIATE_IMPUTATION(
     //     ch_one_reference,

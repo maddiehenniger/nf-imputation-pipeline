@@ -11,13 +11,11 @@ workflow Phase_And_Index_Samples {
     take:
         samples
         reference_intermediate
-        recombination_maps
     
     main:
         shapeit5_phase_samples(
             samples,
-            reference_intermediate,
-            recombination_maps
+            reference_intermediate
         )
         ch_phased_samples = shapeit5_phase_samples.out.phasedSamples
             .map { bcf, chromosomeNum, recombinationMapFile -> [ bcf.baseName, bcf, chromosomeNum, recombinationMapFile ] }

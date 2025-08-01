@@ -32,7 +32,7 @@ workflow Parse_Input_Sheets {
         Channel
             .fromList(samplesheetToList(references, "${projectDir}/assets/schema_references.json"))
             .map { meta, referencePath, geneticMapPath -> 
-                tuple(meta, referencePath, geneticMapPath) 
+                createReferenceChannel(meta, referencePath, geneticMapPath) 
             }
             .set { ch_references }
         

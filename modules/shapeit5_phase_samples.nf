@@ -4,7 +4,7 @@
  * Generates phased samples.
  * @see https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/
  * 
- * @input Map of input samples, intermediate reference to be used, and region(s) of chromosomes to phase.
+ * @input Map of input samples, intermediate reference to be used, and region(s) of chromosomes to phase. Arguments can optionally specify the genetic maps. 
  * @emit phased
  */
 
@@ -22,21 +22,32 @@
     )
 
     input:
-        tuple val(meta), path(samplePath), path(sampleIndexPath)
-        tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        tuple val(chromosomeNum), path(recombinationMapFile)
+        tuple val(meta), path(samplePath), path(sampleIdx)
+        tuple val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple path("${meta.sampleName}_${chromosomeNum}_phased.bcf"), val(chromosomeNum), path(recombinationMapFile), emit: phasedSamples
+        tuple val(metaRef.chromosome), path("${meta.id}_${metaRef.chromosome}_phased.bcf"), path(mapPath), emit: phasedSamples
 
     script:
-        """
-        SHAPEIT5_phase_common \\
-            --input ${samplePath} \\
-            --reference ${referencePath} \\
-            --thread 24 \\
-            --map ${recombinationMapFile} \\
-            --region ${chromosomeNum} \\
-            --output ${meta.sampleName}_${chromosomeNum}_phased.bcf
-        """
+        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
+
+        if(metadata.geneticMaps == 'provided') {
+            """
+            SHAPEIT5_phase_common \\
+                --input ${samplePath} \\
+                --reference ${refPath} \\
+                --region ${metaRef.chromosome} \\
+                --output ${meta.id}_${metaRef.chromosome}_phased.bcf \\
+                ${args}
+            """ 
+        } else if(metadata.geneticMaps == 'none') {
+            """
+            SHAPEIT5_phase_common \\
+                --input ${samplePath} \\
+                --reference ${refPath} \\
+                --region ${metaRef.chromosome} \\
+                --output ${meta.id}_${metaRef.chromosome}_phased.bcf \\
+                ${args}
+            """
+        }
  }
