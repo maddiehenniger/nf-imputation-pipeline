@@ -26,7 +26,7 @@
         tuple val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(metaRef.chromosome), path("${meta.id}_${metaRef.chromosome}_phased.bcf"), path(mapPath), emit: phasedSamples
+        tuple val(meta), val(metaRef.chromosome), path("${meta.id}_${metaRef.chromosome}_phased.bcf"), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
 
     script:
         String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
@@ -36,8 +36,8 @@
             SHAPEIT5_phase_common \\
                 --input ${samplePath} \\
                 --reference ${refPath} \\
-                --region ${metaRef.chromosome} \\
-                --output ${meta.id}_${metaRef.chromosome}_phased.bcf \\
+                --region ${metadata.chromosome} \\
+                --output ${meta.id}_${metadata.chromosome}_phased.bcf \\
                 ${args}
             """ 
         } else if(metadata.geneticMaps == 'none') {

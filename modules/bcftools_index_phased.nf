@@ -9,8 +9,6 @@
  */
 
  process bcftools_index_phased {
-    
-    tag "$sample_id"
 
     label 'bcftools'
 
@@ -25,10 +23,10 @@
     )
 
     input:
-        tuple val(sample_id), path(bcf), val(chromosomeNum), path(recombinationMapFile)
+        tuple val(meta), path(bcf), val(chromosomeNum), path(recombinationMapFile)
 
     output:
-       tuple val(sample_id), path(bcf), path("*.bcf.csi"), val(chromosomeNum), path(recombinationMapFile), emit: indexedPhasedPair
+        tuple val(sample_id), path(bcf), path("*.bcf.csi"), val(chromosomeNum), path(recombinationMapFile), emit: indexedPhasedPair
 
     script:
         """

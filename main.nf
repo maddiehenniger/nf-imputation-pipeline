@@ -15,7 +15,7 @@ nextflow.enable.dsl=2
 
 // include custom workflows
 include { PREPARE_INPUTS          } from "./workflows/prepare_inputs.nf"
-// include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
+include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
 // include { INTERMEDIATE_IMPUTATION } from "./workflows/intermediate_imputation.nf"
 // include { TWOSTEP_IMPUTATION      } from "./workflows/twostep_imputation.nf"
 
@@ -32,17 +32,15 @@ workflow {
     ch_one_reference          = PREPARE_INPUTS.out.reference_intermediate
     ch_two_reference          = PREPARE_INPUTS.out.reference_twostep
     ch_samples                = PREPARE_INPUTS.out.samples_idx
-        .view()
     ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
-        .view()
     ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
-        .view()
 
-    // PHASE_SAMPLES(
-    //     ch_input_samples,
-    //     ch_intermediate_reference
-    // )
-    // ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
+    PHASE_SAMPLES(
+        ch_samples,
+        ch_intermediate_reference
+    )
+    ch_phased_samples = PHASE_SAMPLES.out.phased_samples
+        .view()
 
     // INTERMEDIATE_IMPUTATION(
     //     ch_one_reference,
