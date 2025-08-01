@@ -4,7 +4,7 @@
  * Generates an index (CSI) file for the phased reference.
  * @see https://samtools.github.io/bcftools/bcftools.html#index
  * 
- * @input LinkedHashMap 
+ * @input  
  * @emit
  */
 

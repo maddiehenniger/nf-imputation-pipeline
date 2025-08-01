@@ -4,8 +4,9 @@
  * Generates phased samples.
  * @see https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/
  * 
- * @input Map of input samples, intermediate reference to be used, and region(s) of chromosomes to phase. Arguments can optionally specify the genetic maps. 
- * @emit phased
+ * @input A map of test sample metadata, path to sample, and path to the indexed sample
+ *        A map of the reference panel metadata, path to reference, path to the indexed reference, and path to the optionally provided genetic map.
+ * @emit phasedSamples - TBD lol 
  */
 
  process shapeit5_phase_samples {

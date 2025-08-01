@@ -20,24 +20,32 @@ include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
 // include { TWOSTEP_IMPUTATION      } from "./workflows/twostep_imputation.nf"
 
 workflow {
-    // STEP ONE: PREPARE INPUTS
-    // In this step, samplesheet and references provided in the nextflow.config file are read into the pipeline, indexed, and assessed for chromosome numbers.
+
+    // PREPARE_INPUTS performs the following: 
+    // 1) Reads in the test sample(s), references, and optionally provided genetic maps
+    // 1A) Separates the reference panels based on the user-defined imputationStep ('one' for intermediate, 'two' for second round)
+    // 1B) Detects if the user has provided a path to the genetic maps for downstream use 
+    // 2) Indexes the input sample(s), intermediate reference, and twostep reference
+    // 3) Validates that the same number of chromosomes exist among relevant files and extracts the chromosome values
+
     PREPARE_INPUTS(
-        file(params.samplesheet),
-        file(params.references)
+        file(params.samplesheet),       // required: User-provided path to sample metadata identified in the nextflow.config file 
+        file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    ch_input_samples          = PREPARE_INPUTS.out.samples
-    ch_references             = PREPARE_INPUTS.out.references
-    ch_one_reference          = PREPARE_INPUTS.out.reference_intermediate
-    ch_two_reference          = PREPARE_INPUTS.out.reference_twostep
     ch_samples                = PREPARE_INPUTS.out.samples_idx
     ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
     ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
 
+    // PHASE_SAMPLES performs the following:
+    // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
+    //      Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
+    //      If a genetic map is not provided, SHAPEIT5 uses a default 1 cm/Mb recombination rate 
+    // 2) Indexes the phased test sample(s) per chromosome
+
     PHASE_SAMPLES(
-        ch_samples,
-        ch_intermediate_reference
+        ch_samples,                 // channel: [ [id], samplePath, sampleIndex ]
+        ch_intermediate_reference   // channel: [ [id, chromosome, imputationStep, geneticMaps], referencePath, referenceIndex, geneticMapPath ]
     )
     ch_phased_samples = PHASE_SAMPLES.out.phased_samples
         .view()

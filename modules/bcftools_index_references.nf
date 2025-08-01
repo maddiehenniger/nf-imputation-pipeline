@@ -1,11 +1,11 @@
 /**
- * Process to run BCFtools to index VCF/BCF files.
+ * Process to run BCFtools to index BCF/VCF(.gz) files.
  * 
  * Generates indexed files (.csi) for input VCF/BCF files.
  * @see https://samtools.github.io/bcftools/bcftools.html#index
  * 
- * @input A LinkedHashMap containing the name and path to VCF/BCF file that needs to be indexed.
- * @emit A map containing the name, path to the VCF/BCF(.gz) file, and associated index (.csi) file.
+ * @input A map containing the reference panel metadata, path to BCF/VCF(.gz) reference panel that needs to be indexed, and path to the genetic map if provided.
+ * @emit indexedPair - A map containing the reference panel metadata, path to the BCF/VCF(.gz) file, associated index (.csi) file, and path to the genetic map if provided.
  **/
 
 process bcftools_index_references {

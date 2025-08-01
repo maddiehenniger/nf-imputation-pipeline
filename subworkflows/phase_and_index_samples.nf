@@ -9,8 +9,8 @@ include { shapeit5_phase_samples } from '../modules/shapeit5_phase_samples.nf'
 
 workflow Phase_And_Index_Samples {
     take:
-        samples
-        reference_intermediate
+        samples                 // channel: [ [id], samplePath, sampleIndex ]
+        reference_intermediate  // channel: [ [id, chr, step, geneticMap], referencePath, referenceIndex, geneticMap ]
     
     main:
         shapeit5_phase_samples(

@@ -12,8 +12,8 @@ include { samplesheetToList } from 'plugin/nf-schema'
 
 workflow Parse_Input_Sheets {
     take:
-        samplesheet
-        references
+        samplesheet // channel (required): [ [id], samplePath ]
+        references  // channel (required): [ [id, chr, step, geneticMap], referencePath, mapPath ]
     
     main:
         // Use nf-schema to handle input sample, reference panel, and optionall genetic map parsing
