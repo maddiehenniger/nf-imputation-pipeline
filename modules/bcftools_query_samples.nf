@@ -4,8 +4,8 @@
  * Generates a list of chromosome numbers present in sample and reference files.
  * @see https://samtools.github.io/bcftools/bcftools.html#query
  * 
- * @input LinkedHashMap 
- * @emit
+ * @input A map containing the test sample metadata, path to the test samples, and path to the indexed test samples.
+ * @emit chromosomes - A text file containing the unique and sorted chromosome numbers from the test samples.
  */
 
  process bcftools_query_samples {
@@ -29,7 +29,7 @@
 
     script:
         """
-        bcftools query \
+        bcftools query \\
             -f '%CHROM' ${samplePath} | sort -u -n >> ${meta.id}_chromosomes.txt
         """
  }

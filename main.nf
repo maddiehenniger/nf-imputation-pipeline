@@ -33,9 +33,10 @@ workflow {
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    ch_samples                = PREPARE_INPUTS.out.samples_idx
     ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
     ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
+    ch_samples                = PREPARE_INPUTS.out.split_samples
+        .view()
 
     // PHASE_SAMPLES performs the following:
     // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
@@ -43,12 +44,12 @@ workflow {
     //      If a genetic map is not provided, SHAPEIT5 uses a default 1 cm/Mb recombination rate 
     // 2) Indexes the phased test sample(s) per chromosome
 
-    PHASE_SAMPLES(
-        ch_samples,                 // channel: [ [id], samplePath, sampleIndex ]
-        ch_intermediate_reference   // channel: [ [id, chromosome, imputationStep, geneticMaps], referencePath, referenceIndex, geneticMapPath ]
-    )
-    ch_phased_samples = PHASE_SAMPLES.out.phased_samples
-        .view()
+    //PHASE_SAMPLES(
+    //    ch_samples,                 // channel: [ [id], samplePath, sampleIndex ]
+    //    ch_intermediate_reference   // channel: [ [id, chromosome, imputationStep, geneticMaps], referencePath, referenceIndex, geneticMapPath ]
+    //)
+    //ch_phased_samples = PHASE_SAMPLES.out.phased_samples
+    //    .view()
 
     // INTERMEDIATE_IMPUTATION(
     //     ch_one_reference,

@@ -28,6 +28,14 @@ include { Validate_Chromosomes } from "../subworkflows/validate_chromosomes.nf"
             reference_intermediate,
             reference_twostep
         )
+
+        ch_samples_idx              = Validate_Chromosomes.out.samples_idx
+        ch_chromosomes              = Validate_Chromosomes.out.chromosomes
+
+        Prepare_Phasing(
+            ch_samples_idx,
+            ch_chromosomes
+        )
     
     emit:
         samples                  = Parse_Input_Sheets.out.samples
@@ -37,4 +45,5 @@ include { Validate_Chromosomes } from "../subworkflows/validate_chromosomes.nf"
         samples_idx              = Validate_Chromosomes.out.samples_idx
         intermediate_idx         = Validate_Chromosomes.out.intermediate_idx
         twostep_idx              = Validate_Chromosomes.out.twostep_idx
+        split_samples            = Prepare_Phasing.out.ch_samples_by_chr
 }

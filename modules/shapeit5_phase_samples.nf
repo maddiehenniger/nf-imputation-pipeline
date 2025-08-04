@@ -27,10 +27,9 @@
         tuple val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(meta), val(metaRef.chromosome), path("${meta.id}_${metaRef.chromosome}_phased.bcf"), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
+        tuple val(meta), val(metadata.chromosome), path("${meta.id}_${metadata.chromosome}_phased.bcf"), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
 
     script:
-        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
         if(metadata.geneticMaps == 'provided') {
             """
@@ -39,16 +38,15 @@
                 --reference ${refPath} \\
                 --region ${metadata.chromosome} \\
                 --output ${meta.id}_${metadata.chromosome}_phased.bcf \\
-                ${args}
+                --map ${mapPath}
             """ 
         } else if(metadata.geneticMaps == 'none') {
             """
             SHAPEIT5_phase_common \\
                 --input ${samplePath} \\
                 --reference ${refPath} \\
-                --region ${metaRef.chromosome} \\
-                --output ${meta.id}_${metaRef.chromosome}_phased.bcf \\
-                ${args}
+                --region ${metadata.chromosome} \\
+                --output ${meta.id}_${metadata.chromosome}_phased.bcf
             """
         }
  }

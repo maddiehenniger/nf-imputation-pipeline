@@ -30,7 +30,7 @@ process bcftools_index_samples {
 
     script: 
         """
-        bcftools index \
+        bcftools index \\
         ${sample}
         """
 }
