@@ -13,10 +13,12 @@ include { bcftools_view_samples } from "../modules/bcftools_view_samples.nf"
  workflow Prepare_Phasing {
     take:
         samples
+        chromosomes
     
     main:
         bcftools_view_samples(
-            samples
+            samples,
+            chromosomes
         )
 
         ch_samples_by_chr = bcftools_view_samples.out.samplesByChr

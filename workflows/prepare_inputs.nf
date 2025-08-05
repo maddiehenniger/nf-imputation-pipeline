@@ -1,5 +1,6 @@
 include { Parse_Input_Sheets   } from "../subworkflows/parse_input_sheets.nf"
 include { Validate_Chromosomes } from "../subworkflows/validate_chromosomes.nf"
+include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
 
 /**
  * Workflow to handle and prepare input files.
