@@ -22,28 +22,9 @@ workflow Validate_Chromosomes {
         reference_twostep
     
     main:         
-        // Index the input samples using bcftools index
-        bcftools_index_samples(
-            samples
-        )
-
-        // Index the references using bcftools index
-        // ...the intermediate reference...
-        index_intermediate(
-            reference_intermediate
-        )
-        // ..the twostep reference...
-        index_twostep(
-            reference_twostep
-        )
-        // The outputs from indexing to be used to query chromosomes present in each file
-        samples_idx      = bcftools_index_samples.out.indexedPair
-        intermediate_idx = index_intermediate.out.indexedPair
-        twostep_idx      = index_twostep.out.indexedPair
-
         // Identify the chromosomes present in the input samples using bcftools query
         bcftools_query_samples(
-            samples_idx
+            samples
         )
         // The output of the chromosomes present in the input sample(s)
         samples_chr = bcftools_query_samples.out.chromosomes
@@ -86,3 +67,29 @@ workflow Validate_Chromosomes {
         twostep_idx      = twostep_idx
         chromosomes      = ch_chromosomes
 }
+
+// //
+// // From: https://github.com/nf-core/phaseimpute/blob/dev/workflows/chrcheck/function.nf
+// // Check if the contig names in the input files match the reference contig names.
+// //
+// def checkChr(ch_chr, ch_input){
+//     def chr_checked = ch_chr
+//         .combine(ch_input, by:0)
+//         .map{meta, chr, file, index, lst ->
+//             [
+//                 meta, file, index,
+//                 chr.readLines()*.split(' ').collect{it[0]},
+//                 lst
+//             ]
+//         }
+//         .branch{ meta, file, index, chr, lst ->
+//             def lst_diff = diffChr(chr, lst, file)
+//             def diff = lst_diff[0]
+//             def prefix = lst_diff[1]
+//             no_rename: diff.size() == 0
+//                 return [meta, file, index]
+//             to_rename: true
+//                 return [meta, file, index, diff, prefix]
+//         }
+//     return chr_checked
+// }
