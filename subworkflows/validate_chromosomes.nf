@@ -1,6 +1,6 @@
-include { bcftools_index_samples                          } from '../modules/bcftools_index_samples.nf'
-include { bcftools_index_references as index_intermediate } from '../modules/bcftools_index_references.nf'
-include { bcftools_index_references as index_twostep      } from '../modules/bcftools_index_references.nf'
+// include { bcftools_index_samples                          } from '../modules/bcftools_index_samples.nf'
+// include { bcftools_index_references as index_intermediate } from '../modules/bcftools_index_references.nf'
+// include { bcftools_index_references as index_twostep      } from '../modules/bcftools_index_references.nf'
 include { bcftools_query_samples                          } from '../modules/bcftools_query_samples.nf'
 include { bcftools_query_references as query_intermediate } from '../modules/bcftools_query_references.nf'
 include { bcftools_query_references as query_twostep      } from '../modules/bcftools_query_references.nf'
@@ -21,11 +21,13 @@ workflow Validate_Chromosomes {
         reference_intermediate
         reference_twostep
     
-    main:         
+    main:        
+
         // Identify the chromosomes present in the input samples using bcftools query
         bcftools_query_samples(
             samples
-        )
+        ) 
+
         // The output of the chromosomes present in the input sample(s)
         samples_chr = bcftools_query_samples.out.chromosomes
             .map {
@@ -35,7 +37,7 @@ workflow Validate_Chromosomes {
         // Identify the chromosomes present in the reference(s) using bcftools query
         // Query the intermediate reference panel
         query_intermediate(
-            intermediate_idx
+            reference_intermediate
         )
         intermediate_chr = query_intermediate.out.chromosomes
             .map {
@@ -44,7 +46,7 @@ workflow Validate_Chromosomes {
 
         // Query the twostep reference panel
         query_twostep(
-            twostep_idx
+            reference_twostep
         )
         twostep_chr = query_twostep.out.chromosomes
             .map {
@@ -62,9 +64,6 @@ workflow Validate_Chromosomes {
             .unique()
 
     emit:
-        samples_idx      = samples_idx
-        intermediate_idx = intermediate_idx
-        twostep_idx      = twostep_idx
         chromosomes      = ch_chromosomes
 }
 
