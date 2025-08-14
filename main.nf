@@ -34,11 +34,9 @@ workflow {
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
-        .view()
-    ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
-        .view()
-    ch_samples                = PREPARE_INPUTS.out.split_samples_idx
+    ch_intermediate_reference  = PREPARE_INPUTS.out.intermediate_idx
+    ch_twostep_reference       = PREPARE_INPUTS.out.twostep_idx
+    ch_prepare_phasing_samples = PREPARE_INPUTS.out.prepare_phasing_samples
         .view()
 
     // PHASE_SAMPLES performs the following:

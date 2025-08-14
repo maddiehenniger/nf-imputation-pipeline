@@ -14,6 +14,7 @@ include { bcftools_index_split_samples } from "../modules/bcftools_index_split_s
  workflow Prepare_Phasing {
     take:
         samples_by_chr
+        intermediate_idx
     
     main:
         bcftools_view_samples(
@@ -26,9 +27,12 @@ include { bcftools_index_split_samples } from "../modules/bcftools_index_split_s
             ch_split_samples_by_chr
         )
 
-        ch_split_samples_idx = bcftools_index_split_samples.out.indexedSplitPair
+        bcftools_index_split_samples.out.indexedSplitPair
+            .join(intermediate_idx)
+            .set { ch_prepare_phasing_samples }
+
     
     emit:
-        split_samples_idx = ch_split_samples_idx
+        prepare_phasing_samples = ch_prepare_phasing_samples
 
  }

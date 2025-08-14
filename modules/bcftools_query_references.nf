@@ -25,7 +25,7 @@
         tuple val(meta), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(meta), path(refPath), path(refIdx), path(mapPath), stdout
+        tuple stdout, val(meta), path(refPath), path(refIdx), path(mapPath)
 
     script:
         """

@@ -64,10 +64,10 @@ workflow Validate_Chromosomes {
             intermediate_idx
         )
         query_intermediate.out
-            .flatMap { meta, referencePath, referenceIndex, chrom_string ->
+            .flatMap { chrom_string, meta, referencePath, referenceIndex, mapPath ->
                 def chrom_list = chrom_string.trim().split('\n')
                 def chromosomes = chrom_list.collect { chr ->
-                    [ meta, referencePath, referenceIndex, chr ]
+                    [ chr, meta, referencePath, referenceIndex, mapPath ]
                 }
 
                 return chromosomes
@@ -79,10 +79,10 @@ workflow Validate_Chromosomes {
             twostep_idx
         )
         query_twostep.out
-            .flatMap { meta, referencePath, referenceIndex, chrom_string ->
+            .flatMap { chrom_string, meta, referencePath, referenceIndex, mapPath ->
                 def chrom_list = chrom_string.trim().split('\n')
                 def chromosomes = chrom_list.collect { chr ->
-                    [ meta, referencePath, referenceIndex, chr ]
+                    [ chr, meta, referencePath, referenceIndex, mapPath ]
                 }
 
                 return chromosomes
