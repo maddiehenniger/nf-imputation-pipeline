@@ -1,4 +1,5 @@
-include { bcftools_view_samples } from "../modules/bcftools_view_samples.nf"
+include { bcftools_view_samples        } from "../modules/bcftools_view_samples.nf"
+include { bcftools_index_split_samples } from "../modules/bcftools_index_split_samples.nf"
 // include { bcftools_index } from "../modules/convert_xcf.nf"
 
 /**
@@ -19,13 +20,15 @@ include { bcftools_view_samples } from "../modules/bcftools_view_samples.nf"
             samples_by_chr
         )
 
-        split_samples_by_chr = bcftools_view_samples.out.samplesByChr
+        ch_split_samples_by_chr = bcftools_view_samples.out.samplesByChr
 
-        // bcftools_index_samples(
-        //     ch_samples_by_chr
-        // )
+        bcftools_index_split_samples(
+            ch_split_samples_by_chr
+        )
+
+        ch_split_samples_idx = bcftools_index_split_samples.out.indexedSplitPair
     
     emit:
-        split_samples_by_chr = bcftools_view_samples.out.samplesByChr
+        split_samples_idx = ch_split_samples_idx
 
  }
