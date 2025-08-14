@@ -11,7 +11,7 @@
           "type": "string",
           "pattern": "^\\S+$",
           "errorMessage": "A user-provided reference ID must be provided and cannot contain spaces.",
-          "meta": "id"
+          "meta": "refID"
         },
         "referencePath": {
           "type": "string",

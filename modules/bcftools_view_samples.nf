@@ -25,15 +25,14 @@ process bcftools_view_samples {
         tuple val(meta), path(samplePath), path(sampleIdx), val(chromosomes)
 
     output:
-        tuple val(chromosomes), val(meta), path("${meta.id}_${chromosomes}.bcf"), emit: samplesByChr
+        tuple val(chromosomes), val(meta), path("${meta.sampleID}_${chromosomes}.bcf"), emit: samplesByChr
 
     script:
         """
-        echo "Now separating ${meta.id} for ${chromosomes}!"
         bcftools view \\
         -r ${chromosomes} \\
         -Ob \\
-        -o ${meta.id}_${chromosomes}.bcf \\
+        -o ${meta.sampleID}_${chromosomes}.bcf \\
         ${samplePath}
         """
  }

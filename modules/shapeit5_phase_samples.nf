@@ -23,11 +23,10 @@
     )
 
     input:
-        tuple val(meta), val(chr), path(samplePath), path(sampleIdx)
-        tuple val(metadata), path(refPath), path(refIdx), path(mapPath)
+        tuple val(chr), val(meta), path(samplePath), path(sampleIdx), val(metadata), path(referencePath), path(referenceIdx), path(mapPath)
 
     output:
-        tuple val(meta), val(chr), path("${meta.id}_${chr}_phased.bcf"), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
+        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), val(metadata), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
 
     script:
 
@@ -37,7 +36,7 @@
                 --input ${samplePath} \\
                 --reference ${refPath} \\
                 --region ${chr} \\
-                --output ${meta.id}_${chr}_phased.bcf \\
+                --output ${meta.sampleID}_${chr}_phased.bcf \\
                 --map ${mapPath}
             """ 
         } else if(metadata.geneticMaps == 'none') {
@@ -46,7 +45,7 @@
                 --input ${samplePath} \\
                 --reference ${refPath} \\
                 --region ${chr} \\
-                --output ${meta.id}_${chr}_phased.bcf
+                --output ${meta.sampleID}_${chr}_phased.bcf
             """
         }
  }
