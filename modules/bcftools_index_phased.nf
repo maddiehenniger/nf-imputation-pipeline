@@ -17,20 +17,20 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.phased_samples/$sample_id",
+        path:    "${params.publishDirData}/.phased_samples/",
         mode:    "${params.publishMode}",
         pattern: '*.{bcf,bcf.csi}'
     )
 
     input:
-        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), val(metadata), path(refPath), path(refIdx), path(mapPath)
+        tuple val(chr), val(meta), path(phasedSample), val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), path("*.csi"), val(metadata), path(refPath), path(refIdx), path(mapPath), emit: indexedPhasedPair
+        tuple val(chr), val(meta), path(phasedSample), path("*.csi"), val(metadata), path(refPath), path(refIdx), path(mapPath), emit: indexedPhasedPair
 
     script:
         """
         bcftools index \
-            ${bcf.name}
+            ${phasedSample}
         """
  }

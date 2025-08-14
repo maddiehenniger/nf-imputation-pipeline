@@ -33,55 +33,32 @@ The pipeline will automatically detect where your sample(s), reference(s), and o
 
 #### Sample and Reference Files and Metadata
 
-The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers. The test samples are assumed to be unphased and there is currently no option to skip phasing.
-
-The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance.
+The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples currently must have the AC/AN tags filled before supplying to the pipeline. The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers. The test samples are assumed to be unphased and there is currently no option to skip phasing. There should be one file per sample - specifically, each sample should not be split by chromosome.
 
 The sample metadata should be a comma-delimited file (.CSV) containing two columns: sampleName, samplePath
-- sampleName: A string with no spaces containing the user-defined name of the sample with no file extensions (ex: sample_1)
-- samplePath: A string in the form of a file path to where the associated sample is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz)
+- sampleName: [required] A string with no spaces containing the user-defined name of the sample with no file extensions (ex: sample_1)
+- samplePath: [required] A string in the form of a file path to where the associated sample is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz)
+
+The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. The reference panels must be provided on a by-chromosome basis. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance.
 
 The reference metadata should be a comma-delimited file (.CSV) containing three columns: referenceName, referencePath, imputationStep
-- referenceName: A string with no spaces contianing the user-defined name of the reference panel with no file extensions (ex: HD_panel)
-- referencePath: A string in the form of a file path to where the associated reference panel is located in your directory; this should end with the file extension (ex: /path/to/reference/HD_panel.bcf)
-- referenceIndexPath (OPTIONAL, RECOMMENDED): A string in the form of a file path to where the associated reference panel index file are located in your directory; this should end with the file extension (ex: /path/to/reference/HD_panel.bcf.csi)
-- imputationStep: A string containing one of the following: one or two; one corresponds to the intermediate imputation step, and two corresponds to sequence-level imputation
+- referenceName: [required] A string with no spaces contianing the user-defined name of the reference panel with no file extensions (ex: HD_panel)
+- referencePath: [required] A string in the form of a file path to where the associated reference panel is located in your directory; this should end with the file extension BCF/VCF(.gz) (ex: /path/to/reference/HD_panel.bcf)
+- chromosome: [required] An integer in the form of a numerical value to the associated chromosome for the reference panel; at this time, sex chromosome values are not accepted
+- imputationStep: [required] A string containing one of the following: one or two; one corresponds to the intermediate imputation step, and two corresponds to sequence-level imputation
+- geneticMapPath: [optional] A string in the form of a file path to where the associated genetic maps for the specific chromosome are located, ending with the file extension gmap; if the genetic map is not provided, then the default 1 cM/Mb recombination rate is used for downstream phasing and imputation 
 
-Please note that the `referenceIndexPath` must be in the same directory as the supplied reference file, and in the current version, only supports `.csi` index file format. If no indexed files have been generated for a reference panel, you may leave this column blank. Be aware that if the reference(s) do not exist under `${PROJECTDIR}/data/references`, they will be hard copied to the project directory where the Nextflow script is ran. If the reference panel(s) already exist in this directory, and simply need to be indexed, the copying step will be skipped and only indexing will be performed. Hard copying of reference files can reduce available storage within the project directory and increase processing time depending on reference size.
-
-Please note the `imputationStep` column is required regardless of whether you are performing two-step imputation or not (in this case, the user will just put 'one'). Please also note that at this time, there cannot be more than two reference datasets (i.e., only one for imputationStep value one, only one for imputationStep value two), even if you intend to test different intermediate or sequence-level imputation reference panels. Hopefully, this will be a feature in future implementations to allow for more savvy testing of multiple reference panels, but is not a priority feature.
-
-#### Optional: Pedigree File
-
-Please note: This is currently undergoing construction is not an available feature.
-
-If you already know you'd like to phase your test samples to a pedigree file, you must also supply an additional input file. You must provide the pedigree file in a tab-delimited format containing one line per sample having parent(s) in the data and three columns (kidID fatherID and motherID). Use NAs for unknown parents (in the case of duos).
-
-You must also modify the configuration file to specify that phasing must occur to the pedigree file and the location of the pedigree file. The test sample population must be larger than 25 individuals for pedigree-based phasing, which is a restriction implemented by the phasing tool and not pipeline developers.
-
-#### Currently Required: Recombination Maps
-
-Please note: This is a priority feature undergoing construction. Currently, the pipeline requires recombination maps to be supplied.
-
-!TODO: If recombination maps aren't supplied in the config file, extract the chromosome number from the validation step instead!
-
-The phasing and imputation steps within the current pipeline also optionally allow for the user to supply recombination maps. If recombination maps are not supplied, the phasing and imputation tools automatically assume a constant recombination rate of 1 cM/Mb by default. The current pipeline supplies no maintained recombination maps for any species, and therefore it is up to the user to determine up-to-date and accurate recombination maps for usage. The recombination map input sheet must be a comma-delimited (CSV) file containing two columns:
-
-- chromosomeNum: An integer (i.e., 1, 2, 3...)
-- recombinationFilePath: A path to the recombination map
-
-The recombination maps themselves, as described above, are a text file that should consist of 3 columns: pos / chr / cM:
+The user may choose to optionally supply genetic maps containing recombination rates on a per-chromosome basis. The genetic maps are a tab-delimited file ending in `.gmap` that consists of 3 columns: pos / chr / cM:
 - pos: The position in bases on the chromosome (must be in bases, not in mb, kb, etc.)
 - chr: The chromosome number
 - cM: Measure in centimorgans (cM) of how often recombination happens 
-
-They may optionally end in .gz. The name scheme of these files should remain consistent for pipeline configuration and be pre-supplied in the configuration file. As the downstream phasing and imputation steps require functions to be run by region (by chromosome, essentially), there must be one recombination map per chromosome of interest.  
+If the genetic maps provided are not in this format, the tools will be unable to conduct phasing and imputation using the genetic maps and will return error messages.
 
 ### The Configuration File
 
-The `nextflow.config` file is where the workflow configurations are located. This file is automatically detected by Nextflow, provided it is located within the launch directory. The user must modify the configuration file with project-specific details for Nextflow to detect where test samples, reference panels, and associated files are located. The configuration file is built for the intention of running on a SLURM-based system. 
+The `nextflow.config` file is where the workflow configurations are located. The configuration file is automatically detected by Nextflow, provided it is located within the project launch directory. The user must modify the configuration file to provide a project title, test sample metadata, and reference panel metadata. The configuration file is built for the intention of running on a SLURM-based system. 
 
-Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, `samplesheet`, and `referencesheet` at a minimum. These inputs allows the pipeline to classify the pipeline by project; locate input samples; and locate references and which imputation step they will be used for, if applicable. 
+Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, path to the `samplesheet`, and path to the `references` at a minimum. These inputs allows the pipeline to classify the pipeline by project, locate input test samples, and locate reference panels and which imputation step they will be used for.
 
 ### Modifying Function Parameters (Under Construction)
 
