@@ -45,12 +45,11 @@ workflow {
     //      If a genetic map is not provided, SHAPEIT5 uses a default 1 cm/Mb recombination rate 
     // 2) Indexes the phased test sample(s) per chromosome
 
-    //PHASE_SAMPLES(
-    //    ch_samples,                 // channel: [ [id], samplePath, sampleIndex ]
-    //    ch_intermediate_reference   // channel: [ [id, chromosome, imputationStep, geneticMaps], referencePath, referenceIndex, geneticMapPath ]
-    //)
-    //ch_phased_samples = PHASE_SAMPLES.out.phased_samples
-    //    .view()
+    PHASE_SAMPLES(
+       ch_prepare_phasing_samples
+    )
+    ch_phased_samples = PHASE_SAMPLES.out.phased_samples
+       .view()
 
     // INTERMEDIATE_IMPUTATION(
     //     ch_one_reference,

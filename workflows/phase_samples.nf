@@ -8,13 +8,11 @@ include { Phase_And_Index_Samples } from '../subworkflows/phase_and_index_sample
 
 workflow PHASE_SAMPLES {
     take:
-        samples
-        reference_intermediate
+        prepare_phasing_samples
     
     main:
         Phase_And_Index_Samples(
-            samples,
-            reference_intermediate
+            prepare_phasing_samples
         )
 
     emit:
