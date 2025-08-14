@@ -48,7 +48,7 @@ workflow {
     PHASE_SAMPLES(
        ch_prepare_phasing_samples
     )
-    ch_phased_samples = PHASE_SAMPLES.out.phased_samples
+    ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
        .view()
 
     // INTERMEDIATE_IMPUTATION(

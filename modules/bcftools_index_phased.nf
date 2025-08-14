@@ -23,10 +23,10 @@
     )
 
     input:
-        tuple val(meta), path(bcf), val(chromosomeNum), path(recombinationMapFile)
+        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(sample_id), path(bcf), path("*.bcf.csi"), val(chromosomeNum), path(recombinationMapFile), emit: indexedPhasedPair
+        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), path("*.csi"), val(metadata), path(refPath), path(refIdx), path(mapPath), emit: indexedPhasedPair
 
     script:
         """

@@ -4,9 +4,8 @@
  * Generates phased samples.
  * @see https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/
  * 
- * @input A map containing the test sample metadata, chromosome, path to the by-chromosome sample file, and path to the by-chromosome indexed sample file
- *        A map of the reference panel metadata for the first round of imputation, path to 'one' reference, path to the 'one' indexed reference, and path to the optionally provided genetic map.
- * @emit phasedSamples - TBD lol 
+ * @input A map containing the split-sample chromosome, test sample metadata, path to the by-chromosome sample file, path to the by-chromosome indexed sample file, the reference panel metadata for the first round of imputation, path to 'one' reference, path to the 'one' indexed reference, and path to the optionally provided genetic map.
+ * @emit phasedSamples - A map containing the chromosome, test sample metadata, path to the by-chromosome phased test samples, the reference panel metadata for the first round of imputation, path to the 'one' reference, path to the 'one' indexed reference, and path to the optionally provided genetic map. 
  */
 
  process shapeit5_phase_samples {

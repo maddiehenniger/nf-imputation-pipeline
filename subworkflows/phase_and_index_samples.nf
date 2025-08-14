@@ -17,11 +17,11 @@ workflow Phase_And_Index_Samples {
         )
         ch_phased_samples = shapeit5_phase_samples.out.phasedSamples
 
-        // bcftools_index_phased(
-        //     ch_phased_samples
-        // )
+        bcftools_index_phased(
+            ch_phased_samples
+        )
 
     emit:
         phased_samples      = ch_phased_samples
-        // indexed_phased_pair = bcftools_index.out.indexedPair
+        indexed_phased_pair = bcftools_index.out.indexedPhasedPair
 }
