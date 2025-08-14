@@ -8,7 +8,7 @@
  * @emit indexedSplitPair - A map containing the sample metadata, chromosome value, path to the by-chromosome BCF/VCF(.gz) file, and associated index (.csi) file.
  **/
 
-process bcftools_index_samples {
+process bcftools_index_split_samples {
 
     label 'bcftools'
 
@@ -23,10 +23,10 @@ process bcftools_index_samples {
     )
 
     input: 
-        tuple val(meta), val(chr), path(sample)   
+        tuple val(chr), val(meta), path(sample)   
 
     output:
-        tuple val(meta), val(chr), path(sample), path("*.csi"), emit: indexedSplitPair
+        tuple val(chr), val(meta), path(sample), path("*.csi"), emit: indexedSplitPair
 
     script: 
         """

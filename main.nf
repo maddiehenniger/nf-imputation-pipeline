@@ -26,7 +26,7 @@ workflow {
     // 1A) Separates the reference panels based on the user-defined imputationStep ('one' for the first round of imputation, 'two' for second round of imputation)
     // 1B) Detects if the user has provided a path to the genetic maps for downstream use 
     // 2) Indexes the input sample(s), intermediate reference, and twostep reference
-    // 3) Extracts the unique chromosome values from each sample and reference and stores for downstream phasing/imputation
+    // 3) Extracts the unique chromosome values from each sample and reference panel, storing the chromosome values for downstream phasing/imputation
     // 4) Separates the input test sample by chromosome and then indexes the split files
 
     PREPARE_INPUTS(
@@ -34,8 +34,10 @@ workflow {
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    // ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
-    // ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
+    ch_intermediate_reference = PREPARE_INPUTS.out.intermediate_idx
+        .view()
+    ch_twostep_reference      = PREPARE_INPUTS.out.twostep_idx
+        .view()
     ch_samples                = PREPARE_INPUTS.out.split_samples_idx
         .view()
 

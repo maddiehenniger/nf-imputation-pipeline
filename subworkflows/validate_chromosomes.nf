@@ -60,36 +60,39 @@ workflow Validate_Chromosomes {
 
         // Identify the chromosomes present in the reference(s) using bcftools query
         // Query the intermediate reference panel
-        // query_intermediate(
-        //     reference_intermediate
-        // )
-        // intermediate_chr = query_intermediate.out.chromosomes
-        //     .map {
-        //         it.readLines()
-        //     }
+        query_intermediate(
+            intermediate_idx
+        )
+        query_intermediate.out
+            .flatMap { meta, referencePath, referenceIndex, chrom_string ->
+                def chrom_list = chrom_string.trim().split('\n')
+                def chromosomes = chrom_list.collect { chr ->
+                    [ meta, referencePath, referenceIndex, chr ]
+                }
+
+                return chromosomes
+            }
+            .set { ch_intermediate_by_chr }
 
         // Query the twostep reference panel
-        // query_twostep(
-        //     reference_twostep
-        // )
-        // twostep_chr = query_twostep.out.chromosomes
-        //     .map {
-        //         it.readLines()
-        //     }
+        query_twostep(
+            twostep_idx
+        )
+        query_twostep.out
+            .flatMap { meta, referencePath, referenceIndex, chrom_string ->
+                def chrom_list = chrom_string.trim().split('\n')
+                def chromosomes = chrom_list.collect { chr ->
+                    [ meta, referencePath, referenceIndex, chr ]
+                }
 
-        // Join the intermediate and twostep chromosomes
-        // references_chr = intermediate_chr
-        //     .join(twostep_chr)
-        //     .unique()
-
-        // Create a channel that consists of only the number of chromosomes to be used downstream
-        // ch_chromosomes = samples_chr
-        //     .join(references_chr)
-        //     .unique()
+                return chromosomes
+            }
+            .set { ch_twostep_by_chr }
 
     emit:
-        // chromosomes    = ch_chromosomes
-        samples_by_chr = ch_samples_by_chr
+        samples_by_chr      = ch_samples_by_chr
+        intermediate_by_chr = ch_intermediate_by_chr
+        twostep_by_chr      = ch_twostep_by_chr
 }
 
 // //

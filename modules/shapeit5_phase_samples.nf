@@ -4,8 +4,8 @@
  * Generates phased samples.
  * @see https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/
  * 
- * @input A map of test sample metadata, path to sample, and path to the indexed sample
- *        A map of the reference panel metadata, path to reference, path to the indexed reference, and path to the optionally provided genetic map.
+ * @input A map containing the test sample metadata, chromosome, path to the by-chromosome sample file, and path to the by-chromosome indexed sample file
+ *        A map of the reference panel metadata for the first round of imputation, path to 'one' reference, path to the 'one' indexed reference, and path to the optionally provided genetic map.
  * @emit phasedSamples - TBD lol 
  */
 
@@ -23,11 +23,11 @@
     )
 
     input:
-        tuple val(meta), path(samplePath), path(sampleIdx)
+        tuple val(meta), val(chr), path(samplePath), path(sampleIdx)
         tuple val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(meta), val(metadata.chromosome), path("${meta.id}_${metadata.chromosome}_phased.bcf"), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
+        tuple val(meta), val(chr), path("${meta.id}_${chr}_phased.bcf"), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
 
     script:
 
@@ -36,8 +36,8 @@
             SHAPEIT5_phase_common \\
                 --input ${samplePath} \\
                 --reference ${refPath} \\
-                --region ${metadata.chromosome} \\
-                --output ${meta.id}_${metadata.chromosome}_phased.bcf \\
+                --region ${chr} \\
+                --output ${meta.id}_${chr}_phased.bcf \\
                 --map ${mapPath}
             """ 
         } else if(metadata.geneticMaps == 'none') {
@@ -45,8 +45,8 @@
             SHAPEIT5_phase_common \\
                 --input ${samplePath} \\
                 --reference ${refPath} \\
-                --region ${metadata.chromosome} \\
-                --output ${meta.id}_${metadata.chromosome}_phased.bcf
+                --region ${chr} \\
+                --output ${meta.id}_${chr}_phased.bcf
             """
         }
  }

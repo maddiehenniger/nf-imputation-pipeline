@@ -25,7 +25,7 @@ process bcftools_view_samples {
         tuple val(meta), path(samplePath), path(sampleIdx), val(chromosomes)
 
     output:
-        tuple val(meta), val(chromosomes), path("${meta.id}_${chromosomes}.bcf"), emit: samplesByChr
+        tuple val(chromosomes), val(meta), path("${meta.id}_${chromosomes}.bcf"), emit: samplesByChr
 
     script:
         """

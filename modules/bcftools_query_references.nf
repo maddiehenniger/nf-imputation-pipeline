@@ -22,14 +22,14 @@
     )
 
     input:
-        tuple val(meta), path(refPath), path(mapPath)
+        tuple val(meta), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        path "${meta.id}_chromosomes.txt", emit: chromosomes
+        tuple val(meta), path(refPath), path(refIdx), path(mapPath), stdout
 
     script:
         """
         bcftools query \\
-            -f '%CHROM' ${refPath} | sort -u -n >> ${meta.id}_chromosomes.txt
+            -f '%CHROM' ${refPath} | sort -u -n
         """
  }

@@ -20,7 +20,6 @@ include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
         )
 
         ch_samples                 = Parse_Input_Sheets.out.samples
-        // references              = Parse_Input_Sheets.out.references
         ch_reference_intermediate  = Parse_Input_Sheets.out.reference_intermediate
         ch_reference_twostep       = Parse_Input_Sheets.out.reference_twostep
 
@@ -30,8 +29,6 @@ include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
             ch_reference_twostep
         )
 
-        // ch_samples_idx              = Validate_Chromosomes.out.samples_idx
-        // ch_chromosomes              = Validate_Chromosomes.out.chromosomes
         ch_samples_by_chr           = Validate_Chromosomes.out.samples_by_chr
 
         Prepare_Phasing(
@@ -45,8 +42,7 @@ include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
         references               = Parse_Input_Sheets.out.references
         reference_intermediate   = Parse_Input_Sheets.out.reference_intermediate
         reference_twostep        = Parse_Input_Sheets.out.reference_twostep
-        // samples_idx              = Validate_Chromosomes.out.samples_idx
-        // intermediate_idx         = Validate_Chromosomes.out.intermediate_idx
-        // twostep_idx              = Validate_Chromosomes.out.twostep_idx
-        split_samples_idx            = ch_split_samples_idx
+        intermediate_idx         = Validate_Chromosomes.out.intermediate_by_chr
+        twostep_idx              = Validate_Chromosomes.out.twostep_by_chr
+        split_samples_idx        = ch_split_samples_idx
 }
