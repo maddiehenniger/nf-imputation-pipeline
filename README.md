@@ -23,21 +23,15 @@ In order to run the pipeline, you must have the following inputs:
 - Reference panel(s) for imputing
 - Sample and reference metadata for downstream processes
 
-Input samples that require imputation will be referred to as test samples throughout this documentation. The reference population that you are using to impute with will be referred to as the reference panel. You may optionally also include a pedigree file and must specify this in the configuration file. 
+Input samples that require imputation will be referred to as test samples throughout this documentation. The reference population that you are using to impute with will be referred to as the reference panel. You may optionally provide genetic maps for recombination rates used for phasing and imputation steps.
 
 ### Required Input Files
 
-The following are the user-required files for the pipeline to work. Please note the required input file extensions, expected file format, and pipeline assumptions for each file type. IMPORTANT: The input files for this are assumed to be in VCF/BCF(.gz) format and have already been filtered for the analysis-appropriate quality, allele frequencies, missingness, etc. The user must be aware of how including low-quality base calls in the dataset may impact downstream imputation accuracies. 
+The following are the user-required files for the pipeline to work. Please note the required input file extensions, expected file format, and pipeline assumptions for each file type. IMPORTANT: The input files for this are assumed to be in BCF/VCF(.gz) format and have already been filtered for the analysis-appropriate quality, allele frequencies, missingness, etc. The user must be aware of how including low-quality base calls in the dataset may impact downstream imputation accuracies. 
 
-Note: The below paragraph is currently not implemented in this version of the pipeline and only supports hard copying. Future implementations of the pipeline will provide the below features.
-
-The pipeline will automatically detect where your sample(s), reference(s), and optionally, your pre-indexed file(s) are located. IMPORTANT: (Feature) If you do not have your samples and references pre-indexed and in the same directory defined in your samplesheet, the pipeline will check if the files exist in `${PROJECTDIR}/data/samples/` and `${PROJECTDIR}/data/references/` directories and perform indexing - if they do not exist in the defined directories, the pipeline is set to hard copy these files to these directories to perform downstream analysis, which can impact your processing time and available storage. Therefore, to avoid unneccessary duplication of files, we recommend either preemptively creating these directories and populating them with the correct files, and, optionally, pre-indexing your files. 
-
-In the downstream analysis, the user will be allowed the ability to specify the `--map` parameter for phasing, and the `--m` parameter for imputation steps. These parameters are specifically for genetic maps, which specify recombination rates. Specifically, the user should pre-prepare genetic maps for each chromosome of interest that is present between their test samples and reference panels. These genetic maps are a text file that should consist of 3 columns: pos / chr / cM. They may optionally end in .gz. The name scheme of these files should remain consistent for pipeline configuration and be pre-supplied in the configuration file.
+The pipeline will automatically detect where your sample(s), reference(s), and optionally, your genetic map(s) are located using your user-provided metadata sheets that are specified in your `nextflow.config` file. For details on how to populate these, please see below sections.
 
 #### Sample and Reference Files and Metadata
-
-! Undergoing Construction: For the current implementation of the pipeline, you MUST supply the path to the reference database AND the indexed file for testing. Making the indexing optional is a future priority implementation !
 
 The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers. The test samples are assumed to be unphased and there is currently no option to skip phasing.
 
@@ -46,9 +40,6 @@ The reference panel(s) must be in a BCF/VCF file format and can optionally be gz
 The sample metadata should be a comma-delimited file (.CSV) containing two columns: sampleName, samplePath
 - sampleName: A string with no spaces containing the user-defined name of the sample with no file extensions (ex: sample_1)
 - samplePath: A string in the form of a file path to where the associated sample is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz)
-- sampleIndexPath (OPTIONAL, RECOMMENDED): A string in the form of a file path to where the associated sample index is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz.csi)
-
-Please note that the `sampleIndexPath` must be in the same directory as the supplied sample file, and in the current version, only supports `.csi` index file format. If no indexed files have been generated for a sample, you may leave this column blank. Be aware that if the test samples do not exist under `${PROJECTDIR}/data/samples`, they will be hard copied to the project directory where the Nextflow script is ran. If the samples already exist in this directory, and simply need to be indexed, the copying step will be skipped and only indexing will be performed. Hard copying of sample files can reduce available storage within the project directory and increase processing time depending on sample size.
 
 The reference metadata should be a comma-delimited file (.CSV) containing three columns: referenceName, referencePath, imputationStep
 - referenceName: A string with no spaces contianing the user-defined name of the reference panel with no file extensions (ex: HD_panel)

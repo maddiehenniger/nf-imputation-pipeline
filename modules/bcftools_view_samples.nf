@@ -22,14 +22,14 @@ process bcftools_view_samples {
     )
 
     input:
-        tuple val(meta), path(samplePath)
-        each chromosomes
+        tuple val(meta), path(samplePath), path(sampleIdx), val(chromosomes)
 
     output:
         tuple val(meta), val(chromosomes), path("${meta.id}_${chromosomes}.bcf"), emit: samplesByChr
 
     script:
         """
+        echo "Now separating ${meta.id} for ${chromosomes}!"
         bcftools view \\
         -r ${chromosomes} \\
         -Ob \\

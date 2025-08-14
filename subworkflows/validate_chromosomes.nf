@@ -1,6 +1,6 @@
-// include { bcftools_index_samples                          } from '../modules/bcftools_index_samples.nf'
-// include { bcftools_index_references as index_intermediate } from '../modules/bcftools_index_references.nf'
-// include { bcftools_index_references as index_twostep      } from '../modules/bcftools_index_references.nf'
+include { bcftools_index_samples                          } from '../modules/bcftools_index_samples.nf'
+include { bcftools_index_references as index_intermediate } from '../modules/bcftools_index_references.nf'
+include { bcftools_index_references as index_twostep      } from '../modules/bcftools_index_references.nf'
 include { bcftools_query_samples                          } from '../modules/bcftools_query_samples.nf'
 include { bcftools_query_references as query_intermediate } from '../modules/bcftools_query_references.nf'
 include { bcftools_query_references as query_twostep      } from '../modules/bcftools_query_references.nf'
@@ -22,49 +22,74 @@ workflow Validate_Chromosomes {
         reference_twostep
     
     main:        
+        // Index the input samples using bcftools index
+        bcftools_index_samples(
+            samples
+        )
+
+        // Index the references using bcftools index
+        // ...the intermediate reference...
+        index_intermediate(
+            reference_intermediate
+        )
+        // ..the twostep reference...
+        index_twostep(
+            reference_twostep
+        )
+        // The outputs from indexing to be used to query chromosomes present in each file
+        samples_idx      = bcftools_index_samples.out.indexedPair
+        intermediate_idx = index_intermediate.out.indexedPair
+        twostep_idx      = index_twostep.out.indexedPair
 
         // Identify the chromosomes present in the input samples using bcftools query
         bcftools_query_samples(
-            samples
+            samples_idx
         ) 
 
         // The output of the chromosomes present in the input sample(s)
-        samples_chr = bcftools_query_samples.out.chromosomes
-            .map {
-                it.readLines() // Prints the numbers present in the file
+        bcftools_query_samples.out
+            .flatMap { meta, samplePath, sampleIdx, chrom_string ->
+                def chrom_list = chrom_string.trim().split('\n')
+                def chromosomes = chrom_list.collect { chr ->
+                    [ meta, samplePath, sampleIdx, chr ]
+                }
+
+                return chromosomes
             }
+            .set { ch_samples_by_chr }
 
         // Identify the chromosomes present in the reference(s) using bcftools query
         // Query the intermediate reference panel
-        query_intermediate(
-            reference_intermediate
-        )
-        intermediate_chr = query_intermediate.out.chromosomes
-            .map {
-                it.readLines()
-            }
+        // query_intermediate(
+        //     reference_intermediate
+        // )
+        // intermediate_chr = query_intermediate.out.chromosomes
+        //     .map {
+        //         it.readLines()
+        //     }
 
         // Query the twostep reference panel
-        query_twostep(
-            reference_twostep
-        )
-        twostep_chr = query_twostep.out.chromosomes
-            .map {
-                it.readLines()
-            }
+        // query_twostep(
+        //     reference_twostep
+        // )
+        // twostep_chr = query_twostep.out.chromosomes
+        //     .map {
+        //         it.readLines()
+        //     }
 
         // Join the intermediate and twostep chromosomes
-        references_chr = intermediate_chr
-            .join(twostep_chr)
-            .unique()
+        // references_chr = intermediate_chr
+        //     .join(twostep_chr)
+        //     .unique()
 
         // Create a channel that consists of only the number of chromosomes to be used downstream
-        ch_chromosomes = samples_chr
-            .join(references_chr)
-            .unique()
+        // ch_chromosomes = samples_chr
+        //     .join(references_chr)
+        //     .unique()
 
     emit:
-        chromosomes      = ch_chromosomes
+        // chromosomes    = ch_chromosomes
+        samples_by_chr = ch_samples_by_chr
 }
 
 // //

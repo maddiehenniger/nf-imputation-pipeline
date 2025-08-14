@@ -12,22 +12,20 @@ include { bcftools_view_samples } from "../modules/bcftools_view_samples.nf"
 
  workflow Prepare_Phasing {
     take:
-        samples
-        chromosomes
+        samples_by_chr
     
     main:
         bcftools_view_samples(
-            samples,
-            chromosomes
+            samples_by_chr
         )
 
-        ch_samples_by_chr = bcftools_view_samples.out.samplesByChr
+        split_samples_by_chr = bcftools_view_samples.out.samplesByChr
 
         // bcftools_index_samples(
         //     ch_samples_by_chr
         // )
     
     emit:
-        ch_samples_by_chr = bcftools_view_samples.out.samplesByChr
+        split_samples_by_chr = bcftools_view_samples.out.samplesByChr
 
  }
