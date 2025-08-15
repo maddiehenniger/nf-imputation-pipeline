@@ -35,8 +35,6 @@ workflow {
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    ch_intermediate_reference  = PREPARE_INPUTS.out.intermediate_idx
-    ch_twostep_reference       = PREPARE_INPUTS.out.twostep_idx
     ch_prepare_phasing_samples = PREPARE_INPUTS.out.prepare_phasing_samples
 
     // PHASE_SAMPLES performs the following:
@@ -54,7 +52,7 @@ workflow {
         ch_phased_samples
     )
 
-    ch_intermediate_imputation = INTERMEDIATE_IMPUTATION.out.ligatedSamples
+    ch_intermediate_imputation = INTERMEDIATE_IMPUTATION.out.ligated_intermediate_samples
         .view()
 
     // TWOSTEP_IMPUTATION(

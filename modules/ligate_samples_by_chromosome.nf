@@ -22,7 +22,7 @@
     )
 
     input:
-        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path(chunkedCoordinates), path(chunkedImputed), path (chunkedImputedIdx), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: imputedSamples
+        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path(chunkedCoordinates), path(chunkedImputed), path (chunkedImputedIdx), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath)
 
     output:
         tuple val(chr), val(meta), path(chunkedCoordinates), path("${meta.sampleID}_${metadata.step}_ligated_${chr}.bcf"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: ligateByChr

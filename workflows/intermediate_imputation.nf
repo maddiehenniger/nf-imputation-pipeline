@@ -10,17 +10,16 @@ workflow INTERMEDIATE_IMPUTATION {
             phased_samples
         )
 
-        intermediate_chunked_regions = Prepare_Imputation.out.intermediate_chunked_regions
+        intermediate_chunked_regions = Prepare_Imputation.out.chunked_regions
         
         Intermediate_Imputation(
             intermediate_chunked_regions
         )
 
-        ch_imputed_intermediate_samples        = impute5_impute_samples.out.imputedSamples
-        ch_intermediate_by_chromosomes         = bcftools_concat_by_chromosome.out.ligateByChr
-        ch_intermediate_by_samples             = bcftools_concat_by_sample.out.ligateSample
+        ch_imputed_intermediate_samples        = Intermediate_Imputation.out.imputed_intermediate_samples
+        ch_intermediate_by_samples             = Intermediate_Imputation.out.intermediate_by_sample
 
     emit:
-        imputedSamples = ch_imputed_intermediate_samples
-        ligatedSamples = ch_intermediate_by_samples
+        imputed_intermediate_samples = ch_imputed_intermediate_samples
+        ligated_intermediate_samples = ch_intermediate_by_samples
 }
