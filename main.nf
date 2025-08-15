@@ -28,6 +28,7 @@ workflow {
     // 2) Indexes the input sample(s), intermediate reference, and twostep reference
     // 3) Extracts the unique chromosome values from each sample and reference panel, storing the chromosome values for downstream phasing/imputation
     // 4) Separates the input test sample by chromosome and then indexes the split files
+    // 5) Converts the references to XCF file format for downstream phasing and imputation 
 
     PREPARE_INPUTS(
         file(params.samplesheet),       // required: User-provided path to sample metadata identified in the nextflow.config file 
@@ -37,7 +38,6 @@ workflow {
     ch_intermediate_reference  = PREPARE_INPUTS.out.intermediate_idx
     ch_twostep_reference       = PREPARE_INPUTS.out.twostep_idx
     ch_prepare_phasing_samples = PREPARE_INPUTS.out.prepare_phasing_samples
-        .view()
 
     // PHASE_SAMPLES performs the following:
     // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
@@ -50,9 +50,9 @@ workflow {
     )
     ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
 
-    INTERMEDIATE_IMPUTATION(
-        ch_phased_samples
-    )
+    // INTERMEDIATE_IMPUTATION(
+    //     ch_phased_samples
+    // )
     // ch_intermediate_ref_xcf         = INTERMEDIATE_IMPUTATION.out.intermediate_ref_xcf
     // ch_intermediate_chunked_regions = INTERMEDIATE_IMPUTATION.out.intermediate_chunked_regions
     // ch_imputed_intermediate         = INTERMEDIATE_IMPUTATION.out.imputed_intermediate

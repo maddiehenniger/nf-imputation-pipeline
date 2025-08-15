@@ -31,20 +31,17 @@ include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
 
         ch_samples_by_chr           = Validate_Chromosomes.out.samples_by_chr
         ch_intermediate_by_chr      = Validate_Chromosomes.out.intermediate_by_chr
+        ch_twostep_by_chr           = Validate_Chromosomes.out.twostep_by_chr
 
         Prepare_Phasing(
             ch_samples_by_chr,
-            ch_intermediate_by_chr
+            ch_intermediate_by_chr,
+            ch_twostep_by_chr
         )
 
         ch_prepare_phasing_samples     = Prepare_Phasing.out.prepare_phasing_samples
 
     emit:
-        samples                  = Parse_Input_Sheets.out.samples
-        references               = Parse_Input_Sheets.out.references
-        reference_intermediate   = Parse_Input_Sheets.out.reference_intermediate
-        reference_twostep        = Parse_Input_Sheets.out.reference_twostep
-        intermediate_idx         = Validate_Chromosomes.out.intermediate_by_chr
-        twostep_idx              = Validate_Chromosomes.out.twostep_by_chr
         prepare_phasing_samples  = ch_prepare_phasing_samples
+        twostep_ref_xcf          = Prepare_Phasing.out.twostep_ref_xcf
 }

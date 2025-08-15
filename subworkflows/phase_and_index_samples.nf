@@ -9,7 +9,7 @@ include { bcftools_index_phased  } from '../modules/bcftools_index_phased.nf'
 
 workflow Phase_And_Index_Samples {
     take:
-        prepare_phasing_samples // channel: [ chr, [sampleMetadata], path(samplePath), path(sampleIndex), [intReferenceMetadata], path(intReferencePath), path(intReferenceIndex), path(geneticMapPath) ]
+        prepare_phasing_samples // channel: [ chr, [ sampleID ], path(samplePath), path(sampleIndex), [ referenceID, chr, imputationStep, geneticMaps ], path(xcfReferencePath), path(xcfReferenceIndex), path(xcfReferenceBim), path(xcfReferenceFam), path(geneticMapPath) ]
     
     main:
         shapeit5_phase_samples(

@@ -23,10 +23,10 @@
     )
 
     input:
-        tuple val(chr), val(meta), path(phasedSample), val(metadata), path(refPath), path(refIdx), path(mapPath)
+        tuple val(chr), val(meta), path(phasedSample), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath)
 
     output:
-        tuple val(chr), val(meta), path(phasedSample), path("*.csi"), val(metadata), path(refPath), path(refIdx), path(mapPath), emit: indexedPhasedPair
+        tuple val(chr), val(meta), path(phasedSample), path("*.csi"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: indexedPhasedPair
 
     script:
         """

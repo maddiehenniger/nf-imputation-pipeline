@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(chr), val(meta), path(samplePath), path(sampleIdx), val(metadata), path(refPath), path(refIdx), path(mapPath)
+        tuple val(chr), val(meta), path(samplePath), path(sampleIdx), val(metadata), path(refPath), path(refIdx), path(refBin), path(refFam), path(mapPath)
 
     output:
-        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), val(metadata), path(refPath), path(refIdx), path(mapPath), emit: phasedSamples
+        tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), val(metadata), path(refPath), path(refIdx), path(refBin), path(refFam), path(mapPath), emit: phasedSamples
 
     script:
 
