@@ -3,26 +3,24 @@ include { Intermediate_Imputation } from "../subworkflows/intermediate_imputatio
 
 workflow INTERMEDIATE_IMPUTATION {
     take:
-        indexed_phased_pair
+        phased_samples
 
     main:
         Prepare_Imputation(
-            indexed_phased_pair
+            phased_samples
         )
 
         intermediate_chunked_regions = Prepare_Imputation.out.intermediate_chunked_regions
-        intermediate_ref_xcf         = Prepare_Imputation.out.intermediate_ref_xcf
         
-        // Intermediate_Imputation(
-        //     intermediate_chunked_regions,
-        //     intermediate_ref_xcf
-        // )
+        Intermediate_Imputation(
+            intermediate_chunked_regions
+        )
+
+        ch_imputed_intermediate_samples        = impute5_impute_samples.out.imputedSamples
+        ch_intermediate_by_chromosomes         = bcftools_concat_by_chromosome.out.ligateByChr
+        ch_intermediate_by_samples             = bcftools_concat_by_sample.out.ligateSample
 
     emit:
-        intermediate_chunked_regions = Prepare_Imputation.out.intermediate_chunked_regions
-        intermediate_ref_xcf         = Prepare_Imputation.out.intermediate_ref_xcf
-        // imputed_intermediate         = Intermediate_Imputation.out.imputed_intermediate_samples
-        // intermediate_by_chromosomes  = Intermediate_Imputation.out.intermediate_by_chromosomes
-        // intermediate_imputed_paired  = Intermediate_Imputation.out.intermediate_imputed_paired
-
+        imputedSamples = ch_imputed_intermediate_samples
+        ligatedSamples = ch_intermediate_by_samples
 }

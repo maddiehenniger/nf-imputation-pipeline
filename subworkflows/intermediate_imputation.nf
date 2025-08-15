@@ -12,35 +12,33 @@ include { bcftools_index_imputed        } from '../modules/bcftools_index_impute
 workflow Intermediate_Imputation {
     take:
         intermediate_chunked_regions
-        intermediate_ref_xcf
     
     main:
         impute5_impute_samples(
-            intermediate_chunked_regions,
-            intermediate_ref_xcf
+            intermediate_chunked_regions
         )
 
-        imputed_intermediate_samples = impute5_impute_samples.out.intermediateImputation
+        ch_imputed_intermediate_samples = impute5_impute_samples.out.imputedSamples
 
         bcftools_concat_by_chromosome(
-            imputed_intermediate_samples
+            ch_imputed_intermediate_samples
         )
 
-        intermediate_by_chr = bcftools_concat_by_chromosome.out.intermediateByChromosome
+        intermediate_by_chr = bcftools_concat_by_chromosome.out.ligateByChr
 
         bcftools_concat_by_sample(
             intermediate_by_chr
         )
 
-        intermediate_imputed_joined_samples = bcftools_concat_by_sample.out.intermediateJoinedImputation
+        intermediate_imputed_joined_samples = bcftools_concat_by_sample.out.ligateSample
 
-        bcftools_index_imputed(
-            intermediate_imputed_joined_samples
-        )
+        // bcftools_index_imputed(
+        //     intermediate_imputed_joined_samples
+        // )
 
     emit: 
         imputed_intermediate_samples        = impute5_impute_samples.out.intermediateImputation
         intermediate_by_chromosomes         = bcftools_concat_by_chromosome.out.intermediateByChromosome
         intermediate_imputed_joined_samples = bcftools_concat_by_sample.out.intermediateJoinedImputation
-        intermediate_imputed_paired         = bcftools_index_imputed.out.indexedIntermediatePaired
+        // intermediate_imputed_paired         = bcftools_index_imputed.out.indexedIntermediatePaired
 }

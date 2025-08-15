@@ -17,24 +17,24 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.intermediate_imputed_samples/",
+        path:    "${params.publishDirData}/.${metadata.step}_imputed_samples/",
         mode:    "${params.publishMode}"
     )
 
     input:
-        tuple val(sample_id), val(chromosomeNum), path(intImputedChunkedBcf), path(intImputedChunkedBcfIndex), path(recombinationMapFile)
+        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path(chunkedCoordinates), path(chunkedImputed), path (chunkedImputedIdx), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: imputedSamples
 
     output:
-        tuple val(sample_id), val(chromosomeNum), path("${sample_id}_intermediate_ligated_${chromosomeNum}.bcf"), path(recombinationMapFile), emit: intermediateByChromosome
+        tuple val(chr), val(meta), path(chunkedCoordinates), path("${meta.sampleID}_${metadata.step}_ligated_${chr}.bcf"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: ligateByChr
 
     script:
         """
-        ls -v ${sample_id}_intermediate_${chromosomeNum}*.bcf >> ${sample_id}_file_names_${chromosomeNum}.txt
+        ls -v ${meta.sampleID}_${metadata.step}_${chr}*.bcf >> ${meta.sampleID}_file_names_${chr}.txt
 
         bcftools concat \
         -n \
-        -f ${sample_id}_file_names_${chromosomeNum}.txt \
+        -f ${meta.sampleID}_file_names_${chr}.txt \
         -Ob \
-        -o ${sample_id}_intermediate_ligated_${chromosomeNum}.bcf
+        -o ${meta.sampleID}_${metadata.step}_ligated_${chr}.bcf
         """
  }

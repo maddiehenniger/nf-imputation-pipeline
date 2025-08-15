@@ -10,20 +10,34 @@ The Rowan lab `nf-imputation-pipeline` aims to impute genotypes from array or lo
 
 Please see "Modifying the Configuration File" for modifying defaults. 
 
-## Quickstart
-
-Under construction
-
-## Preparing to Run the nf-imputation-pipeline
+## Preparing to Run the `nf-imputation-pipeline`
 
 In order to run the pipeline, you must have the following inputs:
 
-- Nextflow downloaded and/or configured
+- Nextflow configured on your system (designed for SLURM-based schedulers)
 - Input sample(s) that require imputation
 - Reference panel(s) for imputing
 - Sample and reference metadata for downstream processes
 
 Input samples that require imputation will be referred to as test samples throughout this documentation. The reference population that you are using to impute with will be referred to as the reference panel. You may optionally provide genetic maps for recombination rates used for phasing and imputation steps.
+
+## Quickstart
+
+For users with experience with Nextflow and using a SLURM-based high-performance computing system, navigate or create your desired project directory and clone this repository. Then, create your test sample metadata sheet and reference panel metadata sheet as described in [Sample and Reference Files and Metadata](https://github.com/maddiehenniger/nf-imputation-pipeline?tab=readme-ov-file#sample-and-reference-files-and-metadata). Once complete, modify the `nextflow.config` file to supply a user-defined projectTitle, the path to the sample metadata, and path to the reference metadata. Nextflow will detect the files from the provided metadata sheets and start the pipeline.
+
+Clone the GitHub repository. 
+
+```
+git clone https://github.com/maddiehenniger/nf-imputation-pipeline.git
+```
+
+Navigate into the cloned respository.
+
+```
+cd nf-imputation-pipeline
+```
+
+Modify the `nextflow.config` file to provide paths to your metadata sheets and supply a project title. 
 
 ### Required Input Files
 
@@ -41,7 +55,7 @@ The sample metadata should be a comma-delimited file (.CSV) containing two colum
 
 The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. The reference panels must be provided on a by-chromosome basis. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance.
 
-The reference metadata should be a comma-delimited file (.CSV) containing three columns: referenceName, referencePath, imputationStep
+The reference metadata should be a comma-delimited file (.CSV) containing five columns: referenceName, referencePath, chromosome, imputationStep, geneticMapPath
 - referenceName: [required] A string with no spaces contianing the user-defined name of the reference panel with no file extensions (ex: HD_panel)
 - referencePath: [required] A string in the form of a file path to where the associated reference panel is located in your directory; this should end with the file extension BCF/VCF(.gz) (ex: /path/to/reference/HD_panel.bcf)
 - chromosome: [required] An integer in the form of a numerical value to the associated chromosome for the reference panel; at this time, sex chromosome values are not accepted
@@ -56,9 +70,7 @@ If the genetic maps provided are not in this format, the tools will be unable to
 
 ### The Configuration File
 
-The `nextflow.config` file is where the workflow configurations are located. The configuration file is automatically detected by Nextflow, provided it is located within the project launch directory. The user must modify the configuration file to provide a project title, test sample metadata, and reference panel metadata. The configuration file is built for the intention of running on a SLURM-based system. 
-
-Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, path to the `samplesheet`, and path to the `references` at a minimum. These inputs allows the pipeline to classify the pipeline by project, locate input test samples, and locate reference panels and which imputation step they will be used for.
+The `nextflow.config` file is where the workflow configurations are located. The configuration file is automatically detected by Nextflow, provided it is not moved from within the project launch directory. The user must modify the configuration file in order for the pipeline to run. The configuration file is built for the intention of running on a SLURM-based system. Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, path to the `samplesheet` (containing the test sample metadata), and path to the `references` (containing the reference panel metadata). These inputs allows the pipeline to classify the pipeline by project, locate input test samples, and locate reference panels and which imputation step they will be used for.
 
 ### Modifying Function Parameters (Under Construction)
 
@@ -69,14 +81,6 @@ This is currently not available for the user.
 Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. 
 
 ## Detailed Walkthrough of the Workflow
-
-Some steps will run simultaneously throughout this process.
-
-### Optional: Data Simulation (Under Construction)
-
-! TODO: Not currently available for this version of the pipeline !
-
-The user may optionally designate that a dataset be simulated for the pipeline. This will generate an "artificial" dataset created by downsampling high-density input data to simulate low-density genetic information. In theory, this may include if the user is interested in downsampling their high-density sample to specific SNP array genotypes, in which the user will also be prompted to supply the positions genotyped on their target array. 
 
 ### Test Sample and Reference Validation (Under Construction)
 

@@ -1,33 +1,30 @@
 /**
- * Process to run SHAPEIT5 to phase the test samples to the intermediate reference population.
+ * Process to run IMPUTE5 to impute the test samples to the reference population.
  * 
- * Generates phased samples.
- * @see https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/
+ * Generates imputed samples by pre-specified chunks of chromosomes.
+ * @see https://jmarchini.org/software/#impute-5
  * 
- * @input Map of input samples, intermediate reference to be used, and region(s) of chromosomes to phase.
- * @emit phased
+ * @input
+ * @emit 
  */
 
  process impute5_impute_samples {
-    
-    tag "$sample_id"
 
     label 'med_cpu'
     label 'med_mem'
     label 'med_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.intermediate_imputed_samples/",
+        path:    "${params.publishDirData}/.${metadata.step}_imputed_samples/",
         mode:    "${params.publishMode}"
     )
 
     input:
-        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(chunkedCoordinates), path(recombinationMapFile)
-        tuple val(metaRef), path(referencePath), path(referenceIndexPath), path(xcfIntermediateReferencePath), path(xcfIntermediateReferenceIndexPath), path(xcfIntBin), path(xcfIntFam)
+        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path(chunkedCoordinates), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath)
 
     output:
-        tuple val(sample_id), val(chromosomeNum), path("*.bcf"), path("*.csi"), path(recombinationMapFile), emit: intermediateImputation
-        path "*.log", emit: intermediateImputationLog
+        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path(chunkedCoordinates), path("*.bcf"), path ("*.bcf.csi"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: imputedSamples
+        path "*.log", emit: imputationLog
 
     script:
         """
@@ -36,14 +33,14 @@
         region=\$(echo "\$line" | awk '{print \$4}')
         buffer=\$(echo "\$line" | awk '{print \$3}')
         count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${sampleBcf.baseName}_intermediate_${chromosomeNum}_\${count}.bcf"
-        log_file="${sampleBcf.baseName}_intermediate_${chromosomeNum}_\${count}.log"
+        out_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.bcf"
+        log_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.log"
         impute5_v1.2.0_static \
-            --h ${xcfIntermediateReferencePath} \
-            --g ${sampleBcf} \
+            --h ${xcfRefPath} \
+            --g ${phasedSample} \
             --r \${region} \
             --buffer-region \${buffer} \
-            --m ${recombinationMapFile} \
+            --m ${mapPath} \
             --o \${out_file} \
             --l \${log_file}
         done < ${chunkedCoordinates}
