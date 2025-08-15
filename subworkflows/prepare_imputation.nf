@@ -12,22 +12,19 @@ include { convert_int_ref_to_xcf  } from "../modules/convert_xcf.nf"
 
  workflow Prepare_Imputation {
     take:
-        reference_intermediate
         indexed_phased_pair
     
     main:
         chunk_samples(
-            reference_intermediate,
             indexed_phased_pair
         )
 
         convert_int_ref_to_xcf(
-            reference_intermediate,
             indexed_phased_pair
         )
     
     emit:
         intermediate_chunked_regions      = chunk_samples.out.chunkedRegions
-        intermediate_ref_xcf              = convert_int_ref_to_xcf.out.xcfIntermediateReference
+        intermediate_ref_xcf              = convert_int_ref_to_xcf.out.xcfReference
 
  }

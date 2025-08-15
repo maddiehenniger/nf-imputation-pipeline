@@ -8,7 +8,7 @@
  * @emit
  */
 
- process convert_int_ref_to_xcf {
+ process convert_xcf {
 
     label 'med_cpu'
     label 'med_mem'
@@ -20,22 +20,21 @@
     )
 
     input:
-        tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
+        tuple val(chr), val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(metaRef), path(referencePath), path(referenceIndexPath), path("${referencePath.baseName}_${chromosomeNum}_xcf.bcf"), path("${referencePath.baseName}_${chromosomeNum}_xcf.bcf.csi"), path("${referencePath.baseName}_${chromosomeNum}_xcf.bin"), path("${referencePath.baseName}_${chromosomeNum}_xcf.fam"), emit: xcfIntermediateReference
-        path "${referencePath.baseName}_${chromosomeNum}_xcf_log.out", emit: xcfIntermediateReferenceLog
+        tuple val(chr), val(metadata), path("${metadata.referenceID}_${chr}.xcf.bcf"), path("${metadata.referenceID}_${chr}.xcf.bcf.csi"), path("${metadata.referenceID}_${chr}.xcf.bin"), path("${metadata.referenceID}_${chr}.xcf.fam"), path(mapPath), emit: xcfReference
+        path "${metadata.referenceID}_${chr}.xcf.log.out", emit: xcfLog
 
     script:
         """
-        xcftools_static view \
-            --input ${referencePath} \
-            --output ${referencePath.baseName}_${chromosomeNum}_xcf.bcf \
-            --format sh \
-            --region ${chromosomeNum} \
-            --thread 8 \
-            --maf 0.03125 \
-            --log ${referencePath.baseName}_${chromosomeNum}_xcf_log.out
+        xcftools_static view \\
+            --input ${refPath} \\
+            --output ${metadata.referenceID}_${chr}.xcf.bcf \\
+            --format sh \\
+            --region ${chr} \\
+            --thread 8 \\
+            --maf 0.03125 \\
+            --log ${metadata.referenceID}_${chr}.xcf.log.out
         """
  }

@@ -4,12 +4,11 @@
  * Generates a text file containing the following fields: Chunk ID / chromosome ID / Buffered region / Imputation region / Length / Number of target markers / Number of reference markers
  * @see IMPUTE5 documentation https://jmarchini.org/software/#impute-5
  * 
- * @input 
- * @emit
+ * @input A channel containing the chromosome, test sample metadata, path to by-chromosome phased sample, path to the associated by-chromosome indexed phased sample, the reference panel metadata, the path to the reference panel, the path to the associated indexed reference panel, and the optionally provided path to the genetic map
+ * @emit chunkedRegions - Containing the chromosome, test sample metadata, path to the by-chromosome phased sample, path to the associated by-chromosome indexed phased sample, path to the text file containing the chunked coordinates, the reference panel metadata, the path to the reference panel, the path to the associated indexed reference panel, and the optionally provided path to the genetic map
  */
 
  process chunk_samples {
-    tag "$sample_id"
 
     stageInMode 'copy'
 
@@ -23,20 +22,19 @@
     )
 
     input:
-        tuple val(metaRef), path(referencePath), path(referenceIndexPath)
-        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path(recombinationMapFile)
+        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), val(metadata), path(refPath), path(refIdx), path(mapPath)
 
     output:
-        tuple val(sample_id), path(sampleBcf), path(sampleBcfIndex), val(chromosomeNum), path("${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt"), path(recombinationMapFile), emit: chunkedRegions
+        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path("${meta.sampleID}_${chr}_chunked_coords.txt"), path(refPath), path(refIdx), path(mapPath), emit: chunkedRegions
 
     script:
 
         """
         imp5Chunker_v1.2.0_static \\
-            --h ${referencePath} \\
-            --g ${sampleBcf} \\
-            --r ${chromosomeNum} \\
-            --l ${sampleBcf.baseName}_chunking.log \\
-            --o ${sampleBcf.baseName}_${chromosomeNum}_chunked_coords.txt
+            --h ${refPath} \\
+            --g ${phasedSample} \\
+            --r ${chr} \\
+            --l ${meta.sampleID}_chunking.log \\
+            --o ${meta.sampleID}_${chr}_chunked_coords.txt
         """
  }

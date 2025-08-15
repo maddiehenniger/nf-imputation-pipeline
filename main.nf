@@ -49,12 +49,10 @@ workflow {
        ch_prepare_phasing_samples
     )
     ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
-       .view()
 
-    // INTERMEDIATE_IMPUTATION(
-    //     ch_one_reference,
-    //     ch_indexed_phased_pair
-    // )
+    INTERMEDIATE_IMPUTATION(
+        ch_phased_samples
+    )
     // ch_intermediate_ref_xcf         = INTERMEDIATE_IMPUTATION.out.intermediate_ref_xcf
     // ch_intermediate_chunked_regions = INTERMEDIATE_IMPUTATION.out.intermediate_chunked_regions
     // ch_imputed_intermediate         = INTERMEDIATE_IMPUTATION.out.imputed_intermediate
