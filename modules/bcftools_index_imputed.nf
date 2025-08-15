@@ -26,7 +26,7 @@
         tuple val(chr), val(meta), path(chunkedCoordinates), path(ligatedSample), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath)
 
     output:
-        tuple val(chr), val(meta), path(chunkedCoordinates), path(ligatedSample), path("*.csi"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: indexedPhasedPair
+        tuple val(chr), val(meta), path(ligatedSample), path("*.csi"), emit: indexedPhasedPair
 
     script:
         """

@@ -40,8 +40,9 @@ include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
         )
 
         ch_prepare_phasing_samples     = Prepare_Phasing.out.prepare_phasing_samples
+        ch_twostep_ref_xcf             = Prepare_Phasing.out.twostep_ref_xcf
 
     emit:
         prepare_phasing_samples  = ch_prepare_phasing_samples
-        twostep_ref_xcf          = Prepare_Phasing.out.twostep_ref_xcf
+        twostep_ref_xcf          = ch_twostep_ref_xcf
 }

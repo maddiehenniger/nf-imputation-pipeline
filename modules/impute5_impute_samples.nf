@@ -66,3 +66,4 @@
             done < ${chunkedCoordinates}
             """
         }
+ }

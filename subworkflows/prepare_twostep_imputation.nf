@@ -12,10 +12,13 @@ include { convert_twostep_ref_to_xcf } from '../modules/convert_twostep_xcf.nf'
 
  workflow Prepare_Twostep_Imputation {
     take:
-        reference_twostep
-        imputed_intermediate_paired
+        twostep_by_chr
+        intermediate_imputation
     
     main:
+
+        
+
         chunk_intermediate_imputed_samples(
             reference_twostep,
             imputed_intermediate_paired

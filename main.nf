@@ -35,7 +35,8 @@ workflow {
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    ch_prepare_phasing_samples = PREPARE_INPUTS.out.prepare_phasing_samples
+    ch_prepare_phasing_samples    = PREPARE_INPUTS.out.prepare_phasing_samples
+    ch_twostep_ref_xcf            = PREPARE_INPUTS.out.twostep_ref_xcf
 
     // PHASE_SAMPLES performs the following:
     // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
@@ -64,7 +65,9 @@ workflow {
         ch_phased_samples              // channel: [ chr, [ sampleID ], phasedSample, phasedSampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
     )
 
-    ch_intermediate_imputation = INTERMEDIATE_IMPUTATION.out.imputed_intermediate_samples_by_chr
+    INTERMEDIATE_IMPUTATION.out.imputed_intermediate_samples_by_chr
+        .join(ch_twostep_ref_xcf)
+        .set { ch_intermediate_imputed_samples }
         .view()
 
     // TWOSTEP_IMPUTATION performs the following:
@@ -72,10 +75,13 @@ workflow {
     // 2) Imputes the samples to the reference panel specified for the second round of imputation
         // Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
         // If a genetic map is not provided, IMPUTE5 uses a default 1 cM/Mb recombination rate 
+    // 3) Ligates teh chunked regions for the second round of imputed samples together to generate one BCF per input sample
+    // 3A) First, ligates on a chromosome-by-chromosome basis
+    // 3B) Second, ligates all chromosomes together on a sample-by-sample basis
+    // 4) Indexes the imputed sample and generates summary statistcs
 
     // TWOSTEP_IMPUTATION(
-    //     ch_two_reference,
-    //     ch_imputed_intermediate_paired
+    //     ch_intermediate_imputed_samples,      // channel: [ chr, [ sampleID ], imputedSampleByChr, imputedSampleByChrIdx ]
     // )
 
     // ch_twostep_chunked_regions      = TWOSTEP_IMPUTATION.out.twostep_chunked_regions

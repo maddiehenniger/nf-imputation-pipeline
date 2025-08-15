@@ -33,10 +33,10 @@ workflow Intermediate_Imputation {
         // intermediate_imputed_joined_samples = bcftools_concat_by_sample.out.ligateSample
 
         bcftools_index_imputed(
-            intermediate_by_chr
+            ch_intermediate_by_chr
         )
 
-       ch_intermediate_imputation = bctools_index_imputed.out.indexedPhasedPair
+       ch_intermediate_imputation = bcftools_index_imputed.out.indexedPhasedPair
 
     emit: 
         intermediate_imputation             = ch_intermediate_imputation
