@@ -16,10 +16,8 @@ workflow INTERMEDIATE_IMPUTATION {
             intermediate_chunked_regions
         )
 
-        ch_imputed_intermediate_samples        = Intermediate_Imputation.out.imputed_intermediate_samples
-        ch_intermediate_by_samples             = Intermediate_Imputation.out.intermediate_by_sample
+        ch_imputed_intermediate_samples = Intermediate_Imputation.out.intermediate_imputation
 
     emit:
-        imputed_intermediate_samples = ch_imputed_intermediate_samples
-        ligated_intermediate_samples = ch_intermediate_by_samples
+        imputed_intermediate_samples_by_chr = ch_imputed_intermediate_samples
 }

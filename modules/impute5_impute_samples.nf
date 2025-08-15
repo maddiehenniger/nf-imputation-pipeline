@@ -27,22 +27,42 @@
         path "*.log", emit: imputationLog
 
     script:
-        """
-        while IFS= read -r line; do
-        chr=\$(echo "\$line" | awk '{print \$2}')
-        region=\$(echo "\$line" | awk '{print \$4}')
-        buffer=\$(echo "\$line" | awk '{print \$3}')
-        count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.bcf"
-        log_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.log"
-        impute5_v1.2.0_static \
-            --h ${xcfRefPath} \
-            --g ${phasedSample} \
-            --r \${region} \
-            --buffer-region \${buffer} \
-            --m ${mapPath} \
-            --o \${out_file} \
-            --l \${log_file}
-        done < ${chunkedCoordinates}
-        """
- }
+
+        if(metadata.geneticMaps == 'provided') {
+            """
+            while IFS= read -r line; do
+            chr=\$(echo "\$line" | awk '{print \$2}')
+            region=\$(echo "\$line" | awk '{print \$4}')
+            buffer=\$(echo "\$line" | awk '{print \$3}')
+            count=\$(echo "\$line" | awk '{print \$1}')
+            out_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.bcf"
+            log_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.log"
+            impute5_v1.2.0_static \\
+                --h ${xcfRefPath} \\
+                --g ${phasedSample} \\
+                --r \${region} \\
+                --buffer-region \${buffer} \\
+                --m ${mapPath} \\
+                --o \${out_file} \\
+                --l \${log_file}
+            done < ${chunkedCoordinates}
+            """
+        } else if(metadata.geneticMaps == 'none') {
+            """
+            while IFS= read -r line; do
+            chr=\$(echo "\$line" | awk '{print \$2}')
+            region=\$(echo "\$line" | awk '{print \$4}')
+            buffer=\$(echo "\$line" | awk '{print \$3}')
+            count=\$(echo "\$line" | awk '{print \$1}')
+            out_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.bcf"
+            log_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.log"
+            impute5_v1.2.0_static \\
+                --h ${xcfRefPath} \\
+                --g ${phasedSample} \\
+                --r \${region} \\
+                --buffer-region \${buffer} \\
+                --o \${out_file} \\
+                --l \${log_file}
+            done < ${chunkedCoordinates}
+            """
+        }

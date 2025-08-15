@@ -44,16 +44,34 @@ workflow {
     // 2) Indexes the phased test sample(s) per chromosome
 
     PHASE_SAMPLES(
-       ch_prepare_phasing_samples
+       ch_prepare_phasing_samples       // channel: [ chr, [ sampleID ], samplePath, sampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
     )
     ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
 
+    // INTERMEDIATE_IMPUTATION performs the following:
+    // 1) Chunks the samples by chromosome to prepare for imputation
+    // 2) Imputes the samples to the intermediate reference panel
+        // Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
+        // If a genetic map is not provided, IMPUTE5 uses a default 1 cM/Mb recombination rate
+    // 3) Ligates the chunked regions for imputed samples together to generate one BCF per input sample
+    // 3A) First, ligates on chromosome-by-chromosome basis
+    // 3B) Second, ligates all chromosomes together on a sample-by-sample basis
+    // 4) Indexes the imputed sample and generates summary statistics
+    // 4A) By-chromosome samples are indexed and used for input to the second round of imputation
+    // 4B) Ligated samples are separated to generate summary statistics for the first round of imputation 
+
     INTERMEDIATE_IMPUTATION(
-        ch_phased_samples
+        ch_phased_samples              // channel: [ chr, [ sampleID ], phasedSample, phasedSampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
     )
 
-    ch_intermediate_imputation = INTERMEDIATE_IMPUTATION.out.ligated_intermediate_samples
+    ch_intermediate_imputation = INTERMEDIATE_IMPUTATION.out.imputed_intermediate_samples_by_chr
         .view()
+
+    // TWOSTEP_IMPUTATION performs the following:
+    // 1) Chunks the samples by chromosome to prepare for the second round of imputation
+    // 2) Imputes the samples to the reference panel specified for the second round of imputation
+        // Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
+        // If a genetic map is not provided, IMPUTE5 uses a default 1 cM/Mb recombination rate 
 
     // TWOSTEP_IMPUTATION(
     //     ch_two_reference,
