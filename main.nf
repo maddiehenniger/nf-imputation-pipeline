@@ -17,7 +17,7 @@ nextflow.enable.dsl=2
 include { PREPARE_INPUTS          } from "./workflows/prepare_inputs.nf"
 include { PHASE_SAMPLES           } from "./workflows/phase_samples.nf"
 include { INTERMEDIATE_IMPUTATION } from "./workflows/intermediate_imputation.nf"
-// include { TWOSTEP_IMPUTATION      } from "./workflows/twostep_imputation.nf"
+include { INTERMEDIATE_IMPUTATION as TWOSTEP_IMPUTATION } from "./workflows/intermediate_imputation.nf"
 
 workflow {
 
@@ -65,13 +65,13 @@ workflow {
         ch_phased_samples              // channel: [ chr, [ sampleID ], phasedSample, phasedSampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
     )
 
+    // Join the output samples that are imputed by the reference panel specified for the first round of imputation with the reference panels specified for the second round of imputation 
     INTERMEDIATE_IMPUTATION.out.imputed_intermediate_samples_by_chr
         .join(ch_twostep_ref_xcf)
         .set { ch_intermediate_imputed_samples }
-        .view()
 
     // TWOSTEP_IMPUTATION performs the following:
-    // 1) Chunks the samples by chromosome to prepare for the second round of imputation
+    // 1) Chunks the first-round imputed samples by chromosome to prepare for the second round of imputation
     // 2) Imputes the samples to the reference panel specified for the second round of imputation
         // Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
         // If a genetic map is not provided, IMPUTE5 uses a default 1 cM/Mb recombination rate 
@@ -80,12 +80,10 @@ workflow {
     // 3B) Second, ligates all chromosomes together on a sample-by-sample basis
     // 4) Indexes the imputed sample and generates summary statistcs
 
-    // TWOSTEP_IMPUTATION(
-    //     ch_intermediate_imputed_samples,      // channel: [ chr, [ sampleID ], imputedSampleByChr, imputedSampleByChrIdx ]
-    // )
+    TWOSTEP_IMPUTATION(
+        ch_intermediate_imputed_samples,      // channel: [ chr, [ sampleID ], imputedSampleByChr, imputedSampleByChrIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
+    )
 
-    // ch_twostep_chunked_regions      = TWOSTEP_IMPUTATION.out.twostep_chunked_regions
-    // ch_twostep_ref_xcf              = TWOSTEP_IMPUTATION.out.twostep_ref_xcf
-    // ch_imputed_twostep              = TWOSTEP_IMPUTATION.out.imputed_twostep
-    // ch_twostep_by_chromosomes       = TWOSTEP_IMPUTATION.out.twostep_by_chromosomes
+    TWOSTEP_IMPUTATION.out.imputed_intermediate_samples_by_chr
+        .view()
 }

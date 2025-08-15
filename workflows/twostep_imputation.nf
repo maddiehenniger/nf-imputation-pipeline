@@ -1,29 +1,26 @@
-include { Prepare_Twostep_Imputation } from "../subworkflows/prepare_twostep_imputation.nf"
-include { Twostep_Imputation         } from "../subworkflows/twostep_imputation.nf"
+include { Prepare_Imputation      } from "../subworkflows/prepare_imputation.nf"
+include { Intermediate_Imputation } from "../subworkflows/intermediate_imputation.nf"
 
 workflow TWOSTEP_IMPUTATION {
     take:
-        reference_twostep
-        intermediate_imputed_paired
+        prepared_samples
 
     main:
-        Prepare_Twostep_Imputation(
-            reference_twostep,
-            intermediate_imputed_paired
+       
+       Prepare_Imputation(
+            prepared_samples
         )
 
-        twostep_chunked_regions = Prepare_Twostep_Imputation.out.twostep_chunked_regions
-        twostep_ref_xcf         = Prepare_Twostep_Imputation.out.twostep_ref_xcf
+        twostep_chunked_regions = Prepare_Imputation.out.chunked_regions
         
-        Twostep_Imputation(
-            twostep_chunked_regions,
-            twostep_ref_xcf
+        Intermediate_Imputation(
+            twostep_chunked_regions
         )
+
+        ch_imputed_twostep_samples = Intermediate_Imputation.out.intermediate_imputation
 
     emit:
-        twostep_chunked_regions      = Prepare_Twostep_Imputation.out.twostep_chunked_regions
-        twostep_ref_xcf              = Prepare_Twostep_Imputation.out.twostep_ref_xcf
-        imputed_twostep              = Twostep_Imputation.out.imputed_twostep_samples
-        twostep_by_chromosomes       = Twostep_Imputation.out.twostep_by_chromosomes
+        imputed_twostep_samples = ch_imputed_twostep_samples
+
 
 }

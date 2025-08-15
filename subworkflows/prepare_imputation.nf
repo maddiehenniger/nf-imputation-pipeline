@@ -11,12 +11,12 @@ include { chunk_samples           } from "../modules/chunk_samples.nf"
 
  workflow Prepare_Imputation {
     take:
-        phased_samples
+        prepared_samples
     
     main:
     
         chunk_samples(
-            phased_samples
+            prepared_samples
         )
     
     emit:

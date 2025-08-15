@@ -3,11 +3,11 @@ include { Intermediate_Imputation } from "../subworkflows/intermediate_imputatio
 
 workflow INTERMEDIATE_IMPUTATION {
     take:
-        phased_samples
+        prepared_samples
 
     main:
         Prepare_Imputation(
-            phased_samples
+            prepared_samples
         )
 
         intermediate_chunked_regions = Prepare_Imputation.out.chunked_regions
