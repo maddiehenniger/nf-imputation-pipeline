@@ -1,5 +1,5 @@
 include { Prepare_Imputation      } from "../subworkflows/prepare_imputation.nf"
-include { Impute_Samples } from "../subworkflows/perform_imputation.nf"
+include { Intermediate_Imputation } from "../subworkflows/intermediate_imputation.nf"
 
 workflow INTERMEDIATE_IMPUTATION {
     take:

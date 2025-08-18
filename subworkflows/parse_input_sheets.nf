@@ -61,7 +61,7 @@ def createReferenceChannel(meta, refPath, mapPath) {
     // Store the references in lists
     def referencePath = file(refPath)
     if(mapPath.isEmpty()) {
-        def emptyFileName = "${geneticMapPath.simpleName}.NOFILE"
+        def emptyFileName = "${refPath.simpleName}.NOFILE"
         def emptyFilePath = file("${workDir}").resolve(emptyFileName)
         file("${projectDir}/assets/NO_FILE").copyTo(emptyFilePath)
         geneticMapPath = file(emptyFilePath)
