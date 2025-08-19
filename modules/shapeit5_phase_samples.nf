@@ -28,10 +28,13 @@
         tuple val(chr), val(meta), path("${meta.sampleID}_${chr}_phased.bcf"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: phasedSamples
 
     script:
+        
+        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
         if(metadata.geneticMaps == 'provided') {
             """
             SHAPEIT5_phase_common \\
+                ${args} \\
                 --input ${samplePath} \\
                 --reference ${xcfRefPath} \\
                 --region ${chr} \\
@@ -41,6 +44,7 @@
         } else if(metadata.geneticMaps == 'none') {
             """
             SHAPEIT5_phase_common \\
+                ${args} \\
                 --input ${samplePath} \\
                 --reference ${xcfRefPath} \\
                 --region ${chr} \\
