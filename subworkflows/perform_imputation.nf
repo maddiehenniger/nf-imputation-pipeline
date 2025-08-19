@@ -9,7 +9,7 @@ include { bcftools_index_imputed        } from '../modules/bcftools_index_impute
  * 
  */
 
-workflow Intermediate_Imputation {
+workflow Perform_Imputation {
     take:
         chunked_regions
     
@@ -18,26 +18,26 @@ workflow Intermediate_Imputation {
             chunked_regions
         )
 
-        ch_imputed_intermediate_samples = impute5_impute_samples.out.imputedSamples
+        ch_imputed_samples = impute5_impute_samples.out.imputedSamples
 
         bcftools_concat_by_chromosome(
-            ch_imputed_intermediate_samples
+            ch_imputed_samples
         )
 
-        ch_intermediate_by_chr = bcftools_concat_by_chromosome.out.ligateByChr
+        ch_ligated_by_chr = bcftools_concat_by_chromosome.out.ligatedByChr
 
         // bcftools_concat_by_sample(
         //     intermediate_by_chr
         // )
 
-        // intermediate_imputed_joined_samples = bcftools_concat_by_sample.out.ligateSample
+        // intermediate_imputed_joined_samples = bcftools_concat_by_sample.out.ligatedSamples
 
         bcftools_index_imputed(
-            ch_intermediate_by_chr
+            ch_ligated_by_chr
         )
 
-       ch_intermediate_imputation = bcftools_index_imputed.out.indexedPhasedPair
+       ch_imputed_samples = bcftools_index_imputed.out.indexedImputed
 
     emit: 
-        intermediate_imputation             = ch_intermediate_imputation
+        imputed_samples             = ch_imputed_samples
 }

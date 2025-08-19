@@ -25,7 +25,7 @@
         tuple val(chr), val(meta), path(chunkedCoordinates), path(ligatedByChr), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath)
 
     output:
-        tuple val(chr), val(meta), path(chunkedCoordinates), path("${meta.sampleID}_${metadata.step}_ligated.bcf"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: ligateSample
+        tuple val(chr), val(meta), path(chunkedCoordinates), path("${meta.sampleID}_${metadata.step}_ligated.bcf"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: ligatedSamples
 
     script:
         """

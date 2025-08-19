@@ -1,7 +1,7 @@
 include { Prepare_Imputation      } from "../subworkflows/prepare_imputation.nf"
-include { Intermediate_Imputation } from "../subworkflows/intermediate_imputation.nf"
+include { Perform_Imputation      } from "../subworkflows/perform_imputation.nf"
 
-workflow INTERMEDIATE_IMPUTATION {
+workflow IMPUTE_SAMPLES {
     take:
         prepared_samples
 
@@ -10,14 +10,14 @@ workflow INTERMEDIATE_IMPUTATION {
             prepared_samples
         )
 
-        intermediate_chunked_regions = Prepare_Imputation.out.chunked_regions
+        ch_chunked_regions = Prepare_Imputation.out.chunked_regions
         
-        Intermediate_Imputation(
-            intermediate_chunked_regions
+        Perform_Imputation(
+            ch_chunked_regions
         )
 
-        ch_imputed_intermediate_samples = Intermediate_Imputation.out.intermediate_imputation
+        ch_imputed_samples = Perform_Imputation.out.imputed_samples
 
     emit:
-        imputed_intermediate_samples_by_chr = ch_imputed_intermediate_samples
+        imputed_samples_by_chr = ch_imputed_samples
 }
