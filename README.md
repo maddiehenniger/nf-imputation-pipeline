@@ -23,7 +23,7 @@ Input samples that require imputation will be referred to as test samples throug
 
 ## Quickstart
 
-For users with experience with Nextflow and using a SLURM-based high-performance computing system, navigate or create your desired project directory and clone this repository. Then, create your test sample metadata sheet and reference panel metadata sheet as described in [Sample and Reference Files and Metadata](https://github.com/maddiehenniger/nf-imputation-pipeline?tab=readme-ov-file#sample-and-reference-files-and-metadata). Once complete, modify the `nextflow.config` file to supply a user-defined projectTitle, the path to the sample metadata, and path to the reference metadata. Nextflow will detect the files from the provided metadata sheets and start the pipeline.
+For users with experience with Nextflow and using a SLURM-based high-performance computing system, navigate or create your desired project directory and clone this repository. Then, create your test sample metadata sheet and reference panel metadata sheet as described in [Sample and Reference Files and Metadata](https://github.com/maddiehenniger/nf-imputation-pipeline?tab=readme-ov-file#sample-and-reference-files-and-metadata). Once complete, modify the `nextflow.config` file to supply a user-defined projectTitle, the path to the sample metadata, and path to the reference metadata. Nextflow will detect the files from the provided metadata sheets and start the pipeline. Please note at this time that AC/AN tags must be filled in the test sample population for the pipeline to work.
 
 Clone the GitHub repository. 
 
@@ -72,13 +72,47 @@ If the genetic maps provided are not in this format, the tools will be unable to
 
 The `nextflow.config` file is where the workflow configurations are located. The configuration file is automatically detected by Nextflow, provided it is not moved from within the project launch directory. The user must modify the configuration file in order for the pipeline to run. The configuration file is built for the intention of running on a SLURM-based system. Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, path to the `samplesheet` (containing the test sample metadata), and path to the `references` (containing the reference panel metadata). These inputs allows the pipeline to classify the pipeline by project, locate input test samples, and locate reference panels and which imputation step they will be used for.
 
-### Modifying Function Parameters (Under Construction)
-
-! TODO: Allow the user to modify arguments within modules via the arguments configuration file !
-
-This is currently not available for the user.
+### Modifying Parameters for Phasing and Imputation
 
 Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. 
+
+All parameters provided in the `/conf/args.config` file are the default arguments for phasing and imputation. If the user would like to perform parameter exploration or modification, the defaults may be modified. 
+
+For example, using the process labeled 'shapeit5_phase_samples', which runs SHAPEIT5's phase_common, there are a number of parameters provided, as shown below.
+
+```
+// SHAPEIT5 phase_common parameters
+        // Please see @https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/ for more details
+        // All parameters specified below are the provided default parameters for SHAPEIT5 phase_common
+    withName: 'shapeit5_phase_samples' {
+        ext.argsDefault = [
+            // Filter Parameters
+            '--filter-snp': 'NA', // NA if specified, the program only considers SNPs
+            '--filter-maf': '0', // FLOAT only consider variants with MAF above the specified value. It requires AC/AN tags in VCF/BCF file
+            // MCMC Parameters - Expert
+            '--mcmc-iterations': '5b,1p,1b,1p,1b,1p,5m', // STRING iteration scheme of the MCMC (burnin=b, pruning=p, main=m)
+            '--mcmc-prune': 0.999, // FLOAT pruning threshold for genotype graphs (internal memory structures)
+            '--mcmc-noinit': 'NA', // If specified, phasing initialized by PBWT sweep is disabled
+            // PBWT Parameters - Expert
+            '--pbwt-modulo': 0.1, // FLOAT storage frequency of PBWT indexes in chromosome
+            '--pbwt-depth': 4, // INT depth of PBWT indexes to condition one
+            '--pbwt-mac': 5, // INT minimal minor allele count at which PBWT is evaluated
+            '--pbwt-mdr': 0.1, // FLOAT maximimal missing data rate at which PBWT is evaluated
+            '--pbwt-window': 4, // INT run PBWT selection in windows of this size
+            // HMM Parameters - Expert
+            '--hmm-window': 4, // INT minimal size of the phasing window in chromosome
+            '--hmm-ne': 15000, // INT effective size of the population
+        ]
+    }
+```
+
+To modify these parameters, adjust the value after the semicolon, as shown below in an example for `--filter-maf` in SHAPEIT5 phase_common.
+
+```
+'--filter-maf': '0.00001', // FLOAT only consider variants with MAF above the specified value. It requires AC/AN tags in VCF/BCF file
+```
+
+Keep in mind that the user-supplied values still must fall in the range of accepted values for the parameter (e.g., `--pbwt-window` must be in the range of 0.5 and 10 cM). Please note that modifying default values can alter the accuracy of imputation and therefore appropriate parameter exploration should be conducted to determine ideal values within the user's testing population. 
 
 ## Detailed Walkthrough of the Workflow
 
