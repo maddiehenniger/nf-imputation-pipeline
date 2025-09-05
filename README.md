@@ -65,8 +65,7 @@ The reference metadata should be a comma-delimited file (.CSV) containing five c
 The user may choose to optionally supply genetic maps containing recombination rates on a per-chromosome basis. The genetic maps are a tab-delimited file ending in `.gmap` that consists of 3 columns: pos / chr / cM:
 - pos: The position in bases on the chromosome (must be in bases, not in mb, kb, etc.)
 - chr: The chromosome number
-- cM: Measure in centimorgans (cM) of how often recombination happens 
-If the genetic maps provided are not in this format, the tools will be unable to conduct phasing and imputation using the genetic maps and will return error messages.
+- cM: Measure in centimorgans (cM) of how often recombination happens. If the genetic maps provided are not in this format, the tools will be unable to conduct phasing and imputation using the genetic maps and will return error messages.
 
 ### The Configuration File
 
@@ -112,17 +111,16 @@ To modify these parameters, adjust the value after the semicolon, as shown below
 '--filter-maf': '0.00001', // FLOAT only consider variants with MAF above the specified value. It requires AC/AN tags in VCF/BCF file
 ```
 
-Keep in mind that the user-supplied values still must fall in the range of accepted values for the parameter (e.g., `--pbwt-window` must be in the range of 0.5 and 10 cM). Please note that modifying default values can alter the accuracy of imputation and therefore appropriate parameter exploration should be conducted to determine ideal values within the user's testing population. 
+Keep in mind that the user-supplied values still must fall in the range of accepted values for the parameter (e.g., `--pbwt-window` must be in the range of 0.5 and 10 cM). Please note that the default values do not necessarily represent an optimal value for phasing and imputation, and modifying parameters can alter the accuracy of imputation and therefore appropriate parameter exploration should be conducted to determine ideal values within the user's testing population.
 
 ## Detailed Walkthrough of the Workflow
 
-### Test Sample and Reference Validation (Under Construction)
+The following sections will detail the processes executed by each workflow in the Nextflow `main.nf` script.
 
-The workflow will automatically identify the name and location of the test samples and validate their existence based on the user-specified metadata. The test samples will be assessed for the number of chromosomes.
+### PREPARE_INPUTS
 
-By default, the workflow will identify the name and location of the reference panel(s) and validate their existence based on the user-specified metadata. If multiple reference panels are specified, the workflow detects which step of imputation each reference is used for based on user-supplied input in the metadata. The reference panel will be assessed for the number of chromosomes and whether or not the reference has been phased. These steps cannot currently be skipped to save time by the user configuration.
 
-! Issue: NF pipeline does not wait to validate all reference/samples before storing chromosome values and moving on, so need to fix. !
+
 
 ### Phasing Test Samples to the Reference Population
 

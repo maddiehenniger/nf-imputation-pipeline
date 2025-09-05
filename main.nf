@@ -18,6 +18,7 @@ include { PREPARE_INPUTS                            } from "./workflows/prepare_
 include { PHASE_SAMPLES                             } from "./workflows/phase_samples.nf"
 include { IMPUTE_SAMPLES as FIRST_ROUND_IMPUTATION  } from "./workflows/impute_samples.nf"
 include { IMPUTE_SAMPLES as SECOND_ROUND_IMPUTATION } from "./workflows/impute_samples.nf"
+// include { CALCULATE_ACCURACY } from "./workflows/calculate_accuracy.nf"
 
 workflow {
 
@@ -86,4 +87,20 @@ workflow {
 
     SECOND_ROUND_IMPUTATION.out.imputed_samples_by_chr
         .view()
+
+    // If the user specifies in the nextflow.config that they would like to calculate imputation accuracies, the pipeline will run the following:
+    // CALCULATE_ACCURACY performs the following:
+    // 1) Indexes the two-round imputed BCF files and then converts two-round imputed BCF files to gzipped VCF files
+    // 2) Calculates by-SNP imputation accuracies using the gzipped VCF file
+    // 3) Calculates by-sample imputation accuracies using the BCF file
+    // 4) Prints imputation accuracy statistics by-sample and by-SNP, per chromosome, to two statistics files per provided sample
+
+    if(params.truthset != 'skip') {
+        CALCULATE_ACCURACY(
+
+        )
+    } else if(params.truthset == 'skip') {
+        
+    }
+
 }
