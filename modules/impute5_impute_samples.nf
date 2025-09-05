@@ -27,6 +27,7 @@
         path "*.log", emit: imputationLog
 
     script:
+        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
         if(metadata.geneticMaps == 'provided') {
             """
@@ -38,6 +39,7 @@
             out_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.bcf"
             log_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.log"
             impute5_v1.2.0_static \\
+                ${args} \\
                 --h ${xcfRefPath} \\
                 --g ${phasedSample} \\
                 --r \${region} \\
@@ -57,6 +59,7 @@
             out_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.bcf"
             log_file="${meta.sampleID}_${metadata.step}_${chr}_\${count}.log"
             impute5_v1.2.0_static \\
+                ${args} \\
                 --h ${xcfRefPath} \\
                 --g ${phasedSample} \\
                 --r \${region} \\
