@@ -14,11 +14,6 @@
     label 'med_mem'
     label 'med_time'
 
-    publishDir(
-        path:    "${params.publishDirData}/.reference_xcf/",
-        mode:    "${params.publishMode}"
-    )
-
     input:
         tuple val(chr), val(metadata), path(refPath), path(refIdx), path(mapPath)
 

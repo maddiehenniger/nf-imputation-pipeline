@@ -17,8 +17,9 @@
     label 'med_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.phased_samples/",
-        mode:    "${params.publishMode}"
+        path:    "${params.publishDirData}/phased_samples/",
+        mode:    "${params.publishMode}",
+        pattern: "*phased.bcf"
     )
 
     input:
