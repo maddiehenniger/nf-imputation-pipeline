@@ -18,7 +18,7 @@
 
     publishDir(
         path:    "${params.publishDirData}/.chromosome_validation/",
-        mode:    "${params.publishMode}"
+        mode:    "symlink"
     )
 
     input:

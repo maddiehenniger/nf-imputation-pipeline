@@ -5,7 +5,7 @@
     "type": "array",
     "items": {
       "type": "object",
-      "required": ["referenceID", "referencePath", "chromosome", "imputationStep"],
+      "required": ["referenceID", "referencePath", "chromosome", "imputationRound"],
       "properties": {
         "referenceID": {
           "type": "string",
@@ -24,12 +24,12 @@
           "errorMessage": "A numeric value in the form of an integer must be provided for the respective reference and cannot contain spaces or special characters. Currently, sex chromosome imputation is unavailable.",
           "meta": "chromosome"
         },
-        "imputationStep": {
+        "imputationRound": {
           "type": "string",
           "pattern": "^\\S+$",
           "errorMessage": "Value must be provided as either 'one' or 'two' with no spaces. 'one' represents the reference panel to use for the first round of imputation and 'two' represents the reference panel to use for the second round of imputation.",
           "enum": [ "one", "two" ],
-          "meta": "step"
+          "meta": "round"
         },
         "geneticMapPath": {
           "type": "string",

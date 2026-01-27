@@ -17,7 +17,7 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.phased_samples/",
+        path:    "${params.publishDirData}/phased_samples/",
         mode:    "${params.publishMode}",
         pattern: '*.{bcf,bcf.csi}'
     )

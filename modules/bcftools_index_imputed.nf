@@ -17,7 +17,7 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.${metadata.step}_imputed_samples/",
+        path:    "${params.publishDirData}/${metadata.step}_imputed_samples/",
         mode:    "${params.publishMode}",
         pattern: '*.{bcf,bcf.csi}'
     )

@@ -5,7 +5,7 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["sampleID", "samplePath"],
+    "required": ["sampleID", "samplePath", "sampleIndex"],
     "properties": {
       "sampleID": {
         "type": "string",
@@ -18,6 +18,24 @@
         "pattern": "^\\S+$",
         "format": "file-path",
         "errorMessage": "A BCF/VCF(.gz) file path for samples must be provided, cannot contain spaces, and must have extension '.bcf' or '.vcf'/'vcf.gz'."
+      },
+      "sampleIndex": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "format": "file-path",
+        "errorMessage": "The paired indexed (CSI) file path for the associated sample must be provided, cannot contain spaces, and must match the sample file name with the extension '.csi'."
+      },
+      "wgsPath": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "format": "file-path",
+        "errorMessage": "An optional BCF/VCF(.gz) file path containing the matching WGS sample may be provided, cannot contain spaces, and must have the extension '.bcf', or '.vcf'/'vcf.gz'." 
+      },
+      "wgsIndex": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "format": "file-path",
+        "errorMessage": "If providing the optional WGS sample, the paired indexed (CSI) file path must be provided, cannot contain spaces, and must match the WGS file name with the extension '.csi'."
       }
     }
   }
