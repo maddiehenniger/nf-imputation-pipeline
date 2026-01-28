@@ -35,7 +35,7 @@ workflow {
         file(params.samplesheet),       // required: User-provided path to sample metadata identified in the nextflow.config file 
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
-
+    // How
     ch_chromosomes = PREPARE_INPUTS.out.chromosomes
         .view()
     ch_splitSamples = PREPARE_INPUTS.out.split_samples
