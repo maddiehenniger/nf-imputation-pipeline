@@ -10,10 +10,6 @@
 
  process convert_xcf {
 
-    label 'med_cpu'
-    label 'med_mem'
-    label 'med_time'
-
     input:
         tuple val(chr), val(metadata), path(refPath), path(refIdx), path(mapPath)
 

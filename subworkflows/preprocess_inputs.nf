@@ -13,27 +13,30 @@ include { bcftools_index as bcftools_index_samples } from '../modules/bcftools_i
 workflow Preprocess_Inputs {
     take:
         samples
-        references
+        // references
     
     main:        
-        // Index sample and references
+        // TODO: Index the samples if index files are not provided
 
-        bcftools_index_samples(
+        // Identify the chromosomes present in each sample
+        bcftools_identify_chromosomes(
             samples
         )
-
-        bcftools_index_references(
-            references
-        )
+        ch_chromosomes = bcftools_identify_chromosomes.out.chromosomes
+            .readLines()
         
         // Split samples by chromosome
+        bcftools_split_samples(
+            samples,
+            ch_chromosomes
+        )
+
+        ch_split_samples = bcftools_split_samples.out.splitSamples
 
         // Prepare indexed references
         
 
 
     emit:
-        samples_by_chr      = ch_samples_by_chr
-        intermediate_by_chr = ch_intermediate_by_chr
-        twostep_by_chr      = ch_twostep_by_chr
+        splitSamples = ch_split_samples
 }

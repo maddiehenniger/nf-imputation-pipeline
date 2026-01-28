@@ -1,0 +1,34 @@
+/**
+ * Process to run bcftools view to identify chromosomes present in input file.
+ * 
+ * Produces a text file containing the sorted and unique chromosome IDs present within each sample.
+ * @see https://samtools.github.io/bcftools/bcftools.html#view
+ * 
+ * @input
+ * @emit
+ */
+
+ process bcftools_identify_chromosomes {
+    
+    label 'bcftools'
+
+    label 'def_cpu'
+    label 'lil_mem'
+    label 'lil_time'
+
+    publishDir(
+        path:    "${params.publishDirData}/chromosome_validation/",
+        mode:    "symlink"
+    )
+
+    input:
+        tuple val(metadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
+
+    output:
+        val "*.txt", emit: chromosomes
+
+    script:
+        """
+        bcftools view -H ${sample} | cut -f1 | sort -n -u > ${metadata.sampleID}.chromosomes.txt
+        """
+ }

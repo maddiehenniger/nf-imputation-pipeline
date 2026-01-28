@@ -1,6 +1,8 @@
 include { Parse_Input_Sheets   } from "../subworkflows/parse_input_sheets.nf"
-include { Validate_Chromosomes } from "../subworkflows/validate_chromosomes.nf"
-include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
+include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
+// include { Validate_Chromosomes } from "../subworkflows/validate_chromosomes.nf"
+// include { Prepare_References   } from '../subworkflows/prepare_references.nf'
+// include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
 
 /**
  * Workflow to handle and prepare input files.
@@ -23,26 +25,35 @@ include { Prepare_Phasing      } from "../subworkflows/prepare_phasing.nf"
         ch_reference_intermediate  = Parse_Input_Sheets.out.reference_intermediate
         ch_reference_twostep       = Parse_Input_Sheets.out.reference_twostep
 
-        Validate_Chromosomes(
-            ch_samples,
-            ch_reference_intermediate,
-            ch_reference_twostep
+        // Validate_Chromosomes(
+        //     ch_samples,
+        //     ch_reference_intermediate,
+        //     ch_reference_twostep
+        // )
+
+        // ch_samples_by_chr           = Validate_Chromosomes.out.samples_by_chr
+        // ch_intermediate_by_chr      = Validate_Chromosomes.out.intermediate_by_chr
+        // ch_twostep_by_chr           = Validate_Chromosomes.out.twostep_by_chr
+
+        Preprocess_Inputs(
+            ch_samples
+            // ch_reference_intermediate,
+            // ch_reference_twostep
         )
 
-        ch_samples_by_chr           = Validate_Chromosomes.out.samples_by_chr
-        ch_intermediate_by_chr      = Validate_Chromosomes.out.intermediate_by_chr
-        ch_twostep_by_chr           = Validate_Chromosomes.out.twostep_by_chr
+        ch_split_samples = Preprocess_Inputs.out.splitSamples
 
-        Prepare_Phasing(
-            ch_samples_by_chr,
-            ch_intermediate_by_chr,
-            ch_twostep_by_chr
-        )
+        // Prepare_Phasing(
+        //     ch_samples_by_chr,
+        //     ch_intermediate_by_chr,
+        //     ch_twostep_by_chr
+        // )
 
-        ch_prepare_phasing_samples     = Prepare_Phasing.out.prepare_phasing_samples
-        ch_twostep_ref_xcf             = Prepare_Phasing.out.twostep_ref_xcf
+        // ch_prepare_phasing_samples     = Prepare_Phasing.out.prepare_phasing_samples
+        // ch_twostep_ref_xcf             = Prepare_Phasing.out.twostep_ref_xcf
 
     emit:
-        prepare_phasing_samples  = ch_prepare_phasing_samples
-        twostep_ref_xcf          = ch_twostep_ref_xcf
+        splitSamples = ch_split_samples
+        reference_intermediate = ch_reference_intermediate
+        reference_twostep = ch_reference_twostep
 }

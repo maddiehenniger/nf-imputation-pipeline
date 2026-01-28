@@ -1,8 +1,8 @@
 /**
- * Process to run bcftools query.
+ * Process to run bcftools view to extract unique chromosome ids within each input.
  * 
- * Generates a list of chromosome numbers present in sample and reference files.
- * @see https://samtools.github.io/bcftools/bcftools.html#query
+ * Generates a list of chromosome numbers present in sample files.
+ * @see https://samtools.github.io/bcftools/bcftools.html#view
  * 
  * @input A map containing the test sample metadata, path to the test samples, and path to the indexed test samples.
  * @emit chromosomes - A text file containing the unique and sorted chromosome numbers from the test samples.
@@ -22,14 +22,13 @@
     )
 
     input:
-        tuple val(meta), path(samplePath), path(sampleIdx)
+        tuple val(metadata), path(sample), path(sampleIndex)
 
     output:
         tuple val(meta), path(samplePath), path(sampleIdx), stdout
 
     script:
         """
-        bcftools query \\
-            -f '%CHROM' ${samplePath} | sort -u -n
+        view -H bisnps_autosomes_imputation_testing_samples_chr.bcf | cut -f1 | sort -n -u > wgs_chr_list.txt
         """
  }

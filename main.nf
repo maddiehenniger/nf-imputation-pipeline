@@ -15,9 +15,9 @@ nextflow.enable.dsl=2
 
 // include custom workflows
 include { PREPARE_INPUTS                            } from "./workflows/prepare_inputs.nf"
-include { PHASE_SAMPLES                             } from "./workflows/phase_samples.nf"
-include { IMPUTE_SAMPLES as FIRST_ROUND_IMPUTATION  } from "./workflows/impute_samples.nf"
-include { IMPUTE_SAMPLES as SECOND_ROUND_IMPUTATION } from "./workflows/impute_samples.nf"
+// include { PHASE_SAMPLES                             } from "./workflows/phase_samples.nf"
+// include { IMPUTE_SAMPLES as FIRST_ROUND_IMPUTATION  } from "./workflows/impute_samples.nf"
+// include { IMPUTE_SAMPLES as SECOND_ROUND_IMPUTATION } from "./workflows/impute_samples.nf"
 // include { CALCULATE_ACCURACY } from "./workflows/calculate_accuracy.nf"
 
 workflow {
@@ -36,8 +36,14 @@ workflow {
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
 
-    ch_prepare_phasing_samples    = PREPARE_INPUTS.out.prepare_phasing_samples
-    ch_twostep_ref_xcf            = PREPARE_INPUTS.out.twostep_ref_xcf
+    ch_chromosomes = PREPARE_INPUTS.out.chromosomes
+        .view()
+    ch_splitSamples = PREPARE_INPUTS.out.split_samples
+        .view()
+    ch_reference_intermediate = PREPARE_INPUTS.out.reference_intermediate
+        .view()
+    ch_reference_twostep = PREPARE_INPUTS.out.reference_twostep
+        .view()
 
     // PHASE_SAMPLES performs the following:
     // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
@@ -45,10 +51,10 @@ workflow {
     //      If a genetic map is not provided, SHAPEIT5 uses a default 1 cm/Mb recombination rate 
     // 2) Indexes the phased test sample(s) per chromosome
 
-    PHASE_SAMPLES(
-       ch_prepare_phasing_samples       // channel: [ chr, [ sampleID ], samplePath, sampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
-    )
-    ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
+    // PHASE_SAMPLES(
+    //    ch_prepare_phasing_samples       // channel: [ chr, [ sampleID ], samplePath, sampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
+    // )
+    // ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
 
     // INTERMEDIATE_IMPUTATION performs the following:
     // 1) Chunks the samples by chromosome to prepare for imputation
@@ -62,14 +68,14 @@ workflow {
     // 4A) By-chromosome samples are indexed and used for input to the second round of imputation
     // 4B) Ligated samples are separated to generate summary statistics for the first round of imputation 
 
-    FIRST_ROUND_IMPUTATION(
-        ch_phased_samples              // channel: [ chr, [ sampleID ], phasedSample, phasedSampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
-    )
+    // FIRST_ROUND_IMPUTATION(
+    //     ch_phased_samples              // channel: [ chr, [ sampleID ], phasedSample, phasedSampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
+    // )
 
     // Join the output samples that are imputed by the reference panel specified for the first round of imputation with the reference panels specified for the second round of imputation 
-    FIRST_ROUND_IMPUTATION.out.imputed_samples_by_chr
-        .join(ch_twostep_ref_xcf)
-        .set { ch_intermediate_imputed_samples }
+    // FIRST_ROUND_IMPUTATION.out.imputed_samples_by_chr
+    //     .join(ch_twostep_ref_xcf)
+    //     .set { ch_intermediate_imputed_samples }
 
     // TWOSTEP_IMPUTATION performs the following:
     // 1) Chunks the first-round imputed samples by chromosome to prepare for the second round of imputation
@@ -81,12 +87,12 @@ workflow {
     // 3B) Second, ligates all chromosomes together on a sample-by-sample basis
     // 4) Indexes the imputed sample and generates summary statistcs
 
-    SECOND_ROUND_IMPUTATION(
-        ch_intermediate_imputed_samples      // channel: [ chr, [ sampleID ], imputedSampleByChr, imputedSampleByChrIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
-    )
+    // SECOND_ROUND_IMPUTATION(
+    //     ch_intermediate_imputed_samples      // channel: [ chr, [ sampleID ], imputedSampleByChr, imputedSampleByChrIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
+    // )
 
-    SECOND_ROUND_IMPUTATION.out.imputed_samples_by_chr
-        .view()
+    // SECOND_ROUND_IMPUTATION.out.imputed_samples_by_chr
+    //     .view()
 
     // If the user specifies in the nextflow.config that they would like to calculate imputation accuracies, the pipeline will run the following:
     // CALCULATE_ACCURACY performs the following:
@@ -95,12 +101,12 @@ workflow {
     // 3) Calculates by-sample imputation accuracies using the BCF file
     // 4) Prints imputation accuracy statistics by-sample and by-SNP, per chromosome, to two statistics files per provided sample
 
-    if(params.truthset != 'skip') {
-        CALCULATE_ACCURACY(
+    // if(params.truthset != 'skip') {
+    //     CALCULATE_ACCURACY(
 
-        )
-    } else if(params.truthset == 'skip') {
+    //     )
+    // } else if(params.truthset == 'skip') {
         
-    }
+    // }
 
 }
