@@ -17,7 +17,7 @@ process bcftools_index_split_samples {
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.file_inputs/",
+        path:    "${params.publishDirData}/file_inputs/",
         mode:    "${params.publishMode}",
         pattern: '*.{bcf,bcf.csi,vcf,vcf.csi}'              // Output files may be BCF/VCF format with their associated CSI index file
     )

@@ -42,7 +42,10 @@ workflow Preprocess_Inputs {
             ch_chromosomes
         )
 
-        ch_split_samples = bcftools_split_samples.out.splitSamples
+        bcftools_split_samples.out.splitSamples.map { meta, chr, sample, sampleIdx, wgs, wgsIdx ->
+            [ chr.toString(), meta, sample, sampleIdx, wgs, wgsIndex ]
+        }
+        .set { ch_split_samples }
 
         // Prepare reference panels for imputation
         switch( data_type.toUpperCase() ) {
@@ -52,14 +55,19 @@ workflow Preprocess_Inputs {
                 convert_reference_to_xcf(
                     reference_one
                 )
-                ch_reference_one = convert_reference_to_xcf.out.xcfReference
+                convert_reference_to_xcf.out.xcfReference.map { meta, refPath, refIdx, refBin, refFam, mapPath ->
+                    [ meta.chromosome.toString(), meta, refPath, [refIdx, refBin, refFam].flatten(), mapPath ]
+                }
+                .set { ch_reference_one }
                 
                 // If a Round Two imputation reference is provided, it will convert the specified reference to XCF format
                 convert_reference_two_to_xcf(
                     reference_two
                 )
-                ch_reference_two = convert_reference_two_to_xcf.out.xcfReference
-                break
+                convert_reference_two_to_xcf.out.xcfReference.map { meta, refPath, refIdx, refBin, refFam, mapPath ->
+                    [ meta.chromosome.toString(), meta, refPath, [refIdx, refBin, refFam].flatten(), mapPath ]
+                }
+                .set { ch_reference_two }
             
             case 'LPWGS':
                 glimpse2_chunk(
@@ -74,10 +82,14 @@ workflow Preprocess_Inputs {
                 break
         }
 
+        ch_samples_one = ch_split_samples.combine(ch_reference_one, by:0)
+        ch_samples_two = ch_split_samples.combine(ch_reference_two, by:0)
 
     emit:
-        splitSamples  = ch_split_samples
-        chromosomes   = ch_chromosomes // Don't think we need this to follow downstream but in for testing
-        reference_one = ch_reference_one
-        reference_two = ch_reference_two
+        splitSamples  = ch_split_samples // Testing
+        chromosomes   = ch_chromosomes // Testing
+        reference_one = ch_reference_one // Testing
+        reference_two = ch_reference_two // Testing
+        samples_one   = ch_samples_one
+        samples_two   = ch_samples_two
 }

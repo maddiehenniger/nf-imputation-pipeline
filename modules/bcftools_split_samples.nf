@@ -17,7 +17,7 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/chromosome_validation/",
+        path:    "${params.publishDirData}/input_files/",
         mode:    "symlink"
     )
 
