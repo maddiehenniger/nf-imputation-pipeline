@@ -25,10 +25,10 @@
         tuple val(metadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
 
     output:
-        val "*.txt", emit: chromosomes
+        tuple val(metadata), stdout, path(sample), path(sampleIndex), path(wgs), path(wgsIndex), emit: chromosomes
 
     script:
         """
-        bcftools view -H ${sample} | cut -f1 | sort -n -u > ${metadata.sampleID}.chromosomes.txt
+        bcftools view -H ${sample} | cut -f1 | sort -n -u
         """
  }

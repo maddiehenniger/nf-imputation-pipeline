@@ -21,28 +21,8 @@ workflow Parse_Input_Sheets {
             .fromList(
                 samplesheetToList(samplesheet, "${projectDir}/assets/schema_samplesheet.json")
             )
-            .map { meta, samplePath, wgsPath -> 
-                // Create a runType variable to determine pipeline version to run
-                def runType = ""
-                // Check if the file paths exist
-                if (samplePath && wgsPath) {
-                    log.info "Found existing paths to test samples and WGS samples, calculating imputation accuracy statistics."
-                    runType = "statistics"
-                } else if (samplePath && !wgsPath) {
-                    log.info "Found existing path to test samples without paired WGS sample, performing standard imputation pipeline."
-                    runType = "impute"
-                } else if (!samplePath && wgsPath) {
-                    log.info "Found existing path to WGS sample without paired test sample, performing downsampling as ..."
-                    runType = "downsample"
-                }
-                // Create the updated metadata map, adding 'runType'
-                def new_meta = meta + [runtype: runType]
-                // Convert paths to file objects inside lists [path]
-                // and use an empty list if the path is missing/empty
-                def sample_list = samplePath ? [file(samplePath)] : []
-                def wgs_list    = wgsPath ? [file(wgsPath)] : []
-                // Return with structure [ metadata, [ samplePath ], [ wgsPath ]]
-                return [ new_meta, sample_list, wgs_list ]
+            .map { meta, samplePath, sampleIndex, wgsPath, wgsIndex -> 
+                tuple(meta, samplePath, sampleIndex, wgsPath, wgsIndex)
             }
             .set { ch_samples }
 
@@ -55,7 +35,7 @@ workflow Parse_Input_Sheets {
             .set { ch_references }
         
         ch_references
-        .branch { meta, referencePath, geneticMapPath ->
+        .branch { meta, referencePath, referenceIndex, geneticMapPath ->
                 // If imputationRound is equal to one, create a channel for the reference for the intermediate imputation step
                 oneRound: meta.round == 'one' // Make a channel that contains only the reference panels for the first round of imputation (oneRound)
                 // If imputationRound is equal to two...
@@ -64,10 +44,10 @@ workflow Parse_Input_Sheets {
         .set { ch_ref_split }
 
     emit:
-        samples                = ch_samples
-        references             = ch_references
-        reference_intermediate = ch_ref_split.intermediate
-        reference_twostep      = ch_ref_split.twostep
+        samples       = ch_samples
+        references    = ch_references // I don't think we need this for downstream, was just for testing
+        reference_one = ch_ref_split.oneRound
+        reference_two = ch_ref_split.twoRound
 }
 
 

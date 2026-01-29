@@ -21,9 +21,9 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
             references
         )
 
-        ch_samples                 = Parse_Input_Sheets.out.samples
-        ch_reference_intermediate  = Parse_Input_Sheets.out.reference_intermediate
-        ch_reference_twostep       = Parse_Input_Sheets.out.reference_twostep
+        ch_samples        = Parse_Input_Sheets.out.samples
+        ch_reference_one  = Parse_Input_Sheets.out.reference_one
+        ch_reference_two  = Parse_Input_Sheets.out.reference_two
 
         // Validate_Chromosomes(
         //     ch_samples,
@@ -37,11 +37,12 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
 
         Preprocess_Inputs(
             ch_samples
-            // ch_reference_intermediate,
-            // ch_reference_twostep
+            ch_reference_one,
+            ch_reference_two
         )
 
         ch_split_samples = Preprocess_Inputs.out.splitSamples
+        ch_chromosomes = Preprocess_Inputs.out.chromosomes
 
         // Prepare_Phasing(
         //     ch_samples_by_chr,
@@ -54,6 +55,7 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
 
     emit:
         splitSamples = ch_split_samples
+        chromosomes = ch_chromosomes
         reference_intermediate = ch_reference_intermediate
         reference_twostep = ch_reference_twostep
 }

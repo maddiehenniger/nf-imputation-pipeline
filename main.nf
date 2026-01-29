@@ -35,15 +35,11 @@ workflow {
         file(params.samplesheet),       // required: User-provided path to sample metadata identified in the nextflow.config file 
         file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
     )
-    // How
-    ch_chromosomes = PREPARE_INPUTS.out.chromosomes
+    ch_chromosomes   = PREPARE_INPUTS.out.chromosomes
+    ch_splitSamples  = PREPARE_INPUTS.out.splitSamples
+    ch_reference_one = PREPARE_INPUTS.out.reference_one
         .view()
-    ch_splitSamples = PREPARE_INPUTS.out.split_samples
-        .view()
-    ch_reference_intermediate = PREPARE_INPUTS.out.reference_intermediate
-        .view()
-    ch_reference_twostep = PREPARE_INPUTS.out.reference_twostep
-        .view()
+    ch_reference_two = PREPARE_INPUTS.out.reference_two
 
     // PHASE_SAMPLES performs the following:
     // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis

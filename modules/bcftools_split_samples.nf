@@ -8,7 +8,7 @@
  * @emit
  */
 
- process bcftools_view {
+ process bcftools_split_samples {
     
     label 'bcftools'
 
@@ -17,23 +17,22 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/.chromosome_validation/",
+        path:    "${params.publishDirData}/chromosome_validation/",
         mode:    "symlink"
     )
 
     input:
-        tuple val(metadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
-        val(chromosomes)
+        tuple val(metadata), val(chromosomes), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
 
     output:
-        tuple val(metadata), val(chromosome), path("${metadata.sampleID}_${chromosome}.bcf"), path("$${metadata.sampleID}_${chromosome}.bcf.csi"), emit: splitSamples
+        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}_${chromosomes}.bcf"), path("${metadata.sampleID}_${chromosomes}.bcf.csi"), emit: splitSamples
 
     script:
         """
-        bcftools view -r ${chromosome} \\
+        bcftools view -r ${chromosomes} \\
         -Ob \\
-        -o ${metadata.sampleID}_${chromosome}.bcf \\
+        -o ${metadata.sampleID}_${chromosomes}.bcf \\
         --write-index \\
-        ${samplePath}
+        ${sample}
         """
  }
