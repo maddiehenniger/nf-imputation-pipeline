@@ -1,7 +1,7 @@
 include { bcftools_identify_chromosomes } from '../modules/bcftools_identify_chromosomes.nf'
 include { bcftools_split_samples        } from '../modules/bcftools_split_samples.nf'
-include { convert_reference_to_xcf      } from '../impute5/convert_reference_to_xcf.nf'
-include { convert_reference_to_xcf as convert_reference_two_to_xcf     } from '../impute5/convert_reference_to_xcf.nf'
+include { convert_reference_to_xcf      } from '../modules//impute5/convert_reference_to_xcf.nf'
+include { convert_reference_to_xcf as convert_reference_two_to_xcf     } from '../modules/impute5/convert_reference_to_xcf.nf'
 /**
  * Index and query the number of chromosomes present in the input VCF/BCF files provided in the user-provided samplesheet and reference(s) files.
  * 
@@ -17,6 +17,7 @@ workflow Preprocess_Inputs {
         samples
         reference_one
         reference_two
+        data_type
     
     main:        
         // TODO: Index the samples if index files are not provided

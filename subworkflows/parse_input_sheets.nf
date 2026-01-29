@@ -29,8 +29,8 @@ workflow Parse_Input_Sheets {
         // Creates a channel that takes and validates input reference sheets
         Channel
             .fromList(samplesheetToList(references, "${projectDir}/assets/schema_references.json"))
-            .map { meta, referencePath, geneticMapPath -> 
-                createReferenceChannel(meta, referencePath, geneticMapPath) 
+            .map { meta, referencePath, referenceIndex, geneticMapPath -> 
+                createReferenceChannel(meta, referencePath, referenceIndex, geneticMapPath) 
             }
             .set { ch_references }
         
@@ -50,14 +50,14 @@ workflow Parse_Input_Sheets {
         reference_two = ch_ref_split.twoRound
 }
 
-
-def createReferenceChannel(meta, refPath, mapPath) {
+def createReferenceChannel(meta, refPath, refIndex, mapPath) {
     // Store metadata in a Map shallow copied from the input meta map
     metadata = meta.clone()
     // Fill in the required metadata 
     metadata.geneticMaps = mapPath.isEmpty() ? "none" : "provided"
     // Store the references in lists
     def referencePath = file(refPath)
+    def referenceIndex = file(refIndex)
     if(mapPath.isEmpty()) {
         def emptyFileName = "${refPath.simpleName}.NOFILE"
         def emptyFilePath = file("${workDir}").resolve(emptyFileName)
@@ -67,7 +67,7 @@ def createReferenceChannel(meta, refPath, mapPath) {
         geneticMapPath = file(mapPath)
     }
 
-    return [ metadata, referencePath, geneticMapPath ]
+    return [ metadata, referencePath, referenceIndex, geneticMapPath ]
 }
 
 /**

@@ -5,7 +5,7 @@
     "type": "array",
     "items": {
       "type": "object",
-      "required": ["referenceID", "referencePath", "chromosome", "imputationRound"],
+      "required": ["referenceID", "referencePath", "referenceIndex", "chromosome", "imputationRound"],
       "properties": {
         "referenceID": {
           "type": "string",
@@ -18,6 +18,12 @@
           "pattern": "^\\S+$",
           "format": "file-path",
           "errorMessage": "A BCF/VCF(.gz) file path for the respective reference must be provided, cannot contain spaces, and must have extension '.bcf' or '.vcf'/'vcf.gz'."
+        },
+        "referenceIndex": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "format": "file-path",
+          "errorMessage": "The paired indexed (CSI) file path for the associated reference must be provided, cannot contain spaces, and must match the sample file name with the extension '.csi'."
         },
         "chromosome": {
           "type": "integer",

@@ -24,21 +24,20 @@ workflow {
 
     // PREPARE_INPUTS performs the following: 
     // 1) Reads in the test sample(s), references, and optionally provided paths to genetic maps specified in the nextflow.config file
-    // 1A) Separates the reference panels based on the user-defined imputationStep ('one' for the first round of imputation, 'two' for second round of imputation)
+    // 1A) Separates the reference panels based on the user-defined imputationRound ('one' for the first round of imputation, 'two' for second round of imputation)
     // 1B) Detects if the user has provided a path to the genetic maps for downstream use 
-    // 2) Indexes the input sample(s), intermediate reference, and twostep reference
-    // 3) Extracts the unique chromosome values from each sample and reference panel, storing the chromosome values for downstream phasing/imputation
-    // 4) Separates the input test sample by chromosome and then indexes the split files
-    // 5) Converts the references to XCF file format for downstream phasing and imputation 
+    // TEMPORARILY UNAVAILABLE: 2) Indexes the input sample(s), first round reference, and the optionally provided second round reference
+    // 2) Identifies the chromosomes present in the test samples and separates the test samples by chromosome, also generating the associated indexed file
+    // 
 
     PREPARE_INPUTS(
         file(params.samplesheet),       // required: User-provided path to sample metadata identified in the nextflow.config file 
-        file(params.references)         // required: User-provided path to the reference metadata identified in the nextflow.config file 
+        file(params.references),        // required: User-provided path to the reference metadata identified in the nextflow.config file
+        params.dataType                 // required: User-provided value of either 'array' or 'lpwgs' identified in the nextflow.config file
     )
     ch_chromosomes   = PREPARE_INPUTS.out.chromosomes
     ch_splitSamples  = PREPARE_INPUTS.out.splitSamples
     ch_reference_one = PREPARE_INPUTS.out.reference_one
-        .view()
     ch_reference_two = PREPARE_INPUTS.out.reference_two
 
     // PHASE_SAMPLES performs the following:
