@@ -40,7 +40,9 @@ workflow {
     ch_reference_one = PREPARE_INPUTS.out.reference_one // Testing
     ch_reference_two = PREPARE_INPUTS.out.reference_two  // Testing
     ch_samples_one = PREPARE_INPUTS.out.samples_one
+        .view()
     ch_samples_two = PREPARE_INPUTS.out.samples_two
+        .view()
 
     // PHASE_SAMPLES performs the following:
     // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
