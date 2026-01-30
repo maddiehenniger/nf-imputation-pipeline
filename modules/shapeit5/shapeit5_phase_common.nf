@@ -22,30 +22,33 @@
     )
 
     input:
-        tuple val(chromosome), val(metadata), path(sample), path(sampleIndex), path(reference), path(referenceIndices), path(geneticMap)
+        tuple val(chromosome), val(sMetadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
         
     output:
-        tuple val(chromosome), val(metadata), path("${metadata.sampleID}.${chromosome}.phased.bcf"), path("${metadata.sampleID}.${chromosome}.phased.bcf.csi"), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        tuple val(chromosome), val(sMetadata), path("${metadata.sampleID}.${chromosome}.phased.bcf"), path("${metadata.sampleID}.${chromosome}.phased.bcf.csi"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        path("*log"), emit: phasedLog
 
     script:
-        if(metadata.geneticMaps == 'provided') {
+        if(rMetadata.geneticMaps == 'provided') {
             """
             SHAPEIT5_phase_common \\
                 ${args} \\
                 --input ${sample} \\
                 --reference ${reference} \\
                 --region ${chromosome} \\
-                --output ${meta.metadata.sampleID}.${chromosome}.phased.bcf \\
-                --map ${geneticMap}
+                --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
+                --map ${geneticMap} \\
+                --log ${sMetadata.sampleID}.${chromosome}.phased.log
             """ 
-        } else if(metadata.geneticMaps == 'none') {
+        } else if(rMetadata.geneticMaps == 'none') {
             """
             SHAPEIT5_phase_common \\
                 ${args} \\
                 --input ${sample} \\
                 --reference ${reference} \\
                 --region ${chromosome} \\
-                --output ${metadata.sampleID}.${chromosome}.phased.bcf
+                --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
+                --log ${sMetadata.sampleID}.${chromosome}.phased.log
             """
         }
  }

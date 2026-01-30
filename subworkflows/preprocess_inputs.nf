@@ -93,16 +93,9 @@ workflow Preprocess_Inputs {
                 break
         }
 
-        // Combine the round one reference files with the test samples by chromosome
-        ch_samples_one = ch_split_samples.combine(ch_reference_one, by:0)
-        // If round two is provided, combine the round two reference files with the test samples by chromosome
-        ch_samples_two = ch_split_samples.combine(ch_reference_two, by:0)
-
     emit:
-        splitSamples  = ch_split_samples // Testing
+        splitSamples  = ch_split_samples
         chromosomes   = ch_chromosomes // Testing
-        reference_one = ch_reference_one // Testing
-        reference_two = ch_reference_two // Testing
-        samples_one   = ch_samples_one
-        samples_two   = ch_samples_two
+        reference_one = ch_reference_one
+        reference_two = ch_reference_two
 }

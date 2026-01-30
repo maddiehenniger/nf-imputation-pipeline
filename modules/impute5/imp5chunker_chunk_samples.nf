@@ -10,31 +10,30 @@
 
  process imp5chunker_chunk_samples {
 
-    stageInMode 'copy'
-
     label 'med_cpu'
     label 'med_mem'
     label 'med_time'
 
     publishDir(
         path:    "${params.publishDirData}/chunked_regions/",
-        mode:    "${params.publishMode}"
+        mode:    "symlink"
     )
 
     input:
-        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath)
+        tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chr), val(meta), path(phasedSample), path(phasedIdx), path("${meta.sampleID}_${chr}_chunked_coords.txt"), val(metadata), path(xcfRefPath), path(xcfRefIdx), path(xcfRefBin), path(xcfRefFam), path(mapPath), emit: chunkedRegions
+        tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path("${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.txt"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: chunkedRegions
+        path("${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.log"), emit: chunkedLog
 
     script:
 
         """
         imp5Chunker_v1.2.0_static \\
-            --h ${xcfRefPath} \\
+            --h ${reference} \\
             --g ${phasedSample} \\
-            --r ${chr} \\
-            --l ${meta.sampleID}_chunking.log \\
-            --o ${meta.sampleID}_${chr}_chunked_coords.txt
+            --r ${chromosome} \\
+            --l ${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.log \\
+            --o ${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.txt
         """
  }

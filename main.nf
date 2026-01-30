@@ -36,12 +36,20 @@ workflow {
         params.dataType                 // required: User-provided value of either 'array' or 'lpwgs' identified in the nextflow.config file
     )
     // ch_chromosomes   = PREPARE_INPUTS.out.chromosomes // Testing
-    // ch_splitSamples  = PREPARE_INPUTS.out.splitSamples // Testing
-    ch_reference_one = PREPARE_INPUTS.out.reference_one // Testing
-    ch_reference_two = PREPARE_INPUTS.out.reference_two  // Testing
-    ch_samples_one = PREPARE_INPUTS.out.samples_one
+    ch_splitSamples  = PREPARE_INPUTS.out.splitSamples
+    ch_reference_one = PREPARE_INPUTS.out.reference_one
+    ch_reference_two = PREPARE_INPUTS.out.reference_two
+
+    // PHASE_IMPUTE performs the following:
+    PHASE_IMPUTE(
+        ch_splitSamples,
+        ch_reference_one,
+        ch_reference_two
+    )
+
+    ch_phased_samples = PHASE_IMPUTE.out.phasedSamples
         .view()
-    ch_samples_two = PREPARE_INPUTS.out.samples_two
+    ch_phased_samples_two = PHASE_IMPUTE.out.phasedSamplesTwo
         .view()
 
     // PHASE_SAMPLES performs the following:
