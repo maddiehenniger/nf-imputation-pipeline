@@ -1,15 +1,20 @@
 include { bcftools_identify_chromosomes } from '../modules/bcftools_identify_chromosomes.nf'
-include { bcftools_split_samples        } from '../modules/bcftools_split_samples.nf'
-include { convert_reference_to_xcf      } from '../modules//impute5/convert_reference_to_xcf.nf'
-include { convert_reference_to_xcf as convert_reference_two_to_xcf     } from '../modules/impute5/convert_reference_to_xcf.nf'
+include { bcftools_split_samples } from '../modules/bcftools_split_samples.nf'
+include { convert_reference_to_xcf } from '../modules/impute5/convert_reference_to_xcf.nf'
+include { convert_reference_to_xcf as convert_reference_two_to_xcf } from '../modules/impute5/convert_reference_to_xcf.nf'
+include { glimpse2_chunk } from '../modules/glimpse2/glimpse2_chunk.nf'
+include { glimpse2_split_reference } from '../modules/glimpse2/glimpse2_split_reference.nf'
 /**
- * Index and query the number of chromosomes present in the input VCF/BCF files provided in the user-provided samplesheet and reference(s) files.
+ * Preprocess_Inputs:
+ * For test samples: Identifes the number of chromosomes present in the test samples and then splits the samples by chromosome, providing the associated index.
+ * For references: If the test samples are array genotypes, the reference panel (for both rounds) is converted to XCF format. 
+ *                 If the test samples are from low-pass WGS, the reference panel is chunked into imputation/buffer regions and then converted to GLIMPSE2-binary format.
  * 
- * Tuples the VCF/BCF file and associated index together for downs
- * Wrangles the input samples into the format of channels expected by downstream processes.
+ * Then, test samples are tupled together by chromosome with their appropriate reference panel to ensure proper imputation.
+ * The resultant channel is wrangled into the format expected for downstream processes. 
  *
- * @take samples, references - A LinkedHashMap containing the metadata, file path to VCF/BCF, and file path to the associated indexed VCF/BCF file. 
- * @emit chromosomes - chromosome numbers present in a respective file.
+ * @take 
+ * @emit 
  **/
 
 workflow Preprocess_Inputs {
@@ -17,15 +22,16 @@ workflow Preprocess_Inputs {
         samples
         reference_one
         reference_two
-        data_type
+        dataType
     
     main:        
-        // TODO: Index the samples if index files are not provided
+        // TODO: Detect if the indexed files are present for test samples and references. If yes, skip indexing. If not, index.
 
         // Identify the chromosomes present in each sample
         bcftools_identify_chromosomes(
             samples
         )
+        // Wrangles the output to add chromosome information into the channel
         bcftools_identify_chromosomes.out            
             .flatMap { meta, chrom_string, samplePath, sampleIndex, wgsPath, wgsIndex ->
                 def chrom_list = chrom_string.trim().split('\n')
@@ -37,24 +43,26 @@ workflow Preprocess_Inputs {
             }
             .set { ch_chromosomes }
 
-        // Split samples by chromosome
+        // Split samples by chromosome using bcftools view
         bcftools_split_samples(
             ch_chromosomes
         )
 
+        // Change the chromosome value to string for downstream merging
         bcftools_split_samples.out.splitSamples.map { meta, chr, sample, sampleIdx, wgs, wgsIdx ->
-            [ chr.toString(), meta, sample, sampleIdx, wgs, wgsIndex ]
+            [ chr.toString(), meta, sample, sampleIdx, wgs, wgsIdx ]
         }
         .set { ch_split_samples }
 
         // Prepare reference panels for imputation
-        switch( data_type.toUpperCase() ) {
+        switch( dataType.toUpperCase() ) {
             // If the input samples are specified to be arrays, the reference panels are converted to XCF
             case 'ARRAY':
                 // Convert the reference identified for "round one" of imputation to XCF format
                 convert_reference_to_xcf(
                     reference_one
                 )
+                // Wrangles the channel to convert the chromosome to a string, and flattens the XCF assocaited files together
                 convert_reference_to_xcf.out.xcfReference.map { meta, refPath, refIdx, refBin, refFam, mapPath ->
                     [ meta.chromosome.toString(), meta, refPath, [refIdx, refBin, refFam].flatten(), mapPath ]
                 }
@@ -64,11 +72,14 @@ workflow Preprocess_Inputs {
                 convert_reference_two_to_xcf(
                     reference_two
                 )
+                // Wrangles the channel to convert the chromosome to a string, and flattens the XCF assocaited files together
                 convert_reference_two_to_xcf.out.xcfReference.map { meta, refPath, refIdx, refBin, refFam, mapPath ->
                     [ meta.chromosome.toString(), meta, refPath, [refIdx, refBin, refFam].flatten(), mapPath ]
                 }
                 .set { ch_reference_two }
-            
+                break
+
+            // If the input samples are specified to be from low-pass WGS, the reference panels are assessed for imputation/buffer regions (chunked) and then converted to GLIMPSE2 binary format
             case 'LPWGS':
                 glimpse2_chunk(
                     reference_one
@@ -82,7 +93,9 @@ workflow Preprocess_Inputs {
                 break
         }
 
+        // Combine the round one reference files with the test samples by chromosome
         ch_samples_one = ch_split_samples.combine(ch_reference_one, by:0)
+        // If round two is provided, combine the round two reference files with the test samples by chromosome
         ch_samples_two = ch_split_samples.combine(ch_reference_two, by:0)
 
     emit:

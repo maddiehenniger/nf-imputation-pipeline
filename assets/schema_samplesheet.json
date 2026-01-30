@@ -10,7 +10,7 @@
       "sampleID": {
         "type": "string",
         "pattern": "^\\S+$",
-        "errorMessage": "A user-provided sample ID must be provided and cannot contain spaces.",
+        "errorMessage": "A user-provided unique sample ID must be provided and cannot contain spaces.",
         "meta": "sampleID"
       },
       "samplePath": {

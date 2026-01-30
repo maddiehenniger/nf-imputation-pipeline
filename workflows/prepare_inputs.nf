@@ -14,7 +14,7 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
     take:
         samplesheet
         references
-        data_type
+        dataType
 
     main:
         Parse_Input_Sheets(
@@ -40,7 +40,7 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
             ch_samples,
             ch_reference_one,
             ch_reference_two,
-            data_type
+            dataType
         )
 
         ch_samples_one = Preprocess_Inputs.out.samples_one
@@ -56,8 +56,8 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
         // ch_twostep_ref_xcf             = Prepare_Phasing.out.twostep_ref_xcf
 
     emit:
-        splitSamples = ch_split_samples // Testing
-        chromosomes = ch_chromosomes // Testing
+        // splitSamples = ch_split_samples // Testing
+        // chromosomes = ch_chromosomes // Testing
         reference_one = ch_reference_one // Testing
         reference_two = ch_reference_two // Testing
         samples_one = ch_samples_one
