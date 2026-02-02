@@ -1,4 +1,4 @@
-include { shapeit5_phase_samples } from '../modules/shapeit5/shapeit5_phase_samples.nf'
+include { shapeit5_phase_common } from '../modules/shapeit5/shapeit5_phase_common.nf'
 include { imp5chunker_chunk_samples } from '../modules/impute5/imp5chunker_chunk_samples.nf'
 include { impute5_impute_samples } from '../modules/impute5/impute5_impute_samples.nf'
 /**
@@ -15,10 +15,10 @@ workflow Phase_Impute_Array {
 
     main:
         // Phase samples to the reference defined as round 'one'
-        shapeit5_phase_samples(
+        shapeit5_phase_common(
             split_samples
         )
-        ch_phased_samples = shapeit5_phase_samples.out.phasedSamples
+        ch_phased_samples = shapeit5_phase_common.out.phasedSamples
         
         // If round two is provided, combine the round two reference files with the test samples by chromosome
         ch_phased_two = ch_phased_samples.combine(reference_two, by:0)
@@ -26,11 +26,11 @@ workflow Phase_Impute_Array {
                 tuple(chr, sampleMetadata, phasedSample, phasedIndex, referenceMetadata, reference2, referenceIndices2, geneticMap2)
             }
 
-        // // Identifying imputation and buffer regions
-        // imp5chunker_chunk_samples(
-        //     ch_phased_samples
-        // )
-        // ch_chunked_regions = imp5chunker_chunk_samples.out.chunkedRegions
+        // Identifying imputation and buffer regions
+        imp5chunker_chunk_samples(
+            ch_phased_samples
+        )
+        ch_chunked_regions = imp5chunker_chunk_samples.out.chunkedRegions
 
         // // Perform imputation with IMPUTE5
         // impute5_impute_samples(

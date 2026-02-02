@@ -1,18 +1,27 @@
-include { Phase_Impute_Array      } from "../subworkflows/phase_impute_array.nf"
-include { Perform_Imputation      } from "../subworkflows/perform_imputation.nf"
+include { Phase_Impute_Array } from "../subworkflows/phase_impute_array.nf"
 
 workflow PHASE_IMPUTE {
     take:
-        splitSamples
+        samples_one
         reference_one
         reference_two
+        dataType
 
     main:
-        Phase_Impute_Array(
-            splitSamples,
-            reference_one,
-            reference_two
-        )
+
+        if(dataType == 'array') {
+            Phase_Impute_Array(
+                samples_one,
+                reference_one,
+                reference_two
+            )
+         } else if (dataType == 'lpwgs'){
+            Phase_Impute_Lpwgs(
+                samples_one,
+                reference_one,
+                reference_two
+            )
+        }
 
         ch_phased_samples = Phase_Impute_Array.out.phasedSamples
         ch_phased_samples_two = Phase_Impute_Array.out.phasedSamplesTwo
