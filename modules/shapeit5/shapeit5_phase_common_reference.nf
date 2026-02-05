@@ -8,7 +8,7 @@
  * @emit
  */
 
- process shapeit5_phase_common {
+ process shapeit5_phase_common_reference {
     
     label 'shapeit5'
 
@@ -29,6 +29,9 @@
         path("*log"), emit: phasedLog
 
     script:
+
+        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
+
         if(rMetadata.geneticMaps == 'provided') {
             """
             SHAPEIT5_phase_common \\

@@ -25,8 +25,10 @@ workflow PHASE_IMPUTE {
 
         ch_phased_samples = Phase_Impute_Array.out.phasedSamples
         ch_phased_samples_two = Phase_Impute_Array.out.phasedSamplesTwo
+        ch_imputed_samples = Phase_Impute_Array.out.imputedSamples
 
     emit:
         phasedSamples = ch_phased_samples
         phasedSamplesTwo = ch_phased_samples_two
+        imputedSamples = ch_imputed_samples
 }

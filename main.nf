@@ -48,8 +48,8 @@ workflow {
     )
 
     ch_phased_samples = PHASE_IMPUTE.out.phasedSamples
-        .view()
     ch_phased_samples_two = PHASE_IMPUTE.out.phasedSamplesTwo
+    ch_imputed_samples = PHASE_IMPUTE.out.imputedSamples
         .view()
 
     // PHASE_SAMPLES performs the following:
