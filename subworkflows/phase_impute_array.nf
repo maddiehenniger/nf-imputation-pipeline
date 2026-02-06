@@ -1,5 +1,6 @@
 include { bcftools_index_phased } from '../modules/shapeit5/bcftools_index_phased.nf'
 include { bcftools_ligate_chromosomes } from '../modules/impute5/bcftools_ligate_chromosomes.nf'
+include { bcftools_ligate_chromosomes as bcftools_ligate_chromosomes_again  } from '../modules/impute5/bcftools_ligate_chromosomes.nf'
 include { shapeit5_phase_common_noref } from '../modules/shapeit5/shapeit5_phase_common_noref.nf'
 include { shapeit5_phase_common_reference } from '../modules/shapeit5/shapeit5_phase_common_reference.nf'
 include { shapeit4_phase_common_noref } from '../modules/shapeit5/shapeit4_phase_common_noref.nf'

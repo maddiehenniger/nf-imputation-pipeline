@@ -31,6 +31,7 @@ workflow Preprocess_Inputs {
         bcftools_identify_chromosomes(
             samples
         )
+        
         // Wrangles the output to add chromosome information into the channel
         bcftools_identify_chromosomes.out            
             .flatMap { meta, chrom_string, samplePath, sampleIndex, wgsPath, wgsIndex ->
@@ -48,8 +49,12 @@ workflow Preprocess_Inputs {
             ch_chromosomes
         )
 
+        // Make sure the AC/AN tags are filled
+        bcftools_fill_tags(
+            ch_chromosomes
+        )
         // Change the chromosome value to string for downstream merging
-        bcftools_split_samples.out.splitSamples.map { meta, chr, sample, sampleIdx, wgs, wgsIdx ->
+        bcftools_fill_tags.out.filledTags.map { meta, chr, sample, sampleIdx, wgs, wgsIdx ->
             [ chr.toString(), meta, sample, sampleIdx, wgs, wgsIdx ]
         }
         .set { ch_split_samples }

@@ -57,7 +57,8 @@ workflow {
         ch_reference_one,
         ch_reference_two,
         params.dataType,
-        params.phasingModel
+        params.phasingModel,
+        params.glimpse2Model
     )
 
     ch_imputed_samples_one = PHASE_IMPUTE.out.imputedSamplesOne

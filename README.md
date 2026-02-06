@@ -69,7 +69,8 @@ The reference metadata should be a comma-delimited file (.CSV) containing five c
 The user may choose to optionally supply genetic maps containing recombination rates on a per-chromosome basis. The genetic maps are a tab-delimited file ending in `.gmap` that consists of 3 columns: pos / chr / cM:
 - pos: The position in bases on the chromosome (must be in bases, not in mb, kb, etc.)
 - chr: The chromosome number
-- cM: Measure in centimorgans (cM) of how often recombination happens. 
+- cM: Measure in centimorgans (cM) of how often recombination happens
+
 If the genetic maps provided are not in this format, the tools will be unable to conduct phasing and imputation using the genetic maps and will return error messages.
 
 ### The Configuration File
@@ -89,7 +90,7 @@ These configuration inputs allows the pipeline to classify the pipeline by proje
 
 ### Modifying Parameters for Phasing and Imputation
 
-Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. All parameters provided in the `/conf/args.config` file are the default arguments for phasing and imputation. If the user would like to perform parameter exploration or modification, the defaults may be modified. Please note that parameter modification may be critical to improving the user's imputation accuracy.
+Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. All parameters provided in the `/conf/args.config` file are the default arguments for phasing and imputation. If the user would like to perform parameter exploration or modification, the defaults may be modified. Further, if there is a specific argument the user would like to add that exists for the tool but is not provided here, the user may add it here. Please note that parameter modification may be critical to improving the user's imputation accuracy.
 
 We provide an example, using the process labeled 'shapeit5_phase_common', which runs SHAPEIT5's phase_common. Located within the `conf/args.config` file, there are a number of default parameters specified by SHAPEIT5.
 
@@ -100,7 +101,7 @@ We provide an example, using the process labeled 'shapeit5_phase_common', which 
     withName: 'shapeit5_phase_samples' {
         ext.argsDefault = [
             // Filter Parameters
-            '--filter-snp': 'NA', // NA if specified, the program only considers SNPs
+            // '--filter-snp': ' ', // NA if specified, the program only considers SNPs
             '--filter-maf': '0', // FLOAT only consider variants with MAF above the specified value. It requires AC/AN tags in VCF/BCF file
             // MCMC Parameters - Expert
             '--mcmc-iterations': '5b,1p,1b,1p,1b,1p,5m', // STRING iteration scheme of the MCMC (burnin=b, pruning=p, main=m)
@@ -127,14 +128,19 @@ To modify these parameters, adjust the value after the semicolon, as shown below
 
 Keep in mind that the user-supplied values still must fall in the range of accepted values for the parameter (e.g., `--pbwt-window` must be in the range of 0.5 and 10 cM). Please note that the default values do not necessarily represent an optimal value for phasing and imputation, and modifying parameters can alter the accuracy of imputation and therefore appropriate parameter exploration should be conducted to determine ideal values within the user's testing population.
 
+### Preparing to Run on a Cluster
+
+The current implementation of this pipeline assumes that the pipeline is being ran on SLURM-based HPC and is specialized for the University of Tennessee's HPC (ISAAC). ISAAC maintains Apptainer/Singularity in addition to Nextflow on the cluster. If not planning to run this on ISAAC, some configurations will need to be set up by the user. Please make sure Apptainer/Singularity and Nextflow are maintained in some fashion on the user's system before attempting to run the pipeline, and that the SLURM scheduler is set up correctly.
+
+See `/conf/isaac.config`, where the user's account, partition, and condo may be specified in addition to resource usage. Resources are additionally stored in the `/conf/resources.config` file. Once configurations are appropriately set up, the user may then create a bash script to run the Nextflow pipeline, for example at the basic level: `nextflow run main.nf -profile PROFILE_HERE -plugins nf-schema@2.1.0`. Renaming or moving files within the `nf-imputation-pipeline` directories will nearly always cause the pipeline to fail.
+
+Additional arguments may be added to `nextflow run`, such as `-qs` to limit the number of submissions (ex: `-qs 5` would submit manage 5 jobs at a time), or `-resume` to use cached files to start at a later step, if the pipeline exits and can be resumed.
+
 ## Detailed Walkthrough of the Workflow
 
 The following sections will detail the processes executed by each workflow in the Nextflow `main.nf` script.
 
 ### PREPARE_INPUTS
-
-
-
 
 ### Phasing Test Samples to the Reference Population
 

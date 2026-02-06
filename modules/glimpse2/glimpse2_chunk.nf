@@ -21,14 +21,18 @@
 
     input:
         tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap)
-        // val model // Need to add this back in later prob in the args
+        val glimpse2Model
 
     output:
         tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("${metadata.referenceID}.chunks.${metadata.chromosome}.txt"), emit: chunkedRegions
 
     script:
+        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
+
         """
         GLIMPSE2_chunk_static \\
+            ${args} \\
+            ${glimpse2Model} \\
             --threads ${task.cpus} \\
             -I ${reference} \\
             --region ${metadata.chromosome} \\

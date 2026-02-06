@@ -7,6 +7,7 @@ workflow PHASE_IMPUTE {
         reference_two
         dataType
         phasingModel
+        glimpse2Model
 
     main:
 
@@ -21,7 +22,7 @@ workflow PHASE_IMPUTE {
             Phase_Impute_Lpwgs(
                 samples_one,
                 reference_one,
-                reference_two
+                glimpse2Model
             )
         }
 
