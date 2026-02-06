@@ -37,7 +37,7 @@ Navigate into the cloned respository.
 cd nf-imputation-pipeline
 ```
 
-Modify the `nextflow.config` file to provide paths to your metadata sheets and supply a project title. 
+Modify the `nextflow.config` file to provide paths to your metadata sheets and supply a project title. Please make sure to fill out the appropriate information required for the pipeline to run.
 
 ### Required Input Files
 
@@ -47,37 +47,51 @@ The pipeline will automatically detect where your sample(s), reference(s), and o
 
 #### Sample and Reference Files and Metadata
 
-The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples currently must have the AC/AN tags filled before supplying to the pipeline. The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers. The test samples are assumed to be unphased and there is currently no option to skip phasing. There should be one file per sample - specifically, each sample should not be split by chromosome.
+The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples currently must have the AC/AN tags filled before supplying to the pipeline. The indexed file must be provided and are assumed to have the same naming scheme as the test sample. The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers, unless no markers exist for the region specified. The test samples are assumed to be unphased and there is currently no option to skip phasing. The input test sample(s) should not be split by chromosome as the pipeline will detect chromosomes from samples and split accordingly.
 
 The sample metadata should be a comma-delimited file (.CSV) containing two columns: sampleName, samplePath
-- sampleName: [required] A string with no spaces containing the user-defined name of the sample with no file extensions (ex: sample_1)
-- samplePath: [required] A string in the form of a file path to where the associated sample is located in your directory; this should end with the file extension (ex: /path/to/sample/sample_1.vcf.gz)
+- sampleName: [required] A string with no spaces containing the user-defined name of the sample with no file extensions (ex: samples_1)
+- samplePath: [required] A file path to where the associated sample is located in your file system; this should end with the file extension `.bcf`, `.vcf`, or `.vcf.gz` (ex: `/path/to/sample/sample_1.vcf.gz`)
+- sampleIndex: [required] A file path to where the associated sample's indexed file is located in your file system; this should end with the file extension `.csi` (ex: `/path/to/sample/sample_1.vcf.gz.csi`)
+- wgsPath: [optional] If available, a file path to where the associated sample's whole genome sequencing sample is located in your file system; this should end with the file extension `.bcf`, `.vcf`, or `.vcf.gz`. (ex: `/path/to/samples/sample_wgs_1.bcf`) - this is treated as a "ground truth" sample to enable testing of imputation accuracies
+- wgsIndex: [optional] If available, a file path to where the associated indexed file for the sample's whole genome sequencing sample is located in your file system; this should end with the file extension `.csi`. Note that if you're providing a `wgsPath`, the `wgsIndex` is required. (ex: `/path/to/samples/sample_wgs_1.bcf.csi`)
 
 The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. The reference panels must be provided on a by-chromosome basis. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance.
 
 The reference metadata should be a comma-delimited file (.CSV) containing five columns: referenceName, referencePath, chromosome, imputationStep, geneticMapPath
-- referenceName: [required] A string with no spaces contianing the user-defined name of the reference panel with no file extensions (ex: HD_panel)
-- referencePath: [required] A string in the form of a file path to where the associated reference panel is located in your directory; this should end with the file extension BCF/VCF(.gz) (ex: /path/to/reference/HD_panel.bcf)
+- referenceName: [required] A string with no spaces containing the user-defined name of the reference panel with no file extensions (ex: reference_chr1)
+- referencePath: [required] A file path to where the associated reference panel is located in your file system; this should end with the file extension BCF/VCF(.gz). (ex: `/path/to/reference/reference_panel_chr1.bcf`)
+- referenceIndex: [required] A file path to where the associated indexed file for the reference panel is located in your file system; this should end with the file extension `.csi`. (ex: `/path/to/reference/reference_panel_chr1.bcf.csi`)
 - chromosome: [required] An integer in the form of a numerical value to the associated chromosome for the reference panel; at this time, sex chromosome values are not accepted
-- imputationStep: [required] A string containing one of the following: one or two; one corresponds to the intermediate imputation step, and two corresponds to sequence-level imputation
-- geneticMapPath: [optional] A string in the form of a file path to where the associated genetic maps for the specific chromosome are located, ending with the file extension gmap; if the genetic map is not provided, then the default 1 cM/Mb recombination rate is used for downstream phasing and imputation 
+- imputationRound: [required] A string containing one of two values: either `one` or `two` - one should correspond to the reference panels used for the first round of imputation and two should correspond to the reference panel to use for the second round of imputation, if applicable. If only performing one round of imputation, the user does not have to supply a `two` value
+- geneticMapPath: [optional] A file path to where the associated genetic maps for the specific chromosome are located in your file system, ending with the file extension gmap; if the genetic map is not provided, then the default 1 cM/Mb recombination rate is used for downstream phasing and imputation processes
 
 The user may choose to optionally supply genetic maps containing recombination rates on a per-chromosome basis. The genetic maps are a tab-delimited file ending in `.gmap` that consists of 3 columns: pos / chr / cM:
 - pos: The position in bases on the chromosome (must be in bases, not in mb, kb, etc.)
 - chr: The chromosome number
-- cM: Measure in centimorgans (cM) of how often recombination happens. If the genetic maps provided are not in this format, the tools will be unable to conduct phasing and imputation using the genetic maps and will return error messages.
+- cM: Measure in centimorgans (cM) of how often recombination happens. 
+If the genetic maps provided are not in this format, the tools will be unable to conduct phasing and imputation using the genetic maps and will return error messages.
 
 ### The Configuration File
 
-The `nextflow.config` file is where the workflow configurations are located. The configuration file is automatically detected by Nextflow, provided it is not moved from within the project launch directory. The user must modify the configuration file in order for the pipeline to run. The configuration file is built for the intention of running on a SLURM-based system. Before running the pipeline, the user must modify the `nextflow.config` file. This file must be modified to supply the `projectTitle`, path to the `samplesheet` (containing the test sample metadata), and path to the `references` (containing the reference panel metadata). These inputs allows the pipeline to classify the pipeline by project, locate input test samples, and locate reference panels and which imputation step they will be used for.
+The `nextflow.config` file is where the workflow configurations are located. The configuration file is automatically detected by Nextflow, provided it is not moved from within the project launch directory. The user must modify the configuration file in order for the pipeline to run. The configuration file is built for the intention of running on a SLURM-based system. Before running the pipeline, the user must modify the `nextflow.config` file. 
+
+The following "Input/Output Options" should be filled: supply a user-defined `projectTitle` (ex: `nf-project-imputation`, `henniger-dissertation-testing`, etc.), path to the `samplesheet` (containing the test sample metadata, ex: `/path/to/samplesheet.csv`, `samplesheet.csv`), the `dataType` of either value 'array' or 'lpwgs' (where your input data is either array genotypes or low-pass whole genome sequencing data), and the path to the `references` (containing the reference panel metadata, ex: `/path/to/references_metadata.csv`, `references.csv`). Please note that the default value of `dataType` is 'array'.
+
+If the user's input data is 'array', please select which SHAPEIT parameters to use for phasing. It is up to the user to determine the appropriate phasing parameters for the input test samples by reviewing literature and best practices with tools. A brief summary of the different options for this step are provided. These include three values that correspond to three scenarios that are described below: 'use_reference','no_reference', or 'shapeit4_no_reference'.
+- 'use_reference' : SHAPEIT5_phase_common will run to perform phasing, using the reference panel declared with round 'one' for informing phasing. Note that SHAPEIT5 will only phase where there are overlapping markers present in the reference panel, meaning that if the input sample's variants do not overlap with the reference panel, these variants will be removed. In the case zero variants are present for a region, SHAPEIT5 errors will cause the pipeline to exit.
+- 'no_reference' : SHAPEIT5_phase_common will run to perform phasing, without using the reference panel for informing phasing. If the user supplies an input file with <50 individuals, this will return an error by SHAPEIT5 stating that you should use a reference to inform phasing. This error will cause the pipeline to exit as the pipeline will not be able to perform imputation. If applicable and the user must perform phasing without a reference panel and cannot increase the number of input individuals, please refer to the 'shapeit4_no_reference' for the workaround scenario.
+- 'shapeit4_no_reference' : SHAPEIT4 will run to perform phasing, without using the reference panel for informing phasing. This option allows the user to bypass the error in the 'no_reference' scenario regarding the number of input individuals (if the user has <50 input test individuals). 
+
+If the user's input dataType is 'lpwgs', the user must provide the 'phasingModel' for GLIMPSE2_chunk. The input must be of value 'recursive' or 'sequential'. See the GLIMPE2_chunk documentation for more information.
+
+These configuration inputs allows the pipeline to classify the pipeline by project, locate input test samples, locate reference panels, and allow user flexibility for managing phasing and imputation parameters.
 
 ### Modifying Parameters for Phasing and Imputation
 
-Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. 
+Within the `/conf/args.config` file, the modules run throughout the pipeline will have their additional parameters available for the user to modify. All parameters provided in the `/conf/args.config` file are the default arguments for phasing and imputation. If the user would like to perform parameter exploration or modification, the defaults may be modified. Please note that parameter modification may be critical to improving the user's imputation accuracy.
 
-All parameters provided in the `/conf/args.config` file are the default arguments for phasing and imputation. If the user would like to perform parameter exploration or modification, the defaults may be modified. 
-
-For example, using the process labeled 'shapeit5_phase_samples', which runs SHAPEIT5's phase_common, there are a number of parameters provided, as shown below.
+We provide an example, using the process labeled 'shapeit5_phase_common', which runs SHAPEIT5's phase_common. Located within the `conf/args.config` file, there are a number of default parameters specified by SHAPEIT5.
 
 ```
 // SHAPEIT5 phase_common parameters

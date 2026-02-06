@@ -6,6 +6,7 @@ workflow PHASE_IMPUTE {
         reference_one
         reference_two
         dataType
+        phasingModel
 
     main:
 
@@ -13,7 +14,8 @@ workflow PHASE_IMPUTE {
             Phase_Impute_Array(
                 samples_one,
                 reference_one,
-                reference_two
+                reference_two,
+                phasingModel
             )
          } else if (dataType == 'lpwgs'){
             Phase_Impute_Lpwgs(
@@ -23,12 +25,11 @@ workflow PHASE_IMPUTE {
             )
         }
 
-        ch_phased_samples = Phase_Impute_Array.out.phasedSamples
-        ch_phased_samples_two = Phase_Impute_Array.out.phasedSamplesTwo
-        ch_imputed_samples = Phase_Impute_Array.out.imputedSamples
+        ch_imputed_one = Phase_Impute_Array.out.ligatedSamples
+        ch_imputed_two = Phase_Impute_Array.out.ligatedSamplesTwo
 
     emit:
-        phasedSamples = ch_phased_samples
-        phasedSamplesTwo = ch_phased_samples_two
-        imputedSamples = ch_imputed_samples
+        // phasedSamples = ch_phased_samples
+        imputedSamplesOne = ch_imputed_one
+        imputedSamplesTwo = ch_imputed_two
 }

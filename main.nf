@@ -15,6 +15,7 @@ nextflow.enable.dsl=2
 
 // include custom workflows
 include { PREPARE_INPUTS                            } from "./workflows/prepare_inputs.nf"
+include { PHASE_IMPUTE } from "./workflows/phase_impute.nf"
 // include { PHASE_SAMPLES                             } from "./workflows/phase_samples.nf"
 // include { IMPUTE_SAMPLES as FIRST_ROUND_IMPUTATION  } from "./workflows/impute_samples.nf"
 // include { IMPUTE_SAMPLES as SECOND_ROUND_IMPUTATION } from "./workflows/impute_samples.nf"
@@ -36,70 +37,33 @@ workflow {
         params.dataType                 // required: User-provided value of either 'array' or 'lpwgs' identified in the nextflow.config file
     )
     // ch_chromosomes   = PREPARE_INPUTS.out.chromosomes // Testing
-    ch_splitSamples  = PREPARE_INPUTS.out.splitSamples
+    ch_samples_one   = PREPARE_INPUTS.out.samples_one
     ch_reference_one = PREPARE_INPUTS.out.reference_one
     ch_reference_two = PREPARE_INPUTS.out.reference_two
 
     // PHASE_IMPUTE performs the following:
+    // Note: If genetic maps are provided with the reference metadata, the genetic maps will be used for the following steps
+    // A) For 'array' dataTypes:
+    // A1) Samples are phased using the user-selected SHAPEIT phasingModel 
+    // A2) Phased samples and round one references are used to 'chunk' the chromosomes into imputation and buffer regions for efficient downstream imputation
+    // A3) Phased samples are imputed to the round one reference in the generated imputation chunked regions
+    // A4) Round one imputed chunked regions are ligated back together to produce one round-one imputed sample per chromosome
+    // A5) If round two reference panels are provided in the reference metadata, steps A2-A4 are repeated again, using the round-one imputed samples to impute to the round two reference panel
+    //      A5-A2) Round-one imputed samples and round two references are used to 'chunk' the chromosomes into imputation and buffer regions
+    //      A5-A3) Round-one imputed samples are imputed to the round two reference in the generated imputation chunked regions
+    //      A5-A4) Round two imputed chunked regions are ligated back together to produce one round-two imputed sample per chromosome
     PHASE_IMPUTE(
-        ch_splitSamples,
+        ch_samples_one,
         ch_reference_one,
-        ch_reference_two
+        ch_reference_two,
+        params.dataType,
+        params.phasingModel
     )
 
-    ch_phased_samples = PHASE_IMPUTE.out.phasedSamples
-    ch_phased_samples_two = PHASE_IMPUTE.out.phasedSamplesTwo
-    ch_imputed_samples = PHASE_IMPUTE.out.imputedSamples
+    ch_imputed_samples_one = PHASE_IMPUTE.out.imputedSamplesOne
         .view()
-
-    // PHASE_SAMPLES performs the following:
-    // 1) Phases the test sample(s) to the intermediate (imputationStep: 'one') reference panel on a chromosome-by-chromosome basis
-    //      Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
-    //      If a genetic map is not provided, SHAPEIT5 uses a default 1 cm/Mb recombination rate 
-    // 2) Indexes the phased test sample(s) per chromosome
-
-    // PHASE_SAMPLES(
-    //    ch_prepare_phasing_samples       // channel: [ chr, [ sampleID ], samplePath, sampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
-    // )
-    // ch_phased_samples = PHASE_SAMPLES.out.indexed_phased_pair
-
-    // INTERMEDIATE_IMPUTATION performs the following:
-    // 1) Chunks the samples by chromosome to prepare for imputation
-    // 2) Imputes the samples to the intermediate reference panel
-        // Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
-        // If a genetic map is not provided, IMPUTE5 uses a default 1 cM/Mb recombination rate
-    // 3) Ligates the chunked regions for imputed samples together to generate one BCF per input sample
-    // 3A) First, ligates on chromosome-by-chromosome basis
-    // 3B) Second, ligates all chromosomes together on a sample-by-sample basis
-    // 4) Indexes the imputed sample and generates summary statistics
-    // 4A) By-chromosome samples are indexed and used for input to the second round of imputation
-    // 4B) Ligated samples are separated to generate summary statistics for the first round of imputation 
-
-    // FIRST_ROUND_IMPUTATION(
-    //     ch_phased_samples              // channel: [ chr, [ sampleID ], phasedSample, phasedSampleIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
-    // )
-
-    // Join the output samples that are imputed by the reference panel specified for the first round of imputation with the reference panels specified for the second round of imputation 
-    // FIRST_ROUND_IMPUTATION.out.imputed_samples_by_chr
-    //     .join(ch_twostep_ref_xcf)
-    //     .set { ch_intermediate_imputed_samples }
-
-    // TWOSTEP_IMPUTATION performs the following:
-    // 1) Chunks the first-round imputed samples by chromosome to prepare for the second round of imputation
-    // 2) Imputes the samples to the reference panel specified for the second round of imputation
-        // Note: If a genetic map is provided, the pipeline will supply that to the genetic map parameter
-        // If a genetic map is not provided, IMPUTE5 uses a default 1 cM/Mb recombination rate 
-    // 3) Ligates teh chunked regions for the second round of imputed samples together to generate one BCF per input sample
-    // 3A) First, ligates on a chromosome-by-chromosome basis
-    // 3B) Second, ligates all chromosomes together on a sample-by-sample basis
-    // 4) Indexes the imputed sample and generates summary statistcs
-
-    // SECOND_ROUND_IMPUTATION(
-    //     ch_intermediate_imputed_samples      // channel: [ chr, [ sampleID ], imputedSampleByChr, imputedSampleByChrIdx, [ referenceID, chromosome, imputationStep, geneticMaps ], xcfReferencePath, xcfReferenceIdx, xcfReferenceBin, xcfReferenceFam, geneticMapPath ]
-    // )
-
-    // SECOND_ROUND_IMPUTATION.out.imputed_samples_by_chr
-    //     .view()
+    ch_imputed_samples_two = PHASE_IMPUTE.out.imputedSamplesTwo
+        .view()
 
     // If the user specifies in the nextflow.config that they would like to calculate imputation accuracies, the pipeline will run the following:
     // CALCULATE_ACCURACY performs the following:

@@ -24,7 +24,6 @@
 
     output:
         tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path("${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.txt"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: chunkedRegions
-        path("${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.log"), emit: chunkedLog
 
     script:
 
@@ -33,7 +32,6 @@
             --h ${reference} \\
             --g ${phasedSample} \\
             --r ${chromosome} \\
-            --l ${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.log \\
             --o ${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.txt
         """
  }
