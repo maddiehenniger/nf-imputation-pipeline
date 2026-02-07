@@ -1,4 +1,5 @@
 include { bcftools_index_ligated } from '../modules/impute5/bcftools_index_ligated.nf'
+include { bcftools_index_ligated as bcftools_index_ligated_again } from '../modules/impute5/bcftools_index_ligated.nf'
 include { bcftools_index_phased } from '../modules/shapeit5/bcftools_index_phased.nf'
 include { bcftools_ligate_chromosomes } from '../modules/impute5/bcftools_ligate_chromosomes.nf'
 include { bcftools_ligate_chromosomes as bcftools_ligate_chromosomes_again  } from '../modules/impute5/bcftools_ligate_chromosomes.nf'
@@ -72,23 +73,26 @@ workflow Phase_Impute_Array {
         bcftools_ligate_chromosomes(
             ch_imputed_samples
         )
-        ch_ligated = bcftools_ligate_chromosomes.out.ligatedByChr
+        ch_ligated_noidx = bcftools_ligate_chromosomes.out.ligatedByChr
 
         // Index the ligated samples, since bcftools concat doesn't generate indexed files in naive mode
         bcftools_index_ligated(
-            ch_ligated
+            ch_ligated_noidx
         )
-        ch_ligated_samples = bcftools_index_ligated.out.ligatedIndexed
+        bcftools_index_ligated.out.ligatedIndexed.map { chr, meta, imputedSample, imputedIndex, wgs, wgsIndex -> 
+            [ chr.toString(), meta, imputedSample, imputedIndex, wgs, wgsIndex ]
+        }
+        .set { ch_ligated_one }
 
         // If round two exists, the imputation steps will be performed again, including chunking, imputing, and ligating
-        ch_ligated_for_two = ch_ligated_samples.combine(reference_two, by:0)
+        ch_prepare_two = ch_ligated_one.combine(reference_two, by:0)
             .map { chr, sampleMetadata, imputedSample, imputedSampleIndex, wgs, wgsIndex, referenceMetadata, reference, referenceIndices, geneticMap ->
-                tuple(chr, sampleMetadata, imputedSample, imputedSampleIndex, referenceMetadata, reference, referenceIndices, geneticMap)
+                tuple(chr, sampleMetadata, imputedSample, imputedSampleIndex, wgs, wgsIndex, referenceMetadata, reference, referenceIndices, geneticMap)
             }
 
         // ROUND TWO: Chunk samples again to the reference panel declared as round 'two'
         imp5chunker_chunk_samples_again(
-            ch_ligated_for_two
+            ch_prepare_two
         )
         ch_chunked_regions_two = imp5chunker_chunk_samples_again.out.chunkedRegions
         
@@ -102,11 +106,17 @@ workflow Phase_Impute_Array {
         bcftools_ligate_chromosomes_again(
             ch_imputed_two
         )
-        ch_ligated_two = bcftools_ligate_chromosomes_again.out.ligatedByChr
+        ch_ligated_noidx_two = bcftools_ligate_chromosomes_again.out.ligatedByChr
+
+        // ROUND TWO: Index the ligated samples
+        bcftools_index_ligated_again(
+            ch_ligated_noidx_two
+        )
+        ch_ligated_two = bcftools_index_ligated_again.out.ligatedIndexed
 
     emit:
         // phasedSamples    = ch_phased_samples // Testing
         // phasedSamplesTwo = ch_phased_two // Testing
-        ligatedSamples = ch_ligated_samples
+        ligatedSamples = ch_ligated_one
         ligatedSamplesTwo = ch_ligated_two
 }

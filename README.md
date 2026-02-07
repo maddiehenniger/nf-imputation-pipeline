@@ -47,7 +47,7 @@ The pipeline will automatically detect where your sample(s), reference(s), and o
 
 #### Sample and Reference Files and Metadata
 
-The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The test samples currently must have the AC/AN tags filled before supplying to the pipeline. The indexed file must be provided and are assumed to have the same naming scheme as the test sample. The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers, unless no markers exist for the region specified. The test samples are assumed to be unphased and there is currently no option to skip phasing. The input test sample(s) should not be split by chromosome as the pipeline will detect chromosomes from samples and split accordingly.
+The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The indexed file must be provided and are assumed to have the same naming scheme as the test sample. The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers, unless no markers exist for the region specified. The test samples are assumed to be unphased and there is currently no option to skip phasing. The input test sample(s) should not be split by chromosome as the pipeline will detect chromosomes from samples and split accordingly.
 
 The sample metadata should be a comma-delimited file (.CSV) containing two columns: sampleName, samplePath
 - sampleName: [required] A string with no spaces containing the user-defined name of the sample with no file extensions (ex: samples_1)

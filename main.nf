@@ -62,7 +62,6 @@ workflow {
     )
 
     ch_imputed_samples_one = PHASE_IMPUTE.out.imputedSamplesOne
-        .view()
     ch_imputed_samples_two = PHASE_IMPUTE.out.imputedSamplesTwo
         .view()
 
