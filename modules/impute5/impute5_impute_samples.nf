@@ -15,7 +15,7 @@
     label 'med_time'
 
     publishDir(
-        path:    "${params.publishDirData}/${rMetadata.round}_imputed_samples/",
+        path:    "${params.publishDirData}/${rMetadata.round}_imputed_chunked_samples/",
         mode:    "symlink"
     )
 
@@ -23,7 +23,7 @@
         tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path(chunkedCoordinates), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.bcf"), path("${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.bcf.csi"), path(chunkedCoordinates), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: imputedSamples
+        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.*.bcf"), path("${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.*.bcf.csi"), path(chunkedCoordinates), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: imputedSamples
         path "*.log", emit: imputationLog
 
     script:

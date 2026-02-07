@@ -1,3 +1,4 @@
+include { bcftools_index_ligated } from '../modules/impute5/bcftools_index_ligated.nf'
 include { bcftools_index_phased } from '../modules/shapeit5/bcftools_index_phased.nf'
 include { bcftools_ligate_chromosomes } from '../modules/impute5/bcftools_ligate_chromosomes.nf'
 include { bcftools_ligate_chromosomes as bcftools_ligate_chromosomes_again  } from '../modules/impute5/bcftools_ligate_chromosomes.nf'
@@ -18,7 +19,6 @@ include { impute5_impute_samples as impute5_impute_samples_again } from '../modu
 workflow Phase_Impute_Array {
     take:
         samples_one
-        reference_one
         reference_two
         phasingModel
 
@@ -72,17 +72,23 @@ workflow Phase_Impute_Array {
         bcftools_ligate_chromosomes(
             ch_imputed_samples
         )
-        ch_ligated_samples = bcftools_ligate_chromosomes.out.ligatedByChr
-        
+        ch_ligated = bcftools_ligate_chromosomes.out.ligatedByChr
+
+        // Index the ligated samples, since bcftools concat doesn't generate indexed files in naive mode
+        bcftools_index_ligated(
+            ch_ligated
+        )
+        ch_ligated_samples = bcftools_index_ligated.out.ligatedIndexed
+
         // If round two exists, the imputation steps will be performed again, including chunking, imputing, and ligating
-        ch_ligated_two = ch_ligated_samples.combine(reference_two, by:0)
+        ch_ligated_for_two = ch_ligated_samples.combine(reference_two, by:0)
             .map { chr, sampleMetadata, imputedSample, imputedSampleIndex, wgs, wgsIndex, referenceMetadata, reference, referenceIndices, geneticMap ->
-                tuple(chr, sampleMetadata, phasedSample, phasedIndex, referenceMetadata, reference, referenceIndices, geneticMap)
+                tuple(chr, sampleMetadata, imputedSample, imputedSampleIndex, referenceMetadata, reference, referenceIndices, geneticMap)
             }
 
         // ROUND TWO: Chunk samples again to the reference panel declared as round 'two'
         imp5chunker_chunk_samples_again(
-            ch_ligated_two
+            ch_ligated_for_two
         )
         ch_chunked_regions_two = imp5chunker_chunk_samples_again.out.chunkedRegions
         

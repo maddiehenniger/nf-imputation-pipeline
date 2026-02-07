@@ -14,10 +14,12 @@ workflow PHASE_IMPUTE {
         if(dataType == 'array') {
             Phase_Impute_Array(
                 samples_one,
-                reference_one,
                 reference_two,
                 phasingModel
             )
+            ch_imputed_one = Phase_Impute_Array.out.ligatedSamples
+            ch_imputed_two = Phase_Impute_Array.out.ligatedSamplesTwo
+
          } else if (dataType == 'lpwgs'){
             Phase_Impute_Lpwgs(
                 samples_one,
@@ -25,9 +27,6 @@ workflow PHASE_IMPUTE {
                 glimpse2Model
             )
         }
-
-        ch_imputed_one = Phase_Impute_Array.out.ligatedSamples
-        ch_imputed_two = Phase_Impute_Array.out.ligatedSamplesTwo
 
     emit:
         // phasedSamples = ch_phased_samples

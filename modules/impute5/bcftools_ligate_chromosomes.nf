@@ -17,7 +17,7 @@
     label 'lil_time'
 
     publishDir(
-        path:    "${params.publishDirData}/${rMetadata.round}_imputed_samples/",
+        path:    "${params.publishDirData}/final_imputed_samples/",
         mode:    "symlink"
     )
 
@@ -25,17 +25,16 @@
         tuple val(chromosome), val(sMetadata), path(imputedSample), path(imputedSampleIndex), path(chunkedCoordinates), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf"), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf.csi"), path(wgs), path(wgsIndex), emit: ligatedByChr
+        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf"), path(wgs), path(wgsIndex), emit: ligatedByChr
 
     script:
         """
         ls -v ${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.*.bcf > ${sMetadata.sampleID}.${rMetadata.round}.filenames.${chromosome}.txt
 
-        bcftools concat \
-        -n \
-        -f ${sMetadata.sampleID}.${rMetadata.round}.filenames.${chromosome}.txt \
-        -Ob \
-        --write-index \
+        bcftools concat \\
+        -n \\
+        -f ${sMetadata.sampleID}.${rMetadata.round}.filenames.${chromosome}.txt \\
+        -Ob \\
         -o ${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf
         """
  }

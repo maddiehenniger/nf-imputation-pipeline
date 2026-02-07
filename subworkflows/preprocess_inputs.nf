@@ -1,3 +1,4 @@
+include { bcftools_fill_tags } from '../modules/bcftools_fill_tags.nf'
 include { bcftools_identify_chromosomes } from '../modules/bcftools_identify_chromosomes.nf'
 include { bcftools_split_samples } from '../modules/bcftools_split_samples.nf'
 include { convert_reference_to_xcf } from '../modules/impute5/convert_reference_to_xcf.nf'
