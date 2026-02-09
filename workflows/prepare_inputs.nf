@@ -43,19 +43,8 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
             dataType
         )
 
-        ch_samples_one = Preprocess_Inputs.out.samples_one
-
-        // ch_samples_one = Preprocess_Inputs.out.samples_one
-        // ch_samples_two = Preprocess_Inputs.out.samples_two
-
-        // Prepare_Phasing(
-        //     ch_samples_by_chr,
-        //     ch_intermediate_by_chr,
-        //     ch_twostep_by_chr
-        // )
-
-        // ch_prepare_phasing_samples     = Prepare_Phasing.out.prepare_phasing_samples
-        // ch_twostep_ref_xcf             = Prepare_Phasing.out.twostep_ref_xcf
+        ch_samples_one   = Preprocess_Inputs.out.samples_one
+        ch_reference_two = Preprocess_Inputs.out.reference_two
 
     emit:
         // splitSamples = ch_split_samples

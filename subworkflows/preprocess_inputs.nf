@@ -68,7 +68,7 @@ workflow Preprocess_Inputs {
                 convert_reference_to_xcf(
                     reference_one
                 )
-                // Wrangles the channel to convert the chromosome to a string, and flattens the XCF assocaited files together
+                // Wrangles the channel to convert the chromosome to a string, and flattens the XCF associated files together
                 convert_reference_to_xcf.out.xcfReference.map { meta, refPath, refIdx, refBin, refFam, mapPath ->
                     [ meta.chromosome.toString(), meta, refPath, [refIdx, refBin, refFam].flatten(), mapPath ]
                 }
@@ -78,7 +78,7 @@ workflow Preprocess_Inputs {
                 convert_reference_two_to_xcf(
                     reference_two
                 )
-                // Wrangles the channel to convert the chromosome to a string, and flattens the XCF assocaited files together
+                // Wrangles the channel to convert the chromosome to a string, and flattens the XCF associated files together
                 convert_reference_two_to_xcf.out.xcfReference.map { meta, refPath, refIdx, refBin, refFam, mapPath ->
                     [ meta.chromosome.toString(), meta, refPath, [refIdx, refBin, refFam].flatten(), mapPath ]
                 }
@@ -96,6 +96,7 @@ workflow Preprocess_Inputs {
                     ch_reference_one
                 )
                 ch_reference_one = glimpse2_split_reference.out.chunkedReference
+                ch_reference_two = Channel.empty()
                 break
         }
 
