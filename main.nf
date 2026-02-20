@@ -16,9 +16,6 @@ nextflow.enable.dsl=2
 // include custom workflows
 include { PREPARE_INPUTS                            } from "./workflows/prepare_inputs.nf"
 include { PHASE_IMPUTE } from "./workflows/phase_impute.nf"
-// include { PHASE_SAMPLES                             } from "./workflows/phase_samples.nf"
-// include { IMPUTE_SAMPLES as FIRST_ROUND_IMPUTATION  } from "./workflows/impute_samples.nf"
-// include { IMPUTE_SAMPLES as SECOND_ROUND_IMPUTATION } from "./workflows/impute_samples.nf"
 // include { CALCULATE_ACCURACY } from "./workflows/calculate_accuracy.nf"
 
 workflow {

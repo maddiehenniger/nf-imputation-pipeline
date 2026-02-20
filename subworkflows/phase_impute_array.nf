@@ -106,7 +106,7 @@ workflow Phase_Impute_Array {
         bcftools_ligate_chromosomes_again(
             ch_imputed_two
         )
-        ch_ligated_noidx_two = bcftools_ligate_chromosomes_again.out.ligatedByChr
+        ch_ligated_noidx_two = bcftools_ligate_chromosomes_again.out.ligatedWithReferences
 
         // ROUND TWO: Index the ligated samples
         bcftools_index_ligated_again(

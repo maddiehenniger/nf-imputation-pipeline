@@ -17,24 +17,14 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
         dataType
 
     main:
+        
         Parse_Input_Sheets(
             samplesheet,
             references
         )
-
         ch_samples        = Parse_Input_Sheets.out.samples
         ch_reference_one  = Parse_Input_Sheets.out.reference_one
         ch_reference_two  = Parse_Input_Sheets.out.reference_two
-
-        // Validate_Chromosomes(
-        //     ch_samples,
-        //     ch_reference_intermediate,
-        //     ch_reference_twostep
-        // )
-
-        // ch_samples_by_chr           = Validate_Chromosomes.out.samples_by_chr
-        // ch_intermediate_by_chr      = Validate_Chromosomes.out.intermediate_by_chr
-        // ch_twostep_by_chr           = Validate_Chromosomes.out.twostep_by_chr
 
         Preprocess_Inputs(
             ch_samples,
@@ -42,15 +32,11 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
             ch_reference_two,
             dataType
         )
-
         ch_samples_one   = Preprocess_Inputs.out.samples_one
         ch_reference_two = Preprocess_Inputs.out.reference_two
 
     emit:
-        // splitSamples = ch_split_samples
-        // chromosomes = ch_chromosomes // Testing
         reference_one = ch_reference_one
         reference_two = ch_reference_two
         samples_one   = ch_samples_one
-        // samples_two = ch_samples_two // Testing
 }

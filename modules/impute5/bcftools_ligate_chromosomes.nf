@@ -26,6 +26,7 @@
 
     output:
         tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf"), path(wgs), path(wgsIndex), emit: ligatedByChr
+        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: ligatedWithReferences, optional: true
 
     script:
         """
