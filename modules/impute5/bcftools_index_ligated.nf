@@ -18,7 +18,7 @@
 
     publishDir(
         path:    "${params.publishDirData}/final_imputed_samples/",
-        pattern: "*.ligated.${chromosome}.bcf.csi"
+        pattern: "*.ligated.${chromosome}.bcf.csi",
         mode:    "copy"
     )
 

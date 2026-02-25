@@ -25,13 +25,13 @@
         tuple val(chromosomes), val(sMetadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}.${chromosomes}.phased.tags.bcf"), path("${metadata.sampleID}.${chromosomes}.phased.tags.bcf.csi"), path(wgs), path(wgsIndex), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        tuple val(chromosomes), val(sMetadata), path("${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf"), path("${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf.csi"), path(wgs), path(wgsIndex), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap), emit: phasedSamples
 
     script:
         """
         bcftools +fill-tags ${sample} \\
         -Ob \\
         --write-index \\
-        -o ${metadata.sampleID}.${chromosomes}.phased.tags.bcf -- -t AN,AC
+        -o ${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf -- -t AN,AC
         """
  }
