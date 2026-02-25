@@ -4,8 +4,8 @@
  * Produces a text file containing the sorted and unique chromosome IDs present within each sample.
  * @see https://samtools.github.io/bcftools/bcftools.html#view
  * 
- * @input
- * @emit
+ * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
+ * @emit chromosomes - metadata map updated with a list of chromosomes present for each input sample, including [ meta, [ chromosomeFile ], [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
  */
 
  process bcftools_identify_chromosomes {

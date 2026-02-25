@@ -103,7 +103,6 @@ workflow Preprocess_Inputs {
         ch_samples_one = ch_split_samples.combine(ch_reference_one, by:0)
 
     emit:
-        // splitSamples  = ch_split_samples 
         samples_one   = ch_samples_one
         chromosomes   = ch_chromosomes // Testing
         reference_one = ch_reference_one

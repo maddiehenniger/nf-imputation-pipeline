@@ -1,3 +1,4 @@
+include { bcftools_fill_tags_phasing } from '../modules/shapeit5/bcftools_fill_tags_phasing.nf'
 include { bcftools_index_ligated } from '../modules/impute5/bcftools_index_ligated.nf'
 include { bcftools_index_ligated as bcftools_index_ligated_again } from '../modules/impute5/bcftools_index_ligated.nf'
 include { bcftools_index_phased } from '../modules/shapeit5/bcftools_index_phased.nf'
@@ -53,7 +54,14 @@ workflow Phase_Impute_Array {
                 bcftools_index_phased(
                     ch_phased_noidx
                 )
-                ch_phased_samples = bcftools_index_phased.out.phasedSamples
+                ch_prephased_samples = bcftools_index_phased.out.phasedSamples
+
+                // SHAPEIT4 removes AC/AN tags from fields, re-add
+                bcftools_fill_tags_phasing(
+                    ch_prephased_samples
+                )
+                ch_phased_samples = bcftools_fill_tags_phasing.out.phasedSamples
+                
             break
         }
         
@@ -106,7 +114,7 @@ workflow Phase_Impute_Array {
         bcftools_ligate_chromosomes_again(
             ch_imputed_two
         )
-        ch_ligated_noidx_two = bcftools_ligate_chromosomes_again.out.ligatedWithReferences
+        ch_ligated_noidx_two = bcftools_ligate_chromosomes_again.out.ligatedByChr
 
         // ROUND TWO: Index the ligated samples
         bcftools_index_ligated_again(
@@ -115,8 +123,6 @@ workflow Phase_Impute_Array {
         ch_ligated_two = bcftools_index_ligated_again.out.ligatedIndexed
 
     emit:
-        // phasedSamples    = ch_phased_samples // Testing
-        // phasedSamplesTwo = ch_phased_two // Testing
         ligatedSamples = ch_ligated_one
         ligatedSamplesTwo = ch_ligated_two
 }

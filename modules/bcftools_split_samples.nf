@@ -1,11 +1,11 @@
 /**
- * Process to run bcftools view.
+ * Process to run bcftools view to split each provided test sample by chromosomes present.
  * 
  * Separates the input samples on a chromosome-by-chromosome basis.
  * @see https://samtools.github.io/bcftools/bcftools.html#view
  * 
- * @input
- * @emit
+ * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
+ * @emit splitSamples - containing the samples split by chromosome, including [ meta, chromosome, [ samplePath+BY_CHR ], [ sampleIndex+BY_CHR ], [ wgsPath ], [ wgsIndex ] ]
  */
 
  process bcftools_split_samples {
