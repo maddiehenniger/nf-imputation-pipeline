@@ -190,15 +190,15 @@ Please cite the appropriate tools used throughout your pipeline.
 
 ### Input data: Array
 
-**SHAPEIT5**: (Hofmeister et al., 2023: Accurate rare variant phasing of whole-genome and whole-exome sequencing data in the UK Biobank)[https://www.nature.com/articles/s41588-023-01415-w]
+**SHAPEIT5**: [Hofmeister et al., 2023: Accurate rare variant phasing of whole-genome and whole-exome sequencing data in the UK Biobank](https://www.nature.com/articles/s41588-023-01415-w)
 
 If using the optional SHAPEIT4 process instead:
-**SHAPEIT4**: (Delaneau et al., 2019: Accurate, scalable and integrative haplotype estimation)[https://www.nature.com/articles/s41467-019-13225-y]
+**SHAPEIT4**: [Delaneau et al., 2019: Accurate, scalable and integrative haplotype estimation](https://www.nature.com/articles/s41467-019-13225-y)
 
-**IMPUTE5**: (Rubinacci et al., 2020: Genotype imputation using the Positional Burrows Wheeler Transform)[https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009049]
+**IMPUTE5**: [Rubinacci et al., 2020: Genotype imputation using the Positional Burrows Wheeler Transform](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009049)
 
 ### Input data: LPWGS
 
-**GLIMPSE2**: (Rubinacci et al., 2023: Imputation of low-coverage sequencing data from 150,119 UK Biobank genomes)[https://www.nature.com/articles/s41588-023-01438-3]
+**GLIMPSE2**: [Rubinacci et al., 2023: Imputation of low-coverage sequencing data from 150,119 UK Biobank genomes](https://www.nature.com/articles/s41588-023-01438-3)
 
-**GLIMPSE2**: (Rubinacci et al., 2021: Efficient phasing and imputation of low-coverage sequencing data using large reference panels)[https://www.nature.com/articles/s41588-020-00756-0]
+**GLIMPSE2**: [Rubinacci et al., 2021: Efficient phasing and imputation of low-coverage sequencing data using large reference panels](https://www.nature.com/articles/s41588-020-00756-0)
