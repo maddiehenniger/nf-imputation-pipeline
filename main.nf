@@ -60,7 +60,6 @@ workflow {
 
     ch_imputed_samples_one = PHASE_IMPUTE.out.imputedSamplesOne
     ch_imputed_samples_two = PHASE_IMPUTE.out.imputedSamplesTwo
-        .view()
 
     // If the user specifies in the nextflow.config that they would like to calculate imputation accuracies, the pipeline will run the following:
     // CALCULATE_ACCURACY performs the following:
