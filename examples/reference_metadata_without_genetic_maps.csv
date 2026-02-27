@@ -1,0 +1,5 @@
+referenceID,referencePath,referenceIndex,chromosome,imputationRound,geneticMapPath
+First_Round_Reference_25,/path/to/one_reference_chr25.bcf,/path/to/one_reference_chr25.bcf.csi,25,one,
+First_Round_Reference_28,/path/to/one_reference_chr28.bcf,/path/to/one_reference_chr28.bcf.csi,28,one,
+Second_Round_Reference_25,/path/to/sequence_level_reference_chr25.bcf,/path/to/sequence_level_reference_chr25.bcf.csi,25,two,
+Second_Round_Reference_28,/path/to/sequence_level_reference_chr28.bcf,/path/to/sequence_level_reference_chr28.bcf.csi,28,two,

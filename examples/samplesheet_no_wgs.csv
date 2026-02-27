@@ -1,0 +1,3 @@
+sampleID,samplePath,sampleIndex,wgsPath,wgsIndex
+test_sample,/path/to/test_sample_array.bcf,/path/to/test_sample_array.bcf.csi,,
+group_two,/path/to/group_two_array.bcf,/path/to/group_two_array.bcf.csi,,

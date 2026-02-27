@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name=NAME_HERE
+#SBATCH --cpus-per-task=CPU_HERE
+#SBATCH --mem=MEM_HERE
+#SBATCH --time=TIME_HERE
+#SBATCH --error=FILE_TO_STORE_ERROR_LOGS
+#SBATCH --output=FILE_TO_STORE_OUT_LOGS
+#SBATCH --account=ACCOUNT_HERE
+#SBATCH --partition=PARITION_HERE
+#SBATCH --qos=QOS_HERE
+#SBATCH --mail-user=EMAIL_HERE
+#SBATCH --mail-type=BEGIN,END,FAIL
+
+NOTE: MODULE LOAD NEXTFLOW HERE USING WHAT IS PROVIDED ON THE USER HPC
+
+nextflow run main.nf -profile YOUR_PROFILE_FROM_CONFIG -plugins nf-schema@2.1.0
