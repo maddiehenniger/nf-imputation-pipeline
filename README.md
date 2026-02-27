@@ -184,15 +184,16 @@ PREPARE_INPUTS workflow performs the following steps:
 
 Please cite the appropriate tools used throughout your pipeline.
 
-**Nextflow**: (Tommaso et al., 2017: Nextflow enables reproducible computational workflows)[https://www.nature.com/articles/nbt.3820]
+**Nextflow**: [Tommaso et al., 2017: Nextflow enables reproducible computational workflows](https://www.nature.com/articles/nbt.3820)
 
-**BCFtools**: (Danecek et al., 2021: Twelve years of SAMtools and BCFtools)[https://academic.oup.com/gigascience/article/10/2/giab008/6137722?login=true]
+**BCFtools**: [Danecek et al., 2021: Twelve years of SAMtools and BCFtools](https://academic.oup.com/gigascience/article/10/2/giab008/6137722)
 
 ### Input data: Array
 
 **SHAPEIT5**: [Hofmeister et al., 2023: Accurate rare variant phasing of whole-genome and whole-exome sequencing data in the UK Biobank](https://www.nature.com/articles/s41588-023-01415-w)
 
 If using the optional SHAPEIT4 process instead:
+
 **SHAPEIT4**: [Delaneau et al., 2019: Accurate, scalable and integrative haplotype estimation](https://www.nature.com/articles/s41467-019-13225-y)
 
 **IMPUTE5**: [Rubinacci et al., 2020: Genotype imputation using the Positional Burrows Wheeler Transform](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009049)
