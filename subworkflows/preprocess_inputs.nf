@@ -49,7 +49,7 @@ workflow Preprocess_Inputs {
         bcftools_split_samples(
             ch_chromosomes
         )
-        ch_initial_split.out.bcftools_split_samples.out.splitSamples
+        ch_initial_split = bcftools_split_samples.out.splitSamples
 
         // Make sure the AC/AN tags are filled
         bcftools_fill_tags(
