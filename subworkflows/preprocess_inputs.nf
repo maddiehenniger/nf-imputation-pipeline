@@ -49,11 +49,13 @@ workflow Preprocess_Inputs {
         bcftools_split_samples(
             ch_chromosomes
         )
+        ch_initial_split.out.bcftools_split_samples.out.splitSamples
 
         // Make sure the AC/AN tags are filled
         bcftools_fill_tags(
-            ch_chromosomes
+            ch_initial_split
         )
+        
         // Change the chromosome value to string for downstream merging
         bcftools_fill_tags.out.filledTags.map { meta, chr, sample, sampleIdx, wgs, wgsIdx ->
             [ chr.toString(), meta, sample, sampleIdx, wgs, wgsIdx ]
