@@ -59,8 +59,8 @@ The pipeline will automatically detect where the user's test sample(s), referenc
 
 The test samples must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The indexed file must be provided and are assumed to have the same naming scheme as the test sample. The test samples have no input requirement for the number of individuals. The pipeline will impute test samples regardless of the input number of markers, unless no markers exist for the region specified. The test samples are assumed to be unphased and there is currently no option to skip phasing. The input test sample(s) should not be split by chromosome as the pipeline will detect chromosomes from samples and split accordingly. For optional requirements, include the header name in the metadata sheet, but leave fields empty. Please see `/examples/` for some examples of test sample and reference metadata.
 
-The sample metadata should be a comma-delimited file (.CSV) containing the following columns: sampleName, samplePath, sampleIndex, wgsPath, wgsIndex
-- sampleName: [required] A string with no spaces containing the user-defined name of the sample with no file extensions (ex: samples_1)
+The sample metadata should be a comma-delimited file (.CSV) containing the following columns: sampleID, samplePath, sampleIndex, wgsPath, wgsIndex
+- sampleID: [required] A string with no spaces containing the user-defined name of the sample with no file extensions (ex: samples_1)
 - samplePath: [required] A file path to where the associated sample is located in your file system; this should end with the file extension `.bcf`, `.vcf`, or `.vcf.gz` (ex: `/path/to/sample/sample_1.vcf.gz`)
 - sampleIndex: [required] A file path to where the associated sample's indexed file is located in your file system; this should end with the file extension `.csi` (ex: `/path/to/sample/sample_1.vcf.gz.csi`)
 - wgsPath: [optional] If available, a file path to where the associated sample's whole genome sequencing sample is located in your file system; this should end with the file extension `.bcf`, `.vcf`, or `.vcf.gz`. (ex: `/path/to/samples/sample_wgs_1.bcf`) - this is treated as a "ground truth" sample to enable testing of imputation accuracies
@@ -68,8 +68,8 @@ The sample metadata should be a comma-delimited file (.CSV) containing the follo
 
 The reference panel(s) must be in a BCF/VCF file format and can optionally be gzipped (ending in .gz). The reference panel should already be phased and there is no option currently to perform reference panel phasing. The reference panels must be provided on a by-chromosome basis. There are no marker or individual requirements for the reference panel(s). Users must be aware of how the number of markers and individuals may impact imputation performance. Similarly to the test sample metadata, if the user does not wish to provide an optional column, the column name must exist but the field may remain blank.
 
-The reference metadata should be a comma-delimited file (.CSV) containing the following columns: referenceName, referencePath, referenceIndex, chromosome, imputationStep, geneticMapPath
-- referenceName: [required] A string with no spaces containing the user-defined name of the reference panel with no file extensions (ex: reference_chr1)
+The reference metadata should be a comma-delimited file (.CSV) containing the following columns: referenceID, referencePath, referenceIndex, chromosome, imputationStep, geneticMapPath
+- referenceID: [required] A string with no spaces containing the user-defined name of the reference panel with no file extensions (ex: reference_chr1)
 - referencePath: [required] A file path to where the associated reference panel is located in your file system; this should end with the file extension BCF/VCF(.gz). (ex: `/path/to/reference/reference_panel_chr1.bcf`)
 - referenceIndex: [required] A file path to where the associated indexed file for the reference panel is located in your file system; this should end with the file extension `.csi`. (ex: `/path/to/reference/reference_panel_chr1.bcf.csi`)
 - chromosome: [required] An integer in the form of a numerical value to the associated chromosome for the reference panel; at this time, sex chromosome values are not accepted
