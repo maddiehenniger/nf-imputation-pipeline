@@ -32,10 +32,13 @@
 
         String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
+        def pedigree_command = pedigree ? "--pedigree ${pedigree}"  : ""
+
         if(rMetadata.geneticMaps == 'provided') {
             """
             SHAPEIT5_phase_common \\
                 ${args} \\
+                ${pedigree_command} \\
                 --input ${sample} \\
                 --region ${chromosome} \\
                 --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
@@ -46,6 +49,7 @@
             """
             SHAPEIT5_phase_common \\
                 ${args} \\
+                ${pedigree_command} \\
                 --input ${sample} \\
                 --region ${chromosome} \\
                 --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
