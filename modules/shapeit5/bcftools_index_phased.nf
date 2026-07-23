@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(chr), val(sMetadata), path(phasedSample), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
+        tuple val(chr), val(sMetadata), path(phasedSample), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chr), val(sMetadata), path(phasedSample), path("*.csi"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        tuple val(chr), val(sMetadata), path(phasedSample), path("*.csi"), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
 
     script:
         """

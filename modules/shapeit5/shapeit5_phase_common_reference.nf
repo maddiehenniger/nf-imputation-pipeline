@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(chromosome), val(sMetadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
+        tuple val(chromosome), val(sMetadata), path(sample), path(sampleIndex), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
         
     output:
-        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${chromosome}.phased.bcf"), path("${sMetadata.sampleID}.${chromosome}.phased.bcf.csi"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${chromosome}.phased.bcf"), path("${sMetadata.sampleID}.${chromosome}.phased.bcf.csi"), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
         path("*log"), emit: phasedLog
 
     script:

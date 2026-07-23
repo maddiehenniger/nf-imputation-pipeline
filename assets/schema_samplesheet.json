@@ -25,17 +25,11 @@
         "format": "file-path",
         "errorMessage": "The paired indexed (CSI) file path for the associated sample must be provided, cannot contain spaces, and must match the sample file name with the extension '.csi'."
       },
-      "wgsPath": {
+      "pedigree": {
         "type": "string",
         "pattern": "^\\S+$",
         "format": "file-path",
-        "errorMessage": "An optional BCF/VCF(.gz) file path containing the matching WGS sample may be provided, cannot contain spaces, and must have the extension '.bcf', or '.vcf'/'vcf.gz'." 
-      },
-      "wgsIndex": {
-        "type": "string",
-        "pattern": "^\\S+$",
-        "format": "file-path",
-        "errorMessage": "If providing the optional WGS sample, the paired indexed (CSI) file path must be provided, cannot contain spaces, and must match the WGS file name with the extension '.csi'."
+        "errorMessage": "If providing the optional pedigree file associated with the test samples to be used for phasing, the file path to the pedigree file must be provided, cannot contain spaces, and must end with the extension '.fam' per SHAPEIT requirements."
       }
     }
   }

@@ -4,8 +4,8 @@
  * Produces a text file containing the sorted and unique chromosome IDs present within each sample.
  * @see https://samtools.github.io/bcftools/bcftools.html#view
  * 
- * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
- * @emit chromosomes - metadata map updated with a list of chromosomes present for each input sample, including [ meta, [ chromosomeFile ], [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
+ * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ pedigree ] ]
+ * @emit chromosomes - metadata map updated with a list of chromosomes present for each input sample, including [ meta, [ chromosomeFile ], [ samplePath ], [ sampleIndex ], [ pedigree ] ]
  */
 
  process bcftools_identify_chromosomes {
@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(metadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
+        tuple val(metadata), path(sample), path(sampleIndex), path(pedigree)
 
     output:
-        tuple val(metadata), stdout, path(sample), path(sampleIndex), path(wgs), path(wgsIndex), emit: chromosomes
+        tuple val(metadata), stdout, path(sample), path(sampleIndex), path(pedigree), emit: chromosomes
 
     script:
         """

@@ -23,10 +23,10 @@
     )
 
     input:
-        tuple val(chromosome), val(sMetadata), path(imputedSample), path(imputedSampleIndex), path(chunkedCoordinates), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
+        tuple val(chromosome), val(sMetadata), path(imputedSample), path(imputedSampleIndex), path(chunkedCoordinates), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf"), path(wgs), path(wgsIndex), emit: ligatedByChr
+        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${rMetadata.round}.ligated.${chromosome}.bcf"), path(pedigree), emit: ligatedByChr
 
     script:
         """

@@ -23,10 +23,10 @@
     )
 
     input:
-        tuple val(chromosome), val(sMetadata), path(imputedSample), path(wgs), path(wgsIndex)
+        tuple val(chromosome), val(sMetadata), path(imputedSample), path(pedigree)
 
     output:
-        tuple val(chromosome), val(sMetadata), path(imputedSample), path("*.csi"), path(wgs), path(wgsIndex), emit: ligatedIndexed
+        tuple val(chromosome), val(sMetadata), path(imputedSample), path("*.csi"), path(pedigree), emit: ligatedIndexed
 
     script:
         """

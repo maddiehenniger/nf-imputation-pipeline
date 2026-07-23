@@ -4,8 +4,8 @@
  * Separates the input samples on a chromosome-by-chromosome basis.
  * @see https://samtools.github.io/bcftools/bcftools.html#view
  * 
- * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
- * @emit splitSamples - containing the samples split by chromosome, including [ meta, chromosome, [ samplePath+BY_CHR ], [ sampleIndex+BY_CHR ], [ wgsPath ], [ wgsIndex ] ]
+ * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ pedigree ] ]
+ * @emit splitSamples - containing the samples split by chromosome, including [ meta, chromosome, [ samplePath+BY_CHR ], [ sampleIndex+BY_CHR ], [ pedigree ] ]
  */
 
  process bcftools_split_samples {
@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(metadata), val(chromosomes), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
+        tuple val(metadata), val(chromosomes), path(sample), path(sampleIndex), path(pedigree)
 
     output:
-        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}_${chromosomes}.bcf"), path("${metadata.sampleID}_${chromosomes}.bcf.csi"), path(wgs), path(wgsIndex), emit: splitSamples
+        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}_${chromosomes}.bcf"), path("${metadata.sampleID}_${chromosomes}.bcf.csi"), emit: splitSamples
 
     script:
         """

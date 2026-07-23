@@ -4,8 +4,8 @@
  * Produces a BCF file with the AC/AN INFO field calculated.
  * @see https://samtools.github.io/bcftools/bcftools.html#plugin
  * 
- * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
- * @emit filledTags - metadata map to the sample input information, now with AC/AN tags, including an updated [ meta, [ samplePath+TAGS ], [ sampleIndex+TAGS ], [ wgsPath ], [ wgsIndex ] ]
+ * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ pedigree ] ]
+ * @emit filledTags - metadata map to the sample input information, now with AC/AN tags, including an updated [ meta, [ samplePath+TAGS ], [ sampleIndex+TAGS ], [ pedigree ] ]
  */
 
  process bcftools_fill_tags {
@@ -23,10 +23,10 @@
     )
 
     input:
-        tuple val(metadata), val(chromosomes), path(sample), path(sampleIndex), path(wgs), path(wgsIndex)
+        tuple val(metadata), val(chromosomes), path(sample), path(sampleIndex), path(pedigree)
 
     output:
-        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}.tags.${chromosomes}.bcf"), path("${metadata.sampleID}.tags.${chromosomes}.bcf.csi"), path(wgs), path(wgsIndex), emit: filledTags
+        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}.tags.${chromosomes}.bcf"), path("${metadata.sampleID}.tags.${chromosomes}.bcf.csi"), path(pedigree), emit: filledTags
 
     script:
         """

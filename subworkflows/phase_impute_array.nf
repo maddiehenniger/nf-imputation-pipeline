@@ -76,6 +76,7 @@ workflow Phase_Impute_Array {
             ch_chunked_regions
         )
         ch_imputed_samples = impute5_impute_samples.out.imputedSamples
+        ch_imputed_sample_one_logs = impute5_impute_samples.out.imputationLog
 
         // Ligate samples back together, per chromosome
         bcftools_ligate_chromosomes(
@@ -109,6 +110,7 @@ workflow Phase_Impute_Array {
             ch_chunked_regions_two
         )
         ch_imputed_two = impute5_impute_samples_again.out.imputedSamples
+        ch_imputed_sample_two_logs = impute5_impute_samples_again.out.imputationLog
 
         // ROUND TWO: Ligate the two-round imputed samples by chromosome
         bcftools_ligate_chromosomes_again(
@@ -125,4 +127,6 @@ workflow Phase_Impute_Array {
     emit:
         ligatedSamples = ch_ligated_one
         ligatedSamplesTwo = ch_ligated_two
+        imputationLogOne = ch_imputed_sample_one_logs
+        imputationTwoOne = ch_imputed_sample_two_logs
 }

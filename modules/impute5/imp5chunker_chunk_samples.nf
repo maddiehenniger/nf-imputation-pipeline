@@ -20,10 +20,10 @@
     )
 
     input:
-        tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
+        tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path("${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.txt"), path(wgs), path(wgsIndex), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: chunkedRegions
+        tuple val(chromosome), val(sMetadata), path(phasedSample), path(phasedIndex), path("${sMetadata.sampleID}.${chromosome}.${rMetadata.round}.chunked.txt"), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: chunkedRegions
 
     script:
 

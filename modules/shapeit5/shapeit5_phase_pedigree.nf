@@ -1,16 +1,16 @@
 /**
- * Process to run SHAPEIT4 to phase the test samples without using a reference, specifically to get around limitations with a small input sample size (<50 individuals)
+ * Process to run SHAPEIT5 to phase the test samples to the 'round one' reference panel.
  * 
  * Generates phased samples and associated index file.
- * @see https://odelaneau.github.io/shapeit4/#documentation
+ * @see https://odelaneau.github.io/shapeit5/docs/documentation/phase_common/
  * 
  * @input 
  * @emit
  */
 
- process shapeit4_phase_common_noref {
+ process shapeit5_phase_common_pedigree {
     
-    label 'shapeit4'
+    label 'shapeit5'
 
     label 'med_cpu'
     label 'med_mem'
@@ -25,18 +25,19 @@
         tuple val(chromosome), val(sMetadata), path(sample), path(sampleIndex), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap)
         
     output:
-        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${chromosome}.phased.bcf"), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        tuple val(chromosome), val(sMetadata), path("${sMetadata.sampleID}.${chromosome}.phased.bcf"), path("${sMetadata.sampleID}.${chromosome}.phased.bcf.csi"), path(pedigree), val(rMetadata), path(reference), path(referenceIndices), path(geneticMap), emit: phasedSamples
         path("*log"), emit: phasedLog
 
     script:
-       
+
         String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
         if(rMetadata.geneticMaps == 'provided') {
             """
-            shapeit4 \\
+            SHAPEIT5_phase_common \\
                 ${args} \\
                 --input ${sample} \\
+                --pedigree ${pedigree} \\
                 --region ${chromosome} \\
                 --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
                 --map ${geneticMap} \\
@@ -44,9 +45,10 @@
             """ 
         } else if(rMetadata.geneticMaps == 'none') {
             """
-            shapeit4 \\
+            SHAPEIT5_phase_common \\
                 ${args} \\
                 --input ${sample} \\
+                --pedigree ${pedigree} \\
                 --region ${chromosome} \\
                 --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
                 --log ${sMetadata.sampleID}.${chromosome}.phased.log

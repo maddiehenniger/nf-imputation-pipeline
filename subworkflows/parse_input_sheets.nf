@@ -11,7 +11,7 @@ include { samplesheetToList } from 'plugin/nf-schema'
  **/
 workflow Parse_Input_Sheets {
     take:
-        samplesheet // channel (required): [ sampleMetadata, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex] ]
+        samplesheet // channel (required): [ sampleMetadata, [ samplePath ], [ sampleIndex ], [ pedigree ] ]
         references  // channel (required): [ referenceMetadata, [ referencePath ], [ referenceIndex ], [ geneticMapPath ] ]
     
     main:
@@ -21,8 +21,8 @@ workflow Parse_Input_Sheets {
             .fromList(
                 samplesheetToList(samplesheet, "${projectDir}/assets/schema_samplesheet.json")
             )
-            .map { meta, samplePath, sampleIndex, wgsPath, wgsIndex -> 
-                tuple(meta, samplePath, sampleIndex, wgsPath, wgsIndex)
+            .map { meta, samplePath, sampleIndex, pedigree -> 
+                tuple(meta, samplePath, sampleIndex, pedigree)
             }
             .set { ch_samples }
 

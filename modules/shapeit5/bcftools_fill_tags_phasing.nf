@@ -4,8 +4,8 @@
  * Produces a BCF file with the AC/AN INFO field calculated.
  * @see https://samtools.github.io/bcftools/bcftools.html#plugin
  * 
- * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ wgsPath ], [ wgsIndex ] ]
- * @emit phasedSamples - metadata map to the sample input information, now with AC/AN tags, including an updated [ meta, [ samplePath+TAGS ], [ sampleIndex+TAGS ], [ wgsPath ], [ wgsIndex ], referenceMeta, [ referencePath ], [ referenceIndex ], [ geneticMap ] ]
+ * @input samplesheet - metadata map to the sample input information, including [ meta, [ samplePath ], [ sampleIndex ], [ pedigree ] ]
+ * @emit phasedSamples - metadata map to the sample input information, now with AC/AN tags, including an updated [ meta, [ samplePath+TAGS ], [ sampleIndex+TAGS ], [ pedigree ], referenceMeta, [ referencePath ], [ referenceIndex ], [ geneticMap ] ]
  */
 
  process bcftools_fill_tags_phasing {
@@ -22,10 +22,10 @@
     )
 
     input:
-        tuple val(chromosomes), val(sMetadata), path(sample), path(sampleIndex), path(wgs), path(wgsIndex), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap)
+        tuple val(chromosomes), val(sMetadata), path(sample), path(sampleIndex), path(pedigree), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap)
 
     output:
-        tuple val(chromosomes), val(sMetadata), path("${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf"), path("${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf.csi"), path(wgs), path(wgsIndex), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap), emit: phasedSamples
+        tuple val(chromosomes), val(sMetadata), path("${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf"), path("${sMetadata.sampleID}.${chromosomes}.phased.tags.bcf.csi"), path(pedigree), val(rMetadata), path(referencePath), path(referenceIndices), path(geneticMap), emit: phasedSamples
 
     script:
         """
