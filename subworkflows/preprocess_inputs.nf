@@ -35,10 +35,10 @@ workflow Preprocess_Inputs {
         
         // Wrangles the output to add chromosome information into the channel
         bcftools_identify_chromosomes.out            
-            .flatMap { meta, chrom_string, samplePath, sampleIndex, wgsPath, wgsIndex ->
+            .flatMap { meta, chrom_string, samplePath, sampleIndex, pedigree ->
                 def chrom_list = chrom_string.trim().split('\n')
                 def chromosomes = chrom_list.collect { chr ->
-                    [ meta, chr, samplePath, sampleIndex, wgsPath, wgsIndex ]
+                    [ meta, chr, samplePath, sampleIndex, pedigree ]
                 }
 
                 return chromosomes
@@ -57,8 +57,8 @@ workflow Preprocess_Inputs {
         )
         
         // Change the chromosome value to string for downstream merging
-        bcftools_fill_tags.out.filledTags.map { meta, chr, sample, sampleIdx, wgs, wgsIdx ->
-            [ chr.toString(), meta, sample, sampleIdx, wgs, wgsIdx ]
+        bcftools_fill_tags.out.filledTags.map { meta, chr, sample, sampleIdx, ped ->
+            [ chr.toString(), meta, sample, sampleIdx, ped ]
         }
         .set { ch_split_samples }
 

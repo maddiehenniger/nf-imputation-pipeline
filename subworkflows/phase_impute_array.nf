@@ -88,15 +88,15 @@ workflow Phase_Impute_Array {
         bcftools_index_ligated(
             ch_ligated_noidx
         )
-        bcftools_index_ligated.out.ligatedIndexed.map { chr, meta, imputedSample, imputedIndex, wgs, wgsIndex -> 
-            [ chr.toString(), meta, imputedSample, imputedIndex, wgs, wgsIndex ]
+        bcftools_index_ligated.out.ligatedIndexed.map { chr, meta, imputedSample, imputedIndex, pedigree -> 
+            [ chr.toString(), meta, imputedSample, imputedIndex, pedigree ]
         }
         .set { ch_ligated_one }
 
         // If round two exists, the imputation steps will be performed again, including chunking, imputing, and ligating
         ch_prepare_two = ch_ligated_one.combine(reference_two, by:0)
-            .map { chr, sampleMetadata, imputedSample, imputedSampleIndex, wgs, wgsIndex, referenceMetadata, reference, referenceIndices, geneticMap ->
-                tuple(chr, sampleMetadata, imputedSample, imputedSampleIndex, wgs, wgsIndex, referenceMetadata, reference, referenceIndices, geneticMap)
+            .map { chr, sampleMetadata, imputedSample, imputedSampleIndex, pedigree, referenceMetadata, reference, referenceIndices, geneticMap ->
+                tuple(chr, sampleMetadata, imputedSample, imputedSampleIndex, pedigree, referenceMetadata, reference, referenceIndices, geneticMap)
             }
 
         // ROUND TWO: Chunk samples again to the reference panel declared as round 'two'

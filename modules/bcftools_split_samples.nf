@@ -25,7 +25,7 @@
         tuple val(metadata), val(chromosomes), path(sample), path(sampleIndex), path(pedigree)
 
     output:
-        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}_${chromosomes}.bcf"), path("${metadata.sampleID}_${chromosomes}.bcf.csi"), emit: splitSamples
+        tuple val(metadata), val(chromosomes), path("${metadata.sampleID}_${chromosomes}.bcf"), path("${metadata.sampleID}_${chromosomes}.bcf.csi"), path(pedigree), emit: splitSamples
 
     script:
         """
