@@ -119,7 +119,7 @@ We provide an example here, using the process labeled 'shapeit5', which runs SHA
         ext.argsDefault = [
             // Filter Parameters
             // '--filter-snp': ' ', // NA if specified, the program only considers SNPs
-            '--filter-maf': '0', // FLOAT only consider variants with MAF above the specified value. It requires AC/AN tags in VCF/BCF file
+            // '--filter-maf': '0', // FLOAT only consider variants with MAF above the specified value. It requires AC/AN tags in VCF/BCF file
             // MCMC Parameters - Expert
             '--mcmc-iterations': '5b,1p,1b,1p,1b,1p,5m', // STRING iteration scheme of the MCMC (burnin=b, pruning=p, main=m)
             '--mcmc-prune': 0.999, // FLOAT pruning threshold for genotype graphs (internal memory structures)
@@ -195,7 +195,7 @@ There are a few issues that can occur at this step that will cause the pipeline 
 
 ## Citations
 
-Please cite the appropriate tools used throughout your pipeline.
+Please cite the appropriate tools used throughout your pipeline. These citations were updated as of 27th July, 2026; additional or updated citations may be necessary.
 
 **Nextflow**: [Tommaso et al., 2017: Nextflow enables reproducible computational workflows](https://www.nature.com/articles/nbt.3820)
 
@@ -211,7 +211,7 @@ If using the optional SHAPEIT4 process instead:
 
 **IMPUTE5**: [Rubinacci et al., 2020: Genotype imputation using the Positional Burrows Wheeler Transform](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009049)
 
-### Input data: LPWGS
+### Input data: lcWGS (lpWGS)
 
 **GLIMPSE2**: [Rubinacci et al., 2023: Imputation of low-coverage sequencing data from 150,119 UK Biobank genomes](https://www.nature.com/articles/s41588-023-01438-3)
 
