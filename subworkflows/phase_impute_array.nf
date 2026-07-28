@@ -1,4 +1,5 @@
 include { bcftools_fill_tags_phasing } from '../modules/shapeit5/bcftools_fill_tags_phasing.nf'
+include { bcftools_filter_imputed_sites } from '../modules/impute5/bcftools_filter_imputed_sites.nf'
 include { bcftools_index_ligated } from '../modules/impute5/bcftools_index_ligated.nf'
 include { bcftools_index_ligated as bcftools_index_ligated_again } from '../modules/impute5/bcftools_index_ligated.nf'
 include { bcftools_index_phased } from '../modules/shapeit5/bcftools_index_phased.nf'
@@ -93,8 +94,14 @@ workflow Phase_Impute_Array {
         }
         .set { ch_ligated_one }
 
+        // Filter based on GP to remove low-confidence sites within individuals - not across sites
+        bcftools_filter_imputed_sites(
+            ch_ligated_one
+        )
+        ch_filtered_ligated_one = bcftools_filter_imputed_sites.out.filteredImputed
+
         // If round two exists, the imputation steps will be performed again, including chunking, imputing, and ligating
-        ch_prepare_two = ch_ligated_one.combine(reference_two, by:0)
+        ch_prepare_two = ch_filtered_ligated_one.combine(reference_two, by:0)
             .map { chr, sampleMetadata, imputedSample, imputedSampleIndex, pedigree, referenceMetadata, reference, referenceIndices, geneticMap ->
                 tuple(chr, sampleMetadata, imputedSample, imputedSampleIndex, pedigree, referenceMetadata, reference, referenceIndices, geneticMap)
             }
