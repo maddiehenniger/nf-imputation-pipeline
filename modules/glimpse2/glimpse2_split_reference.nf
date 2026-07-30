@@ -10,6 +10,8 @@
 
  process glimpse2_split_reference {
 
+    label 'glimpse2'
+
     label 'def_cpu'
     label 'lil_mem'
     label 'lil_time'
@@ -26,19 +28,24 @@
         tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("${metadata.referenceID}.chunks.${metadata.chromosome}*"), emit: chunkedReference
 
     script:
+        
+        def genetic_map_command = geneticMap ? "-M ${geneticMap}"  : ""
+
         """
-        while IFS="" read -r LINE || [-n "\$LINE" ];
-        do
-            printf -v ID "%02d" \$(echo \$LINE | cut -d" " -f1)
-            IRG=\$(echo \$LINE | cut -d" " -f3)
-            ORG=\$(echo \$LINE | cut -d" " -f4)
-            GLIMPSE2_split_reference_static \\
-                -R ${reference} \\
-                -M ${geneticMap} \\
-                --input-region \\
-                --output-region \\
-                -O ${metadata.referenceID}.chunks.${metadata.chromosome} \\
-                --log ${metadata.referenceID}.chunks.${metadata.chromosome}.log
+        while IFS= read -r line; do
+        chr=\$(echo "\$line" | awk '{print \$2}')
+        region=\$(echo "\$line" | awk '{print \$4}')
+        buffer=\$(echo "\$line" | awk '{print \$3}')
+        count=\$(echo "\$line" | awk '{print \$1}')
+        out_file="${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.bcf"
+        log_file="${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.log"
+        GLIMPSE2_split_reference \\
+            ${genetic_map_command} \\
+            -R ${reference} \\
+            --input-region \${buffer} \\
+            --output-region \${region} \\
+            -O \${out_file} \\
+            --log \${log_file}
         done < ${chunkedRegions}
         """
  }

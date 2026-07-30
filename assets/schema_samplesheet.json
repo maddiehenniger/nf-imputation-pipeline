@@ -29,7 +29,7 @@
         "type": "string",
         "pattern": "^\\S+$",
         "format": "file-path",
-        "errorMessage": "If providing the optional pedigree file associated with the test samples to be used for phasing, the file path to the pedigree file must be provided, cannot contain spaces, and must end with the extension '.fam' per SHAPEIT requirements."
+        "errorMessage": "If providing the optional pedigree file associated with the test samples to be used for phasing, the file path to the pedigree file must be provided, cannot contain spaces, and must end with the extension '.fam' per SHAPEIT requirements. Note that GLIMPSE2 does not currently support phasing with pedigree information, and should be left blank if using this pipeline for lcWGS data."
       }
     }
   }

@@ -5,6 +5,8 @@ include { convert_reference_to_xcf } from '../modules/impute5/convert_reference_
 include { convert_reference_to_xcf as convert_reference_two_to_xcf } from '../modules/impute5/convert_reference_to_xcf.nf'
 include { glimpse2_chunk } from '../modules/glimpse2/glimpse2_chunk.nf'
 include { glimpse2_split_reference } from '../modules/glimpse2/glimpse2_split_reference.nf'
+include { samtools_identify_chromosomes } from '../modules/samtools_identify_chromosomes.nf'
+include { samtools_split_samples } from '../modules/samtools_split_samples.nf'
 /**
  * Preprocess_Inputs:
  * For test samples: Identifes the number of chromosomes present in the test samples and then splits the samples by chromosome, providing the associated index.
@@ -28,13 +30,69 @@ workflow Preprocess_Inputs {
     main:        
         // TODO: Detect if the indexed files are present for test samples and references. If yes, skip indexing. If not, index.
 
+        // Determine file extension - expects (case insensitive) bam, cram, vcf, vcf.gz, or bcf file
+        samples_process = samples.branch {
+            bam: it[1].name.toLowerCase().endsWith('.bam') ||
+                 it[1].name.toLowerCase().endsWith('.cram')
+            vcf: it[1].name.toLowerCase().endsWith('.vcf') ||
+                 it[1].name.toLowerCase().endsWith('vcf.gz') ||
+                 it[1].name.toLowerCase().endsWith('bcf')
+            unknown: true
+        } 
+
+        // Print error if detection goes wrong at the above step
+        samples_process.bam.count()
+            .combine(samples_process.vcf.count())
+            .subscribe { bamCount, vcfCount ->
+                if (bamCount > 0 && vcfCount > 0) {
+                    error "\n[ERROR]: Mixed file extensions present in the input files.\n" +
+                        "Your input contains $bamCount BAM/CRAM files AND $vcfCount BCF/VCF(.gz) files.\n" +
+                        "Please provide only prove either BAM/CRAM files, OR BCF/VCF(.gz) files."
+                }
+                if (bamCount == 0 && vcfCount == 0) {
+                    error "\n[ERROR]: No valid input files found.\n" +
+                        "Check your file extensions (.bam, .cram, .vcf, .vcf.gz, .bcf)."
+                }
+
+                def type = bamCount > 0 ? "BAM/CRAM" : "BCF/VCF(.gz)"
+                def counter = bamCount > 0 ? bamCount : vcfCount
+                log.info "[IMPUTATION PIPELINE] Processing $counter provided $type files..."
+            }
+
+        // BAM FILE PROCESSING
+        // Identify the chromosomes present in each sample
+        samtools_identity_chromosomes(
+            samples_process.bam
+        )
+
+        ch_bam_split = samtools_identify_chromosomes.out
+            .flatMap { meta, chrom_string, path, idx, ped ->
+                chrom_string.trim().split('\n').findAll { it }.collect { chr ->
+                    [ meta, chr, path, idx, ped ]
+                }
+            }
+            | samtools_split_samples
+        
+        // Map to standard format: [chr, meta, sample, idx, ped]
+        ch_bams = samtools_split_samples.out.splitSamples.
+            .flatmap { meta, chr, sample, idx, ped ->
+                def chrom_list = chrom_string.trim().split('\n')
+                def chromosomes = chrom_list.collect { chr ->
+                    [ meta, chr, samplePath, sampleIndex, pedigree ]
+                 }
+                
+                return chromosomes
+        }
+        .set { ch_chromosomes_bams }
+
+        // VCF FILE PROCESSING
         // Identify the chromosomes present in each sample
         bcftools_identify_chromosomes(
-            samples
+            samples_process.vcf
         )
-        
+            
         // Wrangles the output to add chromosome information into the channel
-        bcftools_identify_chromosomes.out            
+        ch_vcfs_split = bcftools_identify_chromosomes.out            
             .flatMap { meta, chrom_string, samplePath, sampleIndex, pedigree ->
                 def chrom_list = chrom_string.trim().split('\n')
                 def chromosomes = chrom_list.collect { chr ->
@@ -43,24 +101,14 @@ workflow Preprocess_Inputs {
 
                 return chromosomes
             }
-            .set { ch_chromosomes }
-
-        // Split samples by chromosome using bcftools view
-        bcftools_split_samples(
-            ch_chromosomes
-        )
-        ch_initial_split = bcftools_split_samples.out.splitSamples
-
-        // Make sure the AC/AN tags are filled
-        bcftools_fill_tags(
-            ch_initial_split
-        )
+            | bcftools_split_samples
+            | bcftools_fill_tags
         
         // Change the chromosome value to string for downstream merging
         bcftools_fill_tags.out.filledTags.map { meta, chr, sample, sampleIdx, ped ->
             [ chr.toString(), meta, sample, sampleIdx, ped ]
         }
-        .set { ch_split_samples }
+        .set { ch_chromosomes_vcfs }
 
         // Prepare reference panels for imputation
         switch( dataType.toUpperCase() ) {
@@ -102,7 +150,8 @@ workflow Preprocess_Inputs {
                 break
         }
 
-        ch_samples_one = ch_split_samples.combine(ch_reference_one, by:0)
+        ch_samples     = ch_chromosomes_bams.mix(ch_chromosomes_vcfs)
+        ch_samples_one = ch_samples.combine(ch_reference_one, by:0)
 
     emit:
         samples_one   = ch_samples_one

@@ -34,6 +34,6 @@
         ${imputedSample} \\
         -Ob \\
         --write-index \\
-        -o ${sMetadata.id}.filtered.ligated.${chromosome}.bcf -- -t q -n . -e'FORMAT/GP>=0.90'
+        -o ${sMetadata.sampleID}.filtered.ligated.${chromosome}.bcf -- -t q -n . -e'FORMAT/GP>=0.90'
         """
  }

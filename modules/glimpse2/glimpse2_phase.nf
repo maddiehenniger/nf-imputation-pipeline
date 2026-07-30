@@ -1,21 +1,23 @@
 /**
- * Process to phase and impute low-coverage WGS samples to the user specified reference panel.
+ * Process to phase and impute low-coverage WGS samples to the user-specified reference panel.
  * 
- * Generates GLIMPSE2-imputed data
- * @see IMPUTE5 documentation https://odelaneau.github.io/GLIMPSE/docs/documentation/split_reference/
+ * Generates phased and imputed genotypes using GLIMPSE2_phase.
+ * @see GLIMPSE2_phase documentation https://odelaneau.github.io/GLIMPSE/docs/documentation/phase/
  * 
  * @input 
  * @emit
  */
 
- process glimpse2_split_reference {
+ process glimpse2_phase_impute {
 
-    label 'def_cpu'
-    label 'lil_mem'
-    label 'lil_time'
+    label 'glimpse2'
+
+    label 'med_cpu'
+    label 'med_mem'
+    label 'med_time'
 
     publishDir(
-        path:    "${params.publishDirData}/glimpse2_references/split_references/",
+        path:    "${params.publishDirData}/glimpse2_phased/",
         mode:    "symlink"
     )
 
