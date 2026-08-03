@@ -6,7 +6,7 @@
  * 
  * @input 
  * @emit
- */
+ **/
 
  process glimpse2_phase_impute {
 
@@ -26,7 +26,7 @@
         path fastaReference
 
     output:
-        tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("${metadata.referenceID}.chunks.${metadata.chromosome}*"), emit: chunkedReference
+        tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("*bcf"), path("*csi"), emit: imputedSamples
 
     script:
         

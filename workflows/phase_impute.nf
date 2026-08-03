@@ -8,6 +8,7 @@ workflow PHASE_IMPUTE {
         reference_two
         dataType
         phasingModel
+        fastaReference
 
     main:
 
@@ -23,7 +24,8 @@ workflow PHASE_IMPUTE {
          } else if (dataType == 'lpwgs'){
             Phase_Impute_Lpwgs(
                 samples_one,
-                reference_one
+                reference_one,
+                fasta_reference
             )
         }
 
