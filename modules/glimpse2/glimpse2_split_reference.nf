@@ -25,7 +25,7 @@
         tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path(chunkedRegions)
 
     output:
-        tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("${metadata.referenceID}.chunks.${metadata.chromosome}*"), emit: chunkedReference
+        tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("${metadata.referenceID}.${metadata.round}.\${chr}.\${count}.bcf"), emit: chunkedReference
 
     script:
         
@@ -37,8 +37,8 @@
         region=\$(echo "\$line" | awk '{print \$4}')
         buffer=\$(echo "\$line" | awk '{print \$3}')
         count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.bcf"
-        log_file="${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.log"
+        out_file="${metadata.referenceID}.${metadata.round}.\${chr}.\${count}.bcf"
+        log_file="${metadata.referenceID}.${metadata.round}.\${chr}.\${count}.log"
         GLIMPSE2_split_reference \\
             ${genetic_map_command} \\
             -R ${reference} \\

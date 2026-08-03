@@ -37,7 +37,7 @@
         GLIMPSE2_chunk \\
             ${args} \\
             ${genetic_map_command} \\
-            ${glimpse2Model} \\
+            --${glimpse2Model} \\
             --threads ${task.cpus} \\
             -I ${reference} \\
             --region ${metadata.chromosome} \\

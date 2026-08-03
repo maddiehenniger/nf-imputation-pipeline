@@ -15,6 +15,7 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
         samplesheet
         references
         dataType
+        glimpse2Model
 
     main:
         
@@ -30,7 +31,8 @@ include { Preprocess_Inputs    } from '../subworkflows/preprocess_inputs.nf'
             ch_samples,
             ch_reference_one,
             ch_reference_two,
-            dataType
+            dataType,
+            glimpse2Model
         )
         ch_samples_one   = Preprocess_Inputs.out.samples_one
         ch_reference_two = Preprocess_Inputs.out.reference_two

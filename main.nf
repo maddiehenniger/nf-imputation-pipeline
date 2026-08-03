@@ -31,7 +31,8 @@ workflow {
     PREPARE_INPUTS(
         file(params.samplesheet),       // required: User-provided path to sample metadata identified in the nextflow.config file 
         file(params.references),        // required: User-provided path to the reference metadata identified in the nextflow.config file
-        params.dataType                 // required: User-provided value of either 'array' or 'lpwgs' identified in the nextflow.config file
+        params.dataType,                // required: User-provided value of either 'array' or 'lpwgs' identified in the nextflow.config file
+        params.glimpse2Model            // for GLIMPSE2: User-provided value of either 'sequential' or 'recursive' identified in the nextflow.config file
     )
     // ch_chromosomes   = PREPARE_INPUTS.out.chromosomes // Testing
     ch_samples_one   = PREPARE_INPUTS.out.samples_one
