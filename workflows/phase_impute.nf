@@ -1,4 +1,5 @@
 include { Phase_Impute_Array } from "../subworkflows/phase_impute_array.nf"
+include { Phase_Impute_Lpwgs } from "../subworkflows/phase_impute_lpwgs.nf"
 
 workflow PHASE_IMPUTE {
     take:
