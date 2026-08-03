@@ -30,12 +30,13 @@ workflow Preprocess_Inputs {
     
     main:        
         // Determine file extension
-        samples_process = samples.branch {
-            bam: it.samplePath.toLowerCase().endsWith('.bam') ||
-                 it.samplePath.toLowerCase().endsWith('.cram')
-            vcf: it.samplePath.name.toLowerCase().endsWith('.vcf') ||
-                 it.samplePath.name.toLowerCase().endsWith('vcf.gz') ||
-                 it.samplePath.name.toLowerCase().endsWith('bcf')
+        samples_process = samples.branch { meta, path, index, pedigree ->
+            def ext = path.toString().toLowerCase()
+            bam: ext.endsWith('.bam') ||
+                 ext.endsWith('.cram')
+            vcf: ext.endsWith('.vcf') ||
+                 ext.endsWith('vcf.gz') ||
+                 ext.endsWith('bcf')
             unknown: true
         } 
 
@@ -44,7 +45,7 @@ workflow Preprocess_Inputs {
             .combine(samples_process.vcf.count())
             .subscribe { bamCount, vcfCount ->
                 if (bamCount > 0 && vcfCount > 0) {
-                    error "\n[ERROR]: Mixed file extensions present in the input files."
+                    error "\n[ERROR]: Mixed or unknown file extensions present in the input files: ${it[1]}. Only BAM/CRAM -OR- BCF/VCF(.gz) are supported."
                 }
                 if (bamCount == 0 && vcfCount == 0) {
                     error "\n[ERROR]: No valid input files found."

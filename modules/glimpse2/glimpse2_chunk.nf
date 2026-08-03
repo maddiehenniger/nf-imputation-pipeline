@@ -2,7 +2,7 @@
  * Process to create imputation chunks from the reference panel using GLIMPSE2.
  * 
  * Generates 
- * @see IMPUTE5 documentation https://odelaneau.github.io/GLIMPSE/docs/documentation/chunk/
+ * @see GLIMPSE2 documentation https://odelaneau.github.io/GLIMPSE/docs/documentation/chunk/
  * 
  * @input 
  * @emit
@@ -29,8 +29,10 @@
         tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path("${metadata.referenceID}.chunks.${metadata.chromosome}.txt"), emit: chunkedRegions
 
     script:
-        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
+        // Allow for user flexible arguments - defined in the conf/args.config file
+        String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
+        // Determine if genetic maps exist or not
         def genetic_map_command = geneticMap ? "-M ${geneticMap}"  : ""
 
         """
