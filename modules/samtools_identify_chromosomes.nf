@@ -29,6 +29,6 @@
 
     script:
         """
-        samtools view -H ${sample} | cut -f1 | sort -n -u
+        samtools view -H ${sample} | grep '^@SQ' | cut -f2 | sed 's/SN://'
         """
  }

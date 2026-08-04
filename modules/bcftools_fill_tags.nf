@@ -9,6 +9,8 @@
  */
 
  process bcftools_fill_tags {
+
+    tag "${metadata.sampleID}"
     
     label 'bcftools'
 

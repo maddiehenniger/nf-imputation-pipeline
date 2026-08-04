@@ -9,6 +9,8 @@
  */
 
  process bcftools_identify_chromosomes {
+
+    tag "${metadata.sampleID}"
     
     label 'bcftools'
 

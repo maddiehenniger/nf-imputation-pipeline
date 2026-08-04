@@ -55,8 +55,8 @@ workflow {
         ch_reference_one,
         ch_reference_two,
         params.dataType,
-        params.phasingModel,
-        params.fastaReference
+        params.phasingModel // ,
+        // params.fastaReference
     )
 
     ch_imputed_samples_one = PHASE_IMPUTE.out.imputedSamplesOne

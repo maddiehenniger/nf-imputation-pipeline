@@ -52,7 +52,7 @@ workflow Preprocess_Inputs {
                 }
                 def type = bamCount > 0 ? "BAM/CRAM" : "BCF/VCF(.gz)"
                 def counter = bamCount > 0 ? bamCount : vcfCount
-                log.info "[IMPUTATION PIPELINE] Processing $counter $type files..."
+                log.info "[IMPUTATION PIPELINE] Processing $counter $type file(s)..."
             }
 
         // BAM FILE PROCESSING
@@ -62,17 +62,18 @@ workflow Preprocess_Inputs {
         ch_bam_split = samtools_identify_chromosomes.out
             .flatMap { meta, chrom_string, path, idx, ped ->
                 chrom_string.trim().split('\n').findAll { it }.collect { chr ->
-                    [ meta, chr.trim(), path, idx, ped ]
+                    [ chr.trim(), meta, path, idx, ped ]
                 }
             }
 
-        samtools_split_samples(ch_bam_split)
+        // TESTING IF WE SHOULD JUST HAVE THE WHOLE FILE GO?
+        // samtools_split_samples(ch_bam_split)
         
         // Map to standard format: [chr, meta, sample, idx, ped]
-        ch_chromosomes_bams = samtools_split_samples.out.splitSamples
-            .map { meta, chr, sample, idx, ped ->
-                [ chr.toString(), meta, sample, idx, ped ]
-            }
+        //ch_chromosomes_bams = samtools_split_samples.out.splitSamples
+        //    .map { meta, chr, sample, idx, ped ->
+        //        [ chr.toString(), meta, sample, idx, ped ]
+        //    }
 
         // VCF FILE PROCESSING
         bcftools_identify_chromosomes(samples_process.vcf)

@@ -14,9 +14,9 @@
 
     label 'glimpse2'
 
-    label 'def_cpu'
-    label 'lil_mem'
-    label 'lil_time'
+    label 'med_cpu'
+    label 'med_mem'
+    label 'med_time'
 
     publishDir(
         path:    "${params.publishDirData}/glimpse2_references/split_references/",
@@ -47,7 +47,7 @@
         GLIMPSE2_split_reference \\
             ${args} \\
             ${genetic_map_command} \\
-            -T ${task.cpus} \\
+            --threads ${task.cpus} \\
             -R ${reference} \\
             --input-region \${buffer} \\
             --output-region \${region} \\

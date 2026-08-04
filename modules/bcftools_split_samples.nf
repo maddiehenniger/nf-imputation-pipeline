@@ -9,6 +9,8 @@
  */
 
  process bcftools_split_samples {
+
+    tag "${metadata.sampleID}"
     
     label 'bcftools'
 
