@@ -10,7 +10,7 @@
 
  process bcftools_index_ligated {
 
-    tag "${sMetadata.sampleID}-${chromosome}-${rMetadata.round}"
+    tag "${sMetadata.sampleID}-${chromosome}"
 
     label 'bcftools'
 
