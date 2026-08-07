@@ -10,6 +10,8 @@
 
  process bcftools_ligate_chromosomes {
 
+    tag "${sMetadata.sampleID}-${chromosome}-${rMetadata.round}"
+
     label 'bcftools'
 
     label 'def_cpu'

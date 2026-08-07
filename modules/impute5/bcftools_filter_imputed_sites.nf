@@ -10,6 +10,8 @@
 
  process bcftools_filter_imputed_sites {
 
+    tag "${sMetadata.sampleID}"
+
     label 'bcftools'
 
     label 'def_cpu'

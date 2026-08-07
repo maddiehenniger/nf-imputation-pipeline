@@ -10,9 +10,11 @@
 
  process impute5_impute_samples {
 
-    label 'med_cpu'
-    label 'med_mem'
-    label 'med_time'
+    tag "${sMetadata.sampleID}-${chromosome}-${rMetadata.round}"
+
+    label 'big_cpu'
+    label 'big_mem'
+    label 'big_time'
 
     publishDir(
         path:    "${params.publishDirData}/${rMetadata.round}_imputed_chunked_samples/",
@@ -40,6 +42,7 @@
             log_file="${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.log"
             impute5_v1.2.0_static \\
                 ${args} \\
+                --threads ${task.cpus} \\
                 --h ${reference} \\
                 --g ${phasedSample} \\
                 --r \${region} \\
@@ -60,6 +63,7 @@
             log_file="${sMetadata.sampleID}.${rMetadata.round}.${chromosome}.\${count}.log"
             impute5_v1.2.0_static \\
                 ${args} \\
+                --threads ${task.cpus} \\
                 --h ${reference} \\
                 --g ${phasedSample} \\
                 --r \${region} \\

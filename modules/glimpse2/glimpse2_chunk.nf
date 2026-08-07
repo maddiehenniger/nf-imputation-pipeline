@@ -10,6 +10,8 @@
 
  process glimpse2_chunk {
 
+    tag "${metadata.referenceID}"
+
     label 'glimpse2'
 
     label 'def_cpu'

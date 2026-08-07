@@ -121,7 +121,7 @@ workflow Preprocess_Inputs {
                 break
         }
 
-        ch_samples = ch_chromosomes_bams.mix(ch_chromosomes_vcfs)
+        ch_samples = ch_bam_split.mix(ch_chromosomes_vcfs)
         ch_samples_one = ch_samples.combine(ch_reference_one, by: 0)
 
     emit:

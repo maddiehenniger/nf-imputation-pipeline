@@ -10,6 +10,8 @@
 
  process imp5chunker_chunk_samples {
 
+    tag "${rMetadata.referenceID}-${chromosome}-${rMetadata.round}"
+
     label 'med_cpu'
     label 'med_mem'
     label 'med_time'

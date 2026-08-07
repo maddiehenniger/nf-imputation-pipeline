@@ -9,6 +9,8 @@
  */
 
  process samtools_identify_chromosomes {
+
+    tag "${metadata.sampleID}"
     
     label 'samtools'
 

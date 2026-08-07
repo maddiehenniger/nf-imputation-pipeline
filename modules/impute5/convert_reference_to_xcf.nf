@@ -10,6 +10,8 @@
 
  process convert_reference_to_xcf {
 
+    tag "${metadata.referenceID}"
+
     publishDir(
         path:    "${params.publishDirData}/references/",
         mode:    "symlink",

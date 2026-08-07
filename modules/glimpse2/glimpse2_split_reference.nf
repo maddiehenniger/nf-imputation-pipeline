@@ -27,7 +27,7 @@
         tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path(chunkedRegions)
 
     output:
-        tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path(chunkedRegions), path("${metadata.referenceID}.${metadata.round}.\${chr}.\${count}*.bin"), emit: chunkedReference
+        tuple val(metadata), path(reference), path(referenceIndex), path(geneticMap), path(chunkedRegions), path("${metadata.referenceID}.${metadata.round}.${metadata.chromosome}.*.bin"), emit: chunkedReference
 
     script:
         
