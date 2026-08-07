@@ -6,7 +6,7 @@ include { convert_reference_to_xcf as convert_reference_two_to_xcf } from '../mo
 include { glimpse2_chunk } from '../modules/glimpse2/glimpse2_chunk.nf'
 include { glimpse2_split_reference } from '../modules/glimpse2/glimpse2_split_reference.nf'
 include { samtools_identify_chromosomes } from '../modules/samtools_identify_chromosomes.nf'
-include { samtools_split_samples } from '../modules/samtools_split_samples.nf'
+// include { samtools_split_samples } from '../modules/samtools_split_samples.nf'
 /**
  * Preprocess_Inputs:
  * For test samples: Identifes the number of chromosomes present in the test samples and then splits the samples by chromosome, providing the associated index.
