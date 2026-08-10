@@ -15,8 +15,8 @@
     label 'bcftools'
 
     label 'def_cpu'
-    label 'lil_mem'
-    label 'lil_time'
+    label 'med_mem'
+    label 'med_time'
 
     publishDir(
         path:    "${params.publishDirData}/final_imputed_samples/",

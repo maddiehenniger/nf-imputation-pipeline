@@ -21,7 +21,7 @@
     publishDir(
         path:    "${params.publishDirData}/final_imputed_samples/",
         pattern: "*filtered.ligated.${chromosome}.*",
-        mode:    "copy"
+        mode:    "symlink"
     )
 
     input:
