@@ -11,9 +11,9 @@
  process shapeit5_phase_common_noref {
     
     label 'shapeit5'
-
-    label 'med_cpu'
-    label 'med_mem'
+   
+    label 'huge_cpu'
+    label 'huge_mem'
     label 'med_time'
 
     publishDir(

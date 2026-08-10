@@ -12,9 +12,9 @@
 
     tag "${sMetadata.sampleID}-${chromosome}-${rMetadata.round}"
 
-    label 'big_cpu'
-    label 'big_mem'
-    label 'big_time'
+    label 'huge_cpu'
+    label 'huge_mem'
+    label 'huge_time'
 
     publishDir(
         path:    "${params.publishDirData}/${rMetadata.round}_imputed_chunked_samples/",

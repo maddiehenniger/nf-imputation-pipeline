@@ -12,8 +12,8 @@
     
     label 'shapeit4'
 
-    label 'med_cpu'
-    label 'med_mem'
+    label 'huge_cpu'
+    label 'huge_mem'
     label 'med_time'
 
     publishDir(
