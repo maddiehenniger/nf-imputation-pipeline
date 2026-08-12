@@ -36,6 +36,7 @@
             """
             shapeit4 \\
                 ${args} \\
+                --thread ${task.cpus} \\
                 --input ${sample} \\
                 --region ${chromosome} \\
                 --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
@@ -46,6 +47,7 @@
             """
             shapeit4 \\
                 ${args} \\
+                --thread ${task.cpus} \\
                 --input ${sample} \\
                 --region ${chromosome} \\
                 --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\

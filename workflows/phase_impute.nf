@@ -22,11 +22,13 @@ workflow PHASE_IMPUTE {
             ch_imputed_two = Phase_Impute_Array.out.ligatedSamplesTwo
 
          } else if (dataType == 'lpwgs'){
-            Phase_Impute_Lpwgs(
-                samples_one,
-                reference_one //,
-                // fasta_reference
-            )
+            // Phase_Impute_Lpwgs(
+            //     samples_one,
+            //     reference_one //,
+            //     // fasta_reference
+            // )
+            ch_imputed_one = samples_one
+            ch_imputed_two = Channel.empty()
         }
 
     emit:

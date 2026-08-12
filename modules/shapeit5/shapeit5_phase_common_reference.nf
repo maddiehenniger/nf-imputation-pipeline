@@ -38,6 +38,7 @@
             """
             SHAPEIT5_phase_common \\
                 ${args} \\
+                --thread ${task.cpus} \\
                 ${pedigree_command} \\
                 --input ${sample} \\
                 --reference ${reference} \\
@@ -50,6 +51,7 @@
             """
             SHAPEIT5_phase_common \\
                 ${args} \\
+                --thread ${task.cpus} \\
                 ${pedigree_command} \\
                 --input ${sample} \\
                 --reference ${reference} \\
