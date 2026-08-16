@@ -12,9 +12,9 @@
     
     label 'shapeit5'
    
-    label 'huge_cpu'
-    label 'huge_mem'
-    label 'med_time'
+    label 'max_cpu'
+    label 'max_mem'
+    label 'max_time'
 
     publishDir(
         path:    "${params.publishDirData}/phased_samples/",

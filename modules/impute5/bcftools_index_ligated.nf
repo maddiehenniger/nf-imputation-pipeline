@@ -15,7 +15,7 @@
     label 'bcftools'
 
     label 'def_cpu'
-    label 'med_mem'
+    label 'big_mem'
     label 'med_time'
 
     publishDir(
