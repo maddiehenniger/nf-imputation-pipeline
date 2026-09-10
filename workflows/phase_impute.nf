@@ -1,14 +1,14 @@
 include { Phase_Impute_Array } from "../subworkflows/phase_impute_array.nf"
-// include { Phase_Impute_Lpwgs } from "../subworkflows/phase_impute_lpwgs.nf"
+include { Phase_Impute_Lpwgs } from "../subworkflows/phase_impute_lpwgs.nf"
 
 workflow PHASE_IMPUTE {
     take:
         samples_one
-        reference_one
+        reference_one // Don't think I need this
         reference_two
         dataType
         phasingModel
-        // fastaReference
+        fastaReference
 
     main:
 
@@ -22,17 +22,15 @@ workflow PHASE_IMPUTE {
             ch_imputed_two = Phase_Impute_Array.out.ligatedSamplesTwo
 
          } else if (dataType == 'lpwgs'){
-            // Phase_Impute_Lpwgs(
-            //     samples_one,
-            //     reference_one //,
-            //     // fasta_reference
-            // )
-            ch_imputed_one = samples_one
+            Phase_Impute_Lpwgs(
+                samples_one,
+                fastaReference
+            )
+            ch_imputed_one = Phase_Impute_Lpwgs.out.imputedSamples
             ch_imputed_two = Channel.empty()
         }
 
     emit:
-        // phasedSamples = ch_phased_samples
         imputedSamplesOne = ch_imputed_one
         imputedSamplesTwo = ch_imputed_two
 }

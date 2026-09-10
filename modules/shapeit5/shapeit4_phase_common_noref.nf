@@ -31,27 +31,16 @@
     script:
        
         String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
+        def genetic_map_command = geneticMap ? "--map ${geneticMap}" : ""
 
-        if(rMetadata.geneticMaps == 'provided') {
-            """
-            shapeit4 \\
-                ${args} \\
-                --thread ${task.cpus} \\
-                --input ${sample} \\
-                --region ${chromosome} \\
-                --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
-                --map ${geneticMap} \\
-                --log ${sMetadata.sampleID}.${chromosome}.phased.log
-            """ 
-        } else if(rMetadata.geneticMaps == 'none') {
-            """
-            shapeit4 \\
-                ${args} \\
-                --thread ${task.cpus} \\
-                --input ${sample} \\
-                --region ${chromosome} \\
-                --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
-                --log ${sMetadata.sampleID}.${chromosome}.phased.log
-            """
-        }
+        """
+        shapeit4 \\
+            ${args} \\
+            ${genetic_map_command} \\
+            --thread ${task.cpus} \\
+            --input ${sample} \\
+            --region ${chromosome} \\
+            --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
+            --log ${sMetadata.sampleID}.${chromosome}.phased.log
+        """ 
  }

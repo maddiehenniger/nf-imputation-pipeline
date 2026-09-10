@@ -60,11 +60,16 @@ workflow Preprocess_Inputs {
 
         // Split chromosomes into individual channel items
         ch_bam_split = samtools_identify_chromosomes.out
-            .flatMap { meta, chrom_string, path, idx, ped ->
-                chrom_string.trim().split('\n').findAll { it }.collect { chr ->
-                    [ chr.trim(), meta, path, idx, ped ]
+            .flatMap { meta, chrom_string, samplePath, sampleIndex, pedigree ->
+                def chrom_list = chrom_string.trim().split('\n').findAll { it }
+                chrom_list.collect { chr ->
+                    [ meta, chr.trim(), samplePath, sampleIndex, pedigree ]
                 }
             }
+
+        ch_chromosomes_bams = ch_bam_split.map { meta, chr, sample, sampleIdx, ped ->
+            [ chr.toString(), meta, sample, sampleIdx, ped ]
+        }
 
         // TESTING IF WE SHOULD JUST HAVE THE WHOLE FILE GO?
         // samtools_split_samples(ch_bam_split)
@@ -117,11 +122,13 @@ workflow Preprocess_Inputs {
                     glimpse2Model
                 )
                 glimpse2_split_reference(glimpse2_chunk.out.chunkedRegions)
-                ch_reference_one = glimpse2_split_reference.out.chunkedReference
+                ch_reference_one = glimpse2_split_reference.out.chunkedReference.map { meta, refPath, refIdx, mapPath, chunks, refBins -> 
+                    [ meta.chromosome.toString(), meta, refPath, refIdx, mapPath, chunks, refBins ]
+                }
                 break
         }
 
-        ch_samples = ch_bam_split.mix(ch_chromosomes_vcfs)
+        ch_samples = ch_chromosomes_bams.mix(ch_chromosomes_vcfs)
         ch_samples_one = ch_samples.combine(ch_reference_one, by: 0)
 
     emit:

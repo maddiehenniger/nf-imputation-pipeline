@@ -37,22 +37,23 @@
         def genetic_map_command = geneticMap ? "-M ${geneticMap}"  : ""
 
         """
-        while IFS= read -r line; do
-        chr=\$(echo "\$line" | awk '{print \$2}')
-        region=\$(echo "\$line" | awk '{print \$4}')
-        buffer=\$(echo "\$line" | awk '{print \$3}')
-        count=\$(echo "\$line" | awk '{print \$1}')
-        out_file="${metadata.referenceID}.${metadata.round}.\${chr}.\${count}"
-        log_file="${metadata.referenceID}.${metadata.round}.\${chr}.\${count}.log"
-        GLIMPSE2_split_reference \\
-            ${args} \\
-            ${genetic_map_command} \\
-            --threads ${task.cpus} \\
-            -R ${reference} \\
-            --input-region \${buffer} \\
-            --output-region \${region} \\
-            -O \${out_file} \\
-            --log \${log_file}
+        while IFS="" read -r line; do
+            ORG=\$(echo "\$line" | awk '{print \$4}')
+            IRG=\$(echo "\$line" | awk '{print \$3}')
+            chr=\$(echo \${line} | cut -d" " -f2)
+            REGS=\$(echo \${IRG} | cut -d":" -f 2 | cut -d"-" -f1)
+            REGE=\$(echo \${IRG} | cut -d":" -f 2 | cut -d"-" -f2)
+            out_file="${metadata.referenceID}.${metadata.round}.\${chr}."
+            log_file="${metadata.referenceID}.${metadata.round}.\${chr}.log"
+            GLIMPSE2_split_reference \\
+                ${args} \\
+                ${genetic_map_command} \\
+                --threads ${task.cpus} \\
+                -R ${reference} \\
+                --input-region \${IRG} \\
+                --output-region \${ORG} \\
+                -O \${out_file} \\
+                --log \${log_file}
         done < ${chunkedRegions}
         """
  }

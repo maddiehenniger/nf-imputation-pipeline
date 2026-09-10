@@ -30,7 +30,7 @@ workflow Parse_Input_Sheets {
         Channel
             .fromList(samplesheetToList(references, "${projectDir}/assets/schema_references.json"))
             .map { meta, referencePath, referenceIndex, geneticMapPath -> 
-                createReferenceChannel(meta, referencePath, referenceIndex, geneticMapPath) 
+                tuple(meta, referencePath, referenceIndex, geneticMapPath) 
             }
             .set { ch_references }
         
@@ -50,25 +50,25 @@ workflow Parse_Input_Sheets {
         reference_two = ch_ref_split.twoRound
 }
 
-def createReferenceChannel(meta, refPath, refIndex, mapPath) {
-    // Store metadata in a Map shallow copied from the input meta map
-    metadata = meta.clone()
-    // Fill in the required metadata 
-    metadata.geneticMaps = mapPath.isEmpty() ? "none" : "provided"
-    // Store the references in lists
-    def referencePath = file(refPath)
-    def referenceIndex = file(refIndex)
-    if(mapPath.isEmpty()) {
-        def emptyFileName = "${refPath.simpleName}.NOFILE"
-        def emptyFilePath = file("${workDir}").resolve(emptyFileName)
-        file("${projectDir}/assets/NO_FILE").copyTo(emptyFilePath)
-        geneticMapPath = file(emptyFilePath)
-    } else {
-        geneticMapPath = file(mapPath)
-    }
+// def createReferenceChannel(meta, refPath, refIndex, mapPath) {
+//     // Store metadata in a Map shallow copied from the input meta map
+//     metadata = meta.clone()
+//     // Fill in the required metadata 
+//     metadata.geneticMaps = mapPath.isEmpty() ? "none" : "provided"
+//     // Store the references in lists
+//     def referencePath = file(refPath)
+//     def referenceIndex = file(refIndex)
+//     if(mapPath.isEmpty()) {
+//         def emptyFileName = "${refPath.simpleName}.NOFILE"
+//         def emptyFilePath = file("${workDir}").resolve(emptyFileName)
+//         file("${projectDir}/assets/NO_FILE").copyTo(emptyFilePath)
+//         geneticMapPath = file(emptyFilePath)
+//     } else {
+//         geneticMapPath = file(mapPath)
+//     }
 
-    return [ metadata, referencePath, referenceIndex, geneticMapPath ]
-}
+//     return [ metadata, referencePath, referenceIndex, geneticMapPath ]
+// }
 
 /**
  * Determine whether or not a file is empty
@@ -79,13 +79,13 @@ def createReferenceChannel(meta, refPath, refIndex, mapPath) {
  *
  * @return A boolean indicating whether or not the fastq file is empty.
 */
-def isEmpty(Path fq) {
-    // set decimal representation of first byte of empty file
-    def emptyDecimal = -1
-    def firstByteOfFastq = readFirstByte(fq)
+// def isEmpty(Path fq) {
+//     // set decimal representation of first byte of empty file
+//     def emptyDecimal = -1
+//     def firstByteOfFastq = readFirstByte(fq)
 
-    return firstByteOfFastq == emptyDecimal
-}
+//     return firstByteOfFastq == emptyDecimal
+// }
 
 /**
  * Read the first byte of a gzip compressed file.
@@ -94,10 +94,10 @@ def isEmpty(Path fq) {
  *
  * @return An integer representation of the first byte of the file.
 */
-def readFirstByte(Path f) {
-    f.withInputStream { fis ->
-        new java.util.zip.GZIPInputStream(fis).withStream { gis ->
-            return gis.read()
-        }
-    }
-}
+// def readFirstByte(Path f) {
+//     f.withInputStream { fis ->
+//         new java.util.zip.GZIPInputStream(fis).withStream { gis ->
+//             return gis.read()
+//         }
+//     }
+// }

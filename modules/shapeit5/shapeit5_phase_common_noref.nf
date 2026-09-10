@@ -33,29 +33,17 @@
         String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
 
         def pedigree_command = pedigree ? "--pedigree ${pedigree}"  : ""
+        def genetic_map_command = geneticMap ? "--map ${geneticMap}" : ""
 
-        if(rMetadata.geneticMaps == 'provided') {
-            """
-            SHAPEIT5_phase_common \\
-                ${args} \\
-                --thread ${task.cpus} \\
-                ${pedigree_command} \\
-                --input ${sample} \\
-                --region ${chromosome} \\
-                --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
-                --map ${geneticMap} \\
-                --log ${sMetadata.sampleID}.${chromosome}.phased.log
-            """ 
-        } else if(rMetadata.geneticMaps == 'none') {
-            """
-            SHAPEIT5_phase_common \\
-                ${args} \\
-                --thread ${task.cpus} \\
-                ${pedigree_command} \\
-                --input ${sample} \\
-                --region ${chromosome} \\
-                --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
-                --log ${sMetadata.sampleID}.${chromosome}.phased.log
-            """
-        }
+        """
+        SHAPEIT5_phase_common \\
+            ${args} \\
+            ${genetic_map_command} \\
+            ${pedigree_command} \\
+            --thread ${task.cpus} \\
+            --input ${sample} \\
+            --region ${chromosome} \\
+            --output ${sMetadata.sampleID}.${chromosome}.phased.bcf \\
+            --log ${sMetadata.sampleID}.${chromosome}.phased.log
+        """ 
  }
