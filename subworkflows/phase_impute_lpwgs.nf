@@ -83,7 +83,7 @@ workflow Phase_Impute_Lpwgs {
         bcftools_index(
             ch_ligated_imputed_samples
         )
-        ch_indexed_imputed_samples = bcftools_index.out.imputedIndexed
+        ch_indexed_imputed_samples = bcftools_index.out.ligatedIndexedSamples
 
 
     emit:
