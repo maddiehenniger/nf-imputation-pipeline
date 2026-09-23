@@ -36,7 +36,7 @@
 
     output:
         tuple val(rMetadata), path(refPath), path(refIdx), path(geneticMap), path(chunkedRegions), path(refBins), path("*.bcf"), path("*.bcf.csi"), emit: imputedSamples
-        tuple path("*coverage.txt.gz"), path("*log"), emit: imputationStatistics
+        tuple path("*coverage.txt.gz"), path("*log"), emit: imputedStatistics
 
     script:
 
