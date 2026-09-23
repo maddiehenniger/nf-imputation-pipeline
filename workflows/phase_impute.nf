@@ -26,7 +26,7 @@ workflow PHASE_IMPUTE {
                 samples_one,
                 fastaReference
             )
-            ch_imputed_one = Phase_Impute_Lpwgs.out.imputedSamples
+            ch_imputed_one = Phase_Impute_Lpwgs.out.ligatedIndexedSamples
             ch_imputed_two = Channel.empty()
         }
 
