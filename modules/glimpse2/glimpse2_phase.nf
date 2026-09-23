@@ -11,6 +11,9 @@
  * in `bamList`, so `samplePath`/`sampleIdx` are provided here to ensure
  * appropriate staging
  *
+ * Note that genetic maps are not supplied at this step; these are embedded in the binary files provided, if the user supplied them
+ * So adding the -M parameter to GLIMPSE2 phase would cause it to exit.
+ *
  * @input
  * @emit
  */
@@ -42,8 +45,6 @@
 
         // Allow for user flexible arguments - defined in the conf/args.config file
         String args = new Args(argsDefault: task.ext.argsDefault, argsDynamic: task.ext.argsDynamic, argsUser: task.ext.argsUser).buildArgsString()
-        // Determine if genetic maps exist or not
-        def genetic_map_command = geneticMap ? "-M ${geneticMap}"  : ""
         // Determine if the path to the FASTA reference in the appropriate genome build was provided
         def fasta_reference_command = fastaReference ? "-F ${fastaReference}" : ""
         // Pull sample path information from the lists
@@ -65,7 +66,6 @@
         GLIMPSE2_phase \\
             ${input_file_command} \\
             ${args} \\
-            ${genetic_map_command} \\
             ${fasta_reference_command} \\
             --threads ${task.cpus} \\
             --reference ${rMetadata.referenceID}.${rMetadata.round}.\${chr}._\${chr}_\${REGS}_\${REGE}.bin \\
