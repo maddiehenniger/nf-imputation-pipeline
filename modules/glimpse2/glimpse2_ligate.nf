@@ -11,7 +11,7 @@
 
  process glimpse2_ligate {
 
-    tag "${chromosome}-${rMetadata.referenceID}"
+    tag "${rMetadata.chromosome}-${rMetadata.referenceID}"
 
     label 'glimpse2'
 
@@ -32,11 +32,11 @@
 
     script:
         """
-        ls -1v *.bcf > imputed_files.txt
+        ls -1v ${rMetadata.chromosome}.imputed.chunk.*.bcf > ${rMetadata.chromosome}_imputed_files.txt
 
         GLIMPSE2_ligate \\
-            -I imputed_files.txt \\
-            -T ${task.cpus} \\
-            -O imputed.chr.${rMetadata.chromosome}.bcf
+            --input imputed_files.txt \\
+            --threads ${task.cpus} \\
+            --output imputed.chr.${rMetadata.chromosome}.bcf
         """
  }

@@ -38,7 +38,7 @@
         path(fastaReference)
 
     output:
-        tuple val(rMetadata), path(refPath), path(refIdx), path(geneticMap), path(chunkedRegions), path(refBins), path("*.bcf"), path("*.bcf.csi"), emit: imputedSamples
+        tuple val(rMetadata), path(refPath), path(refIdx), path(geneticMap), path(chunkedRegions), path(refBins), path("${chromosome}.imputed.chunk.*.bcf"), path("${chromosome}.imputed.chunk.*.bcf.csi"), emit: imputedSamples
         tuple path("*coverage.txt.gz"), path("*log"), emit: imputedStatistics
 
     script:
@@ -61,8 +61,8 @@
         count=\$(echo "\$line" | awk '{print \$1}')
         REGS=\$(echo \${IRG} | cut -d":" -f 2 | cut -d"-" -f1)
         REGE=\$(echo \${IRG} | cut -d":" -f 2 | cut -d"-" -f2)
-        out_file="${chromosome}.\${chr}.\${REGS}.\${REGE}.bcf"
-        log_file="${chromosome}.\${chr}.\${REGS}.\${REGE}.log"
+        out_file="${chromosome}.imputed.chunk.\${chr}.\${REGS}.\${REGE}.bcf"
+        log_file="${chromosome}.imputed.chunk.\${chr}.\${REGS}.\${REGE}.log"
         GLIMPSE2_phase \\
             ${input_file_command} \\
             ${args} \\
