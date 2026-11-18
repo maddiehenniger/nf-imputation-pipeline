@@ -14,9 +14,8 @@ nextflow.enable.dsl=2
 */
 
 // include custom workflows
-include { PREPARE_INPUTS                            } from "./workflows/prepare_inputs.nf"
-include { PHASE_IMPUTE } from "./workflows/phase_impute.nf"
-// include { CALCULATE_ACCURACY } from "./workflows/calculate_accuracy.nf"
+include { PREPARE_INPUTS } from "./workflows/prepare_inputs.nf"
+include { PHASE_IMPUTE   } from "./workflows/phase_impute.nf"
 
 workflow {
 
@@ -24,7 +23,6 @@ workflow {
     // 1) Reads in the test sample(s), references, and optionally provided paths to genetic maps specified in the nextflow.config file
     // 1A) Separates the reference panels based on the user-defined imputationRound ('one' for the first round of imputation, 'two' for second round of imputation)
     // 1B) Detects if the user has provided a path to the genetic maps for downstream use 
-    // TEMPORARILY UNAVAILABLE: 2) Indexes the input sample(s), first round reference, and the optionally provided second round reference
     // 2) Identifies the chromosomes present in the test samples and separates the test samples by chromosome, also generating the associated indexed file
     // 
 
@@ -50,6 +48,8 @@ workflow {
     //      A5-A2) Round-one imputed samples and round two references are used to 'chunk' the chromosomes into imputation and buffer regions
     //      A5-A3) Round-one imputed samples are imputed to the round two reference in the generated imputation chunked regions
     //      A5-A4) Round two imputed chunked regions are ligated back together to produce one round-two imputed sample per chromosome
+    ///
+    
     PHASE_IMPUTE(
         ch_samples_one,
         ch_reference_one,

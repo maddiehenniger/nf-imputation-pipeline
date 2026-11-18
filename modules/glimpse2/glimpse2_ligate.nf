@@ -28,15 +28,15 @@
         tuple val(rMetadata), path(refPath), path(refIdx), path(geneticMap), path(chunkedRegions), path(refBins), path(imputedSamples), path(imputedSamplesIndex)
 
     output:
-        tuple val(rMetadata), path("imputed.chr.${rMetadata.chromosome}.bcf"), emit: ligatedImputedSamples
+        tuple val(rMetadata), path("imputed_chr_${rMetadata.chromosome}.bcf"), emit: ligatedImputedSamples
 
     script:
         """
         ls -1v ${rMetadata.chromosome}.imputed.chunk.*.bcf > ${rMetadata.chromosome}_imputed_files.txt
 
         GLIMPSE2_ligate \\
-            --input imputed_files.txt \\
+            --input ${rMetadata.chromosome}_imputed_files.txt \\
             --threads ${task.cpus} \\
-            --output imputed.chr.${rMetadata.chromosome}.bcf
+            --output imputed_chr_${rMetadata.chromosome}.bcf
         """
  }

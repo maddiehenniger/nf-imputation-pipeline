@@ -4,12 +4,6 @@
  * Uses the binary chunks generated during GLIMPSE2 chunk and split reference to impute target population in chunks.
  * @see GLIMPSE2 documentation https://odelaneau.github.io/GLIMPSE/docs/documentation/phase/
  *
- * GLIMPSE2 phasing is joint across samples but performed on a by-chromosome basis, so
- * the input tuple arrives as a list (sMetadata/samplePath/sampleIdx/pedigree)
- * per sample sharing this chromosome), bundled upstream via
- * groupTuple. The actual per-sample file references (via --bam-list) live
- * in `bamList`, so `samplePath`/`sampleIdx` are provided here to ensure
- * appropriate staging
  *
  * Note that genetic maps are not supplied at this step; these are embedded in the binary files provided, if the user supplied them
  * So adding the -M parameter to GLIMPSE2 phase would cause it to exit.
